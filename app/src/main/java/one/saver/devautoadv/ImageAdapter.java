@@ -32,9 +32,9 @@ public class ImageAdapter extends BaseAdapter {
         if (convertView == null) {
             // if it's not recycled, initialize some attributes
             imageView = new ImageView(mContext);
-            imageView.setLayoutParams(new GridView.LayoutParams(85, 85));
+            imageView.setLayoutParams(new GridView.LayoutParams(200, 200));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setPadding(8, 8, 8, 8);
+            imageView.setPadding(4, 4, 4, 4);
         } else {
             imageView = (ImageView) convertView;
         }
@@ -52,6 +52,9 @@ public class ImageAdapter extends BaseAdapter {
             R.drawable.card15, R.drawable.card16, R.drawable.card17,
             R.drawable.card18, R.drawable.card19, R.drawable.card20,
             R.drawable.card21 };  */
-    public	Integer[] mThumbIds = { R.drawable.ford, R.drawable.mazda, R.drawable.mercedes_benz,
-            R.drawable.mitsubishi, R.drawable.skoda };
+    public	Integer[] mThumbIds = { R.drawable.audi, R.drawable.bmw, R.drawable.landrover, R.drawable.citroen,
+            R.drawable.fiatlogo, R.drawable.ford, R.drawable.honda, R.drawable.hyundai, R.drawable.lexus,
+            R.drawable.mazda, R.drawable.mercedes_benz, R.drawable.mitsubishi, R.drawable.nissan, R.drawable.opel,
+            R.drawable.renault, R.drawable.seat, R.drawable.skoda, R.drawable.subaru, R.drawable.thumbsvolkswagen,
+            R.drawable.toyota, R.drawable.volvo};
 }
