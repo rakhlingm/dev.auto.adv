@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AbsoluteLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/textMake"
+        android:layout_width="165dp"
+        android:layout_height="70dp"
+        android:layout_x="200dp"
+        android:layout_y="27dp"
+        android:text="Audi"
+        android:textSize="46dp" />
+
+    <ImageView
+        android:id="@+id/full_image_view"
+        android:layout_width="200dp"
+        android:layout_height="120dp"
+        android:layout_x="7dp"
+        android:layout_y="-1dp" />
+
+    <TextView
+        android:id="@+id/textViewMinPrice"
+        android:layout_width="105dp"
+        android:layout_height="wrap_content"
+        android:layout_x="20dp"
+        android:layout_y="133dp"
+        android:text="Price"
+        android:textSize="18dp" />
+
+    <Spinner
+        android:id="@+id/spinnerPrice"
+        android:layout_width="150dp"
+        android:layout_height="40dp"
+        android:layout_x="13dp"
+        android:layout_y="171dp"
+        android:textSize="18dp" />
+
+    <LinearLayout
+        android:layout_width="353dp"
+        android:layout_height="245dp"
+        android:layout_x="13dp"
+        android:layout_y="231dp"
+        android:orientation="horizontal">
+
+        <Spinner
+            android:id="@+id/spinnerMinPrice"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:layout_x="13dp"
+            android:layout_y="171dp"
+            android:textSize="18dp" />
+
+        <Spinner
+            android:id="@+id/spinnerMaxPrice"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="30dp"
+            android:layout_x="13dp"
+            android:layout_y="171dp"
+            android:textSize="18dp" />
+    </LinearLayout>
+
+</AbsoluteLayout>

@@ -20,7 +20,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".Buyer"></activity>
-        <activity android:name=".FullImageActivity"></activity>
+        <activity android:name=".AdvertActivity"></activity>
     </application>
 
 </manifest>

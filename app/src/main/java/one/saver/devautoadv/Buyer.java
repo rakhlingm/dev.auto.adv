@@ -2,11 +2,9 @@ package one.saver.devautoadv;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.GridView;
 import android.widget.TextView;
 
@@ -35,7 +33,7 @@ public class Buyer extends Activity {
 
             // Sending image id to FullScreenActivity
             Intent i = new Intent(getApplicationContext(),
-                    FullImageActivity.class);
+                    AdvertActivity.class);
             // passing array index
             i.putExtra("id", position);
             startActivity(i);
