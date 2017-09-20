@@ -3,6 +3,73 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-
     <string name="action_settings">Settings</string>
+    <string-array name="priseMin">
+        <item>No minimum</item>
+        <item>$1000</item>
+        <item>$2000</item>
+        <item>$3000</item>
+        <item>$4000</item>
+        <item>$5000</item>
+        <item>$6000</item>
+        <item>$7000</item>
+        <item>$8000</item>
+        <item>$9000</item>
+        <item>$10000</item>
+        <item>$11000</item>
+        <item>$12000</item>
+        <item>$13000</item>
+        <item>$14000</item>
+        <item>$15000</item>
+        <item>$16000</item>
+        <item>$17000</item>
+        <item>$18000</item>
+        <item>$19000</item>
+        <item>$20000</item>
+        <item>$25000</item>
+        <item>$30000</item>
+        <item>$35000</item>
+        <item>$40000</item>
+        <item>$45000</item>
+        <item>$50000</item>
+        <item>$60000</item>
+        <item>$70000</item>
+        <item>$80000</item>
+        <item>$90000</item>
+        <item>$100000</item>
+    </string-array>
+    <string-array name="priseMax">
+        <item>No maximum</item>
+        <item>$1000</item>
+        <item>$2000</item>
+        <item>$3000</item>
+        <item>$4000</item>
+        <item>$5000</item>
+        <item>$6000</item>
+        <item>$7000</item>
+        <item>$8000</item>
+        <item>$9000</item>
+        <item>$10000</item>
+        <item>$11000</item>
+        <item>$12000</item>
+        <item>$13000</item>
+        <item>$14000</item>
+        <item>$15000</item>
+        <item>$16000</item>
+        <item>$17000</item>
+        <item>$18000</item>
+        <item>$19000</item>
+        <item>$20000</item>
+        <item>$25000</item>
+        <item>$30000</item>
+        <item>$35000</item>
+        <item>$40000</item>
+        <item>$45000</item>
+        <item>$50000</item>
+        <item>$60000</item>
+        <item>$70000</item>
+        <item>$80000</item>
+        <item>$90000</item>
+        <item>$100000</item>
+    </string-array>
 </resources>
