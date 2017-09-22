@@ -171,4 +171,30 @@
             android:textSize="18dp" />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="363dp"
+        android:layout_height="50dp"
+        android:layout_x="13dp"
+        android:layout_y="420dp"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/buttonToMyAccount"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_x="20dp"
+            android:layout_y="333dp"
+            android:layout_marginLeft="7dp"
+            android:text="Back to my adverts"
+            android:textSize="12dp" />
+        <Button
+            android:id="@+id/buttonAddNewAdv"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_x="20dp"
+            android:layout_y="237dp"
+            android:layout_marginLeft="120dp"
+            android:text="Add new advert"
+            android:textSize="12dp" />
+    </LinearLayout>
+
 </AbsoluteLayout>

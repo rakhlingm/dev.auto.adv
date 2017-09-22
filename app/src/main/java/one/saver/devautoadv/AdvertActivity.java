@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -32,6 +34,18 @@ public class AdvertActivity extends Activity {
     String[] mileageMax ;
     String[] model ;
     String[] colors ;
+    Button buttonToMyAccount;
+    Button buttonAddNewAdv;
+    boolean isMinPriceCorrect = false;
+    boolean isMaxPriceCorrect = false;
+    boolean isMinMileageCorrect = false;
+    boolean isMaxMileageCorrect = false;
+    int minPriceCounter = 0;
+    int maxPriceCounter = 0;
+    int minMileageCounter = 0;
+    int maxMileageCounter = 0;
+    int counter = 1;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +57,8 @@ public class AdvertActivity extends Activity {
         spinnerMinMileage = (Spinner) findViewById(R.id.spinnerMinMileage);
         spinnerMaxMileage = (Spinner) findViewById(R.id.spinnerMaxMileage);
         spinnerColor = (Spinner) findViewById(R.id.spinnerColor);
+        buttonToMyAccount = (Button) findViewById(R.id.buttonToMyAccount);
+        buttonAddNewAdv = (Button) findViewById(R.id.buttonAddNewAdv);
         // get intent data
         Intent intent = getIntent();
         // Selected image id
@@ -124,8 +140,57 @@ public class AdvertActivity extends Activity {
         AdapterView.OnItemSelectedListener spinnerMinPriceListener = new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            //    Toast toast = Toast.makeText(getApplicationContext(), spinnerMinPrice.getSelectedItem().toString(), Toast.LENGTH_SHORT);
-            //    toast.show();
+                if(spinnerMinPrice.getSelectedItemPosition() > spinnerMaxPrice.getSelectedItemPosition()
+                        && spinnerMaxPrice.getSelectedItemPosition() != 0
+                       ) {
+                    Toast toast = Toast.makeText(getApplicationContext(),
+                            "Min price cannot be bigger than max price", Toast.LENGTH_LONG);
+                    TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
+                    if( v != null) v.setGravity(Gravity.CENTER);
+                    toast.show();
+                    Log.e("Min Price B (if = true)", isMinPriceCorrect + " " + isMaxPriceCorrect
+                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
+                    buttonAddNewAdv.setEnabled(false);
+                    isMinPriceCorrect = false;
+                    counter++;
+                    Log.e("Min Price B(if = true)", isMinPriceCorrect + " " + isMaxPriceCorrect
+                    + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
+                } else
+                    if (spinnerMinPrice.getSelectedItemPosition() > spinnerMaxPrice.getSelectedItemPosition()
+                            && spinnerMaxPrice.getSelectedItemPosition()== 0
+                            && (!isMinPriceCorrect || !isMaxPriceCorrect || !isMinMileageCorrect|| !isMaxMileageCorrect)) {
+                        Log.e("MinPrice B(if = true/2)", isMinPriceCorrect + " " + isMaxPriceCorrect
+                                + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
+                        buttonAddNewAdv.setEnabled(false);
+                        isMinPriceCorrect = false;
+                        counter++;
+                        Log.e("MinPriceA(if = true/2)", isMinPriceCorrect + " " + isMaxPriceCorrect
+                                + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
+                    } else
+                        if(spinnerMinPrice.getSelectedItemPosition() < spinnerMaxPrice.getSelectedItemPosition()
+                                && (!isMinPriceCorrect || !isMaxPriceCorrect || !isMinMileageCorrect|| !isMaxMileageCorrect)
+                                ){
+                        Log.e("MinPrice B(if = true/3)", isMinPriceCorrect + " " + isMaxPriceCorrect
+                                + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
+                        buttonAddNewAdv.setEnabled(false);
+                        isMinPriceCorrect = true;
+                        isMaxPriceCorrect = true;
+                        counter++;
+                        Log.e("MinPriceA(if = true/3)", isMinPriceCorrect + " " + isMaxPriceCorrect
+                                + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
+                    } else
+
+                        {
+                    Log.e("Min Price B(if = false)", isMinPriceCorrect + " " + isMaxPriceCorrect
+                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
+                    if(counter > 5) {
+                        isMinPriceCorrect = true;
+                    }
+                    counter++;
+                    buttonAddNewAdv.setEnabled(true);
+                    Log.e("Min Price A(if = false)", isMinPriceCorrect + " " + isMaxPriceCorrect
+                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
+                }
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
@@ -136,8 +201,42 @@ public class AdvertActivity extends Activity {
         AdapterView.OnItemSelectedListener spinnerMaxPriceListener = new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            //    Toast toast = Toast.makeText(getApplicationContext(), spinnerMaxPrice.getSelectedItem().toString(), Toast.LENGTH_SHORT);
-            //    toast.show();
+                if(spinnerMinPrice.getSelectedItemPosition() > spinnerMaxPrice.getSelectedItemPosition()
+                        && spinnerMaxPrice.getSelectedItemPosition() != 0
+                        && (!isMinPriceCorrect || !isMaxPriceCorrect || !isMinMileageCorrect|| !isMaxMileageCorrect)) {
+                        Toast toast = Toast.makeText(getApplicationContext(),
+                                "Max price cannot be less than min price", Toast.LENGTH_LONG);
+                    TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
+                    if( v != null) v.setGravity(Gravity.CENTER);
+                        toast.show();
+                    Log.e("Max Price B (if = true)", isMinPriceCorrect + " " + isMaxPriceCorrect
+                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
+                    buttonAddNewAdv.setEnabled(false);
+                    isMaxPriceCorrect = false;
+                    counter++;
+                    Log.e("Max Price A (if = true)", isMinPriceCorrect + " " + isMaxPriceCorrect
+                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
+                } else
+                if (spinnerMinPrice.getSelectedItemPosition() < spinnerMaxPrice.getSelectedItemPosition()
+                        && (!isMinPriceCorrect || !isMaxPriceCorrect || !isMinMileageCorrect|| !isMaxMileageCorrect)) {
+                    Log.e("MaxPrice B(if = true/2)", isMinPriceCorrect + " " + isMaxPriceCorrect
+                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
+                    buttonAddNewAdv.setEnabled(false);
+                    isMaxPriceCorrect = false;
+                    counter++;
+                    Log.e("MaxPrice A(if = true/2)", isMinPriceCorrect + " " + isMaxPriceCorrect
+                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
+                } else {
+                    Log.e("Max Price B(if = false)", isMinPriceCorrect + " " + isMaxPriceCorrect
+                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
+                    if(counter > 5) {
+                        isMaxPriceCorrect = true;
+                    }
+                    counter++;
+                    Log.e("Max Price A(if = false)", isMinPriceCorrect + " " + isMaxPriceCorrect
+                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
+                    buttonAddNewAdv.setEnabled(true);
+                }
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
@@ -145,5 +244,138 @@ public class AdvertActivity extends Activity {
             }
         };
         spinnerMaxPrice.setOnItemSelectedListener(spinnerMaxPriceListener);
+        AdapterView.OnItemSelectedListener spinnerMinMileageListener = new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(spinnerMinMileage.getSelectedItemPosition() > spinnerMaxMileage.getSelectedItemPosition()
+                        && spinnerMaxMileage.getSelectedItemPosition() != 0
+                        && (!isMinPriceCorrect || !isMaxPriceCorrect || !isMinMileageCorrect|| !isMaxMileageCorrect)) {
+                    Toast toast = Toast.makeText(getApplicationContext(),
+                            "Min mileage cannot be bigger than max mileage", Toast.LENGTH_LONG);
+                    TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
+                    if( v != null) v.setGravity(Gravity.CENTER);
+                    toast.show();
+                    buttonAddNewAdv.setEnabled(false);
+                    Log.e("Min Mil B(if = true)", isMinPriceCorrect + " " + isMaxPriceCorrect
+                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
+                    isMinMileageCorrect = false;
+                    counter++;
+                    Log.e("Min Mil A(if = true)", isMinPriceCorrect + " " + isMaxPriceCorrect
+                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
+                } else
+                if (spinnerMinPrice.getSelectedItemPosition() > spinnerMaxPrice.getSelectedItemPosition()
+                        && spinnerMaxPrice.getSelectedItemPosition()== 0
+                        && (!isMinPriceCorrect || !isMaxPriceCorrect || !isMinMileageCorrect|| !isMaxMileageCorrect)) {
+                    Log.e("Min Mil B(if = true/2)", isMinPriceCorrect + " " + isMaxPriceCorrect
+                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
+                    buttonAddNewAdv.setEnabled(false);
+                    isMinMileageCorrect = false;
+                    counter++;
+                    Log.e("Min Mil A(if = true/2)", isMinPriceCorrect + " " + isMaxPriceCorrect
+                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
+
+                } else {
+                    Log.e("Min Mil B(if = false)", isMinPriceCorrect + " " + isMaxPriceCorrect
+                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
+                    if(counter > 5) {
+                        isMinMileageCorrect = true;
+                        isMaxMileageCorrect = true;
+                        }
+                    counter++;
+                    Log.e("Min Mil A(if = false)", isMinPriceCorrect + " " + isMaxPriceCorrect
+                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
+                    buttonAddNewAdv.setEnabled(true);
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                return;
+            }
+        };
+        spinnerMinMileage.setOnItemSelectedListener(spinnerMinMileageListener);
+        AdapterView.OnItemSelectedListener spinnerMaxMileageListener = new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(spinnerMinMileage.getSelectedItemPosition() > spinnerMaxMileage.getSelectedItemPosition()
+                        && spinnerMaxMileage.getSelectedItemPosition() != 0
+                        && (!isMinPriceCorrect || !isMaxPriceCorrect || !isMinMileageCorrect|| !isMaxMileageCorrect)) {
+                    Toast toast = Toast.makeText(getApplicationContext(),
+                            "Max mileage cannot be less than min mileage", Toast.LENGTH_LONG);
+                    TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
+                    if( v != null) v.setGravity(Gravity.CENTER);
+                    toast.show();
+                    buttonAddNewAdv.setEnabled(false);
+                    Log.e("Max Mil B(if = true)", isMinPriceCorrect + " " + isMaxPriceCorrect
+                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
+                    isMaxMileageCorrect = false;
+                    counter++;
+                    Log.e("Max Mil A(if = true)", isMinPriceCorrect + " " + isMaxPriceCorrect
+                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
+                } else
+                if (spinnerMaxPrice.getSelectedItemPosition() < spinnerMaxPrice.getSelectedItemPosition()
+                        && (!isMinPriceCorrect || !isMaxPriceCorrect || !isMinMileageCorrect|| !isMaxMileageCorrect)) {
+                    Log.e("Max Mil B(if = true/2)", isMinPriceCorrect + " " + isMaxPriceCorrect
+                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
+                    buttonAddNewAdv.setEnabled(false);
+                    isMaxMileageCorrect = false;
+                    counter++;
+                    Log.e("Max Mil A(if = true/2)", isMinPriceCorrect + " " + isMaxPriceCorrect
+                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
+                } else
+                if(spinnerMinMileage.getSelectedItemPosition() < spinnerMaxMileage.getSelectedItemPosition()
+                        && counter == 5
+                        ) {
+                    Log.e("Max Mil B(if = true/3)", isMinPriceCorrect + " " + isMaxPriceCorrect
+                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
+                    buttonAddNewAdv.setEnabled(true);
+                    isMaxMileageCorrect = true;
+                    isMinMileageCorrect = true;
+                    counter++;
+                    Log.e("Max Mil A(if = true/3)", isMinPriceCorrect + " " + isMaxPriceCorrect
+                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
+                } else
+                if(spinnerMinMileage.getSelectedItemPosition() < spinnerMaxMileage.getSelectedItemPosition()
+                        && (!isMinPriceCorrect || !isMaxPriceCorrect || !isMinMileageCorrect|| !isMaxMileageCorrect)
+                        ){
+                    Log.e("Max Mil B(if = true/4)", isMinPriceCorrect + " " + isMaxPriceCorrect
+                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
+                    buttonAddNewAdv.setEnabled(false);
+                    isMaxMileageCorrect = true;
+                    isMinMileageCorrect = true;
+                    counter++;
+                    Log.e("Max Mil A(if = true/4)", isMinPriceCorrect + " " + isMaxPriceCorrect
+                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
+                } else {
+                    Log.e("Max Mil B(if = false)", isMinPriceCorrect + " " + isMaxPriceCorrect
+                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
+                    if(counter > 5) {
+                        isMaxMileageCorrect = true;
+                        isMinMileageCorrect = true;
+                    }
+                    counter++;
+                    Log.e("Max Mil A(if = false)", isMinPriceCorrect + " " + isMaxPriceCorrect
+                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
+                    buttonAddNewAdv.setEnabled(true);
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                return;
+            }
+        };
+        spinnerMaxMileage.setOnItemSelectedListener(spinnerMaxMileageListener);
+        buttonToMyAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        buttonAddNewAdv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+             //   if()
+            }
+        });
+
     }
 }
