@@ -144,52 +144,12 @@ public class AdvertActivity extends Activity {
                         && spinnerMaxPrice.getSelectedItemPosition() != 0
                        ) {
                     Toast toast = Toast.makeText(getApplicationContext(),
-                            "Min price cannot be bigger than max price", Toast.LENGTH_LONG);
+                            "Min price cannot be bigger than max price", Toast.LENGTH_SHORT);
                     TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
                     if( v != null) v.setGravity(Gravity.CENTER);
                     toast.show();
-                    Log.e("Min Price B (if = true)", isMinPriceCorrect + " " + isMaxPriceCorrect
-                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
-                    buttonAddNewAdv.setEnabled(false);
-                    isMinPriceCorrect = false;
-                    counter++;
-                    Log.e("Min Price B(if = true)", isMinPriceCorrect + " " + isMaxPriceCorrect
-                    + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
-                } else
-                    if (spinnerMinPrice.getSelectedItemPosition() > spinnerMaxPrice.getSelectedItemPosition()
-                            && spinnerMaxPrice.getSelectedItemPosition()== 0
-                            && (!isMinPriceCorrect || !isMaxPriceCorrect || !isMinMileageCorrect|| !isMaxMileageCorrect)) {
-                        Log.e("MinPrice B(if = true/2)", isMinPriceCorrect + " " + isMaxPriceCorrect
-                                + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
-                        buttonAddNewAdv.setEnabled(false);
-                        isMinPriceCorrect = false;
-                        counter++;
-                        Log.e("MinPriceA(if = true/2)", isMinPriceCorrect + " " + isMaxPriceCorrect
-                                + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
-                    } else
-                        if(spinnerMinPrice.getSelectedItemPosition() < spinnerMaxPrice.getSelectedItemPosition()
-                                && (!isMinPriceCorrect || !isMaxPriceCorrect || !isMinMileageCorrect|| !isMaxMileageCorrect)
-                                ){
-                        Log.e("MinPrice B(if = true/3)", isMinPriceCorrect + " " + isMaxPriceCorrect
-                                + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
-                        buttonAddNewAdv.setEnabled(false);
-                        isMinPriceCorrect = true;
-                        isMaxPriceCorrect = true;
-                        counter++;
-                        Log.e("MinPriceA(if = true/3)", isMinPriceCorrect + " " + isMaxPriceCorrect
-                                + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
-                    } else
+                } else {
 
-                        {
-                    Log.e("Min Price B(if = false)", isMinPriceCorrect + " " + isMaxPriceCorrect
-                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
-                    if(counter > 5) {
-                        isMinPriceCorrect = true;
-                    }
-                    counter++;
-                    buttonAddNewAdv.setEnabled(true);
-                    Log.e("Min Price A(if = false)", isMinPriceCorrect + " " + isMaxPriceCorrect
-                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
                 }
             }
             @Override
@@ -202,40 +162,14 @@ public class AdvertActivity extends Activity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if(spinnerMinPrice.getSelectedItemPosition() > spinnerMaxPrice.getSelectedItemPosition()
-                        && spinnerMaxPrice.getSelectedItemPosition() != 0
-                        && (!isMinPriceCorrect || !isMaxPriceCorrect || !isMinMileageCorrect|| !isMaxMileageCorrect)) {
+                        && spinnerMaxPrice.getSelectedItemPosition() != 0) {
                         Toast toast = Toast.makeText(getApplicationContext(),
-                                "Max price cannot be less than min price", Toast.LENGTH_LONG);
+                                "Max price cannot be less than min price", Toast.LENGTH_SHORT);
                     TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
                     if( v != null) v.setGravity(Gravity.CENTER);
                         toast.show();
-                    Log.e("Max Price B (if = true)", isMinPriceCorrect + " " + isMaxPriceCorrect
-                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
-                    buttonAddNewAdv.setEnabled(false);
-                    isMaxPriceCorrect = false;
-                    counter++;
-                    Log.e("Max Price A (if = true)", isMinPriceCorrect + " " + isMaxPriceCorrect
-                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
-                } else
-                if (spinnerMinPrice.getSelectedItemPosition() < spinnerMaxPrice.getSelectedItemPosition()
-                        && (!isMinPriceCorrect || !isMaxPriceCorrect || !isMinMileageCorrect|| !isMaxMileageCorrect)) {
-                    Log.e("MaxPrice B(if = true/2)", isMinPriceCorrect + " " + isMaxPriceCorrect
-                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
-                    buttonAddNewAdv.setEnabled(false);
-                    isMaxPriceCorrect = false;
-                    counter++;
-                    Log.e("MaxPrice A(if = true/2)", isMinPriceCorrect + " " + isMaxPriceCorrect
-                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
                 } else {
-                    Log.e("Max Price B(if = false)", isMinPriceCorrect + " " + isMaxPriceCorrect
-                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
-                    if(counter > 5) {
-                        isMaxPriceCorrect = true;
-                    }
-                    counter++;
-                    Log.e("Max Price A(if = false)", isMinPriceCorrect + " " + isMaxPriceCorrect
-                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
-                    buttonAddNewAdv.setEnabled(true);
+
                 }
             }
             @Override
@@ -247,44 +181,13 @@ public class AdvertActivity extends Activity {
         AdapterView.OnItemSelectedListener spinnerMinMileageListener = new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(spinnerMinMileage.getSelectedItemPosition() > spinnerMaxMileage.getSelectedItemPosition()
-                        && spinnerMaxMileage.getSelectedItemPosition() != 0
-                        && (!isMinPriceCorrect || !isMaxPriceCorrect || !isMinMileageCorrect|| !isMaxMileageCorrect)) {
+                if(spinnerMinMileage.getSelectedItemPosition() > spinnerMaxMileage.getSelectedItemPosition()) {
                     Toast toast = Toast.makeText(getApplicationContext(),
-                            "Min mileage cannot be bigger than max mileage", Toast.LENGTH_LONG);
+                            "Min mileage cannot be bigger than max mileage", Toast.LENGTH_SHORT);
                     TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
                     if( v != null) v.setGravity(Gravity.CENTER);
                     toast.show();
-                    buttonAddNewAdv.setEnabled(false);
-                    Log.e("Min Mil B(if = true)", isMinPriceCorrect + " " + isMaxPriceCorrect
-                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
-                    isMinMileageCorrect = false;
-                    counter++;
-                    Log.e("Min Mil A(if = true)", isMinPriceCorrect + " " + isMaxPriceCorrect
-                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
-                } else
-                if (spinnerMinPrice.getSelectedItemPosition() > spinnerMaxPrice.getSelectedItemPosition()
-                        && spinnerMaxPrice.getSelectedItemPosition()== 0
-                        && (!isMinPriceCorrect || !isMaxPriceCorrect || !isMinMileageCorrect|| !isMaxMileageCorrect)) {
-                    Log.e("Min Mil B(if = true/2)", isMinPriceCorrect + " " + isMaxPriceCorrect
-                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
-                    buttonAddNewAdv.setEnabled(false);
-                    isMinMileageCorrect = false;
-                    counter++;
-                    Log.e("Min Mil A(if = true/2)", isMinPriceCorrect + " " + isMaxPriceCorrect
-                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
-
                 } else {
-                    Log.e("Min Mil B(if = false)", isMinPriceCorrect + " " + isMaxPriceCorrect
-                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
-                    if(counter > 5) {
-                        isMinMileageCorrect = true;
-                        isMaxMileageCorrect = true;
-                        }
-                    counter++;
-                    Log.e("Min Mil A(if = false)", isMinPriceCorrect + " " + isMaxPriceCorrect
-                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
-                    buttonAddNewAdv.setEnabled(true);
                 }
             }
             @Override
@@ -296,66 +199,13 @@ public class AdvertActivity extends Activity {
         AdapterView.OnItemSelectedListener spinnerMaxMileageListener = new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(spinnerMinMileage.getSelectedItemPosition() > spinnerMaxMileage.getSelectedItemPosition()
-                        && spinnerMaxMileage.getSelectedItemPosition() != 0
-                        && (!isMinPriceCorrect || !isMaxPriceCorrect || !isMinMileageCorrect|| !isMaxMileageCorrect)) {
+                if(spinnerMinMileage.getSelectedItemPosition() > spinnerMaxMileage.getSelectedItemPosition()) {
                     Toast toast = Toast.makeText(getApplicationContext(),
-                            "Max mileage cannot be less than min mileage", Toast.LENGTH_LONG);
+                            "Max mileage cannot be less than min mileage", Toast.LENGTH_SHORT);
                     TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
                     if( v != null) v.setGravity(Gravity.CENTER);
                     toast.show();
-                    buttonAddNewAdv.setEnabled(false);
-                    Log.e("Max Mil B(if = true)", isMinPriceCorrect + " " + isMaxPriceCorrect
-                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
-                    isMaxMileageCorrect = false;
-                    counter++;
-                    Log.e("Max Mil A(if = true)", isMinPriceCorrect + " " + isMaxPriceCorrect
-                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
-                } else
-                if (spinnerMaxPrice.getSelectedItemPosition() < spinnerMaxPrice.getSelectedItemPosition()
-                        && (!isMinPriceCorrect || !isMaxPriceCorrect || !isMinMileageCorrect|| !isMaxMileageCorrect)) {
-                    Log.e("Max Mil B(if = true/2)", isMinPriceCorrect + " " + isMaxPriceCorrect
-                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
-                    buttonAddNewAdv.setEnabled(false);
-                    isMaxMileageCorrect = false;
-                    counter++;
-                    Log.e("Max Mil A(if = true/2)", isMinPriceCorrect + " " + isMaxPriceCorrect
-                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
-                } else
-                if(spinnerMinMileage.getSelectedItemPosition() < spinnerMaxMileage.getSelectedItemPosition()
-                        && counter == 5
-                        ) {
-                    Log.e("Max Mil B(if = true/3)", isMinPriceCorrect + " " + isMaxPriceCorrect
-                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
-                    buttonAddNewAdv.setEnabled(true);
-                    isMaxMileageCorrect = true;
-                    isMinMileageCorrect = true;
-                    counter++;
-                    Log.e("Max Mil A(if = true/3)", isMinPriceCorrect + " " + isMaxPriceCorrect
-                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
-                } else
-                if(spinnerMinMileage.getSelectedItemPosition() < spinnerMaxMileage.getSelectedItemPosition()
-                        && (!isMinPriceCorrect || !isMaxPriceCorrect || !isMinMileageCorrect|| !isMaxMileageCorrect)
-                        ){
-                    Log.e("Max Mil B(if = true/4)", isMinPriceCorrect + " " + isMaxPriceCorrect
-                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
-                    buttonAddNewAdv.setEnabled(false);
-                    isMaxMileageCorrect = true;
-                    isMinMileageCorrect = true;
-                    counter++;
-                    Log.e("Max Mil A(if = true/4)", isMinPriceCorrect + " " + isMaxPriceCorrect
-                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
                 } else {
-                    Log.e("Max Mil B(if = false)", isMinPriceCorrect + " " + isMaxPriceCorrect
-                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
-                    if(counter > 5) {
-                        isMaxMileageCorrect = true;
-                        isMinMileageCorrect = true;
-                    }
-                    counter++;
-                    Log.e("Max Mil A(if = false)", isMinPriceCorrect + " " + isMaxPriceCorrect
-                            + " " + isMinMileageCorrect + " " + isMaxMileageCorrect + " " + counter);
-                    buttonAddNewAdv.setEnabled(true);
                 }
             }
             @Override
@@ -373,7 +223,23 @@ public class AdvertActivity extends Activity {
         buttonAddNewAdv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-             //   if()
+               if((spinnerMinPrice.getSelectedItemPosition() > spinnerMaxPrice.getSelectedItemPosition()
+                       && spinnerMaxPrice.getSelectedItemPosition() != 0) ||
+                       (spinnerMinPrice.getSelectedItemPosition() > spinnerMaxPrice.getSelectedItemPosition()
+                       && spinnerMaxPrice.getSelectedItemPosition() != 0)) {
+                   Log.e("buttonAddNewAdv", "Please, check parameters of your query!");
+                /*           "Please, check parameters of your query!", Toast.LENGTH_SHORT);
+                   TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
+                   if( tv != null) tv.setGravity(Gravity.CENTER);
+                   toast.show(); */
+               } else {
+                   Log.e("buttonAddNewAdv", "Your advert is adding know!");
+             /*      Toast toast = Toast.makeText(getApplicationContext(),
+                           "Your advert is adding know!", Toast.LENGTH_SHORT);
+                   TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
+                   if( tv != null) tv.setGravity(Gravity.CENTER);
+                   toast.show();   */
+               }
             }
         });
 
