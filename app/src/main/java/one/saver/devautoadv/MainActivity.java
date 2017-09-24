@@ -19,6 +19,7 @@ import android.widget.Button;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     Button buyer;
+    Button seller;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,11 +45,19 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         buyer = (Button)findViewById(R.id.Button1);
+        seller = (Button)findViewById(R.id.Button2);
         buyer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.e("Button Buyer", "opening Buyer.Activity");
                 startActivity(new Intent(MainActivity.this, Buyer.class));
+            }
+        });
+        seller.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e("Button Seller", "opening Seller.Activity");
+                startActivity(new Intent(MainActivity.this, Seller.class));
             }
         });
     }

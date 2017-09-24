@@ -7,14 +7,14 @@
     android:orientation="vertical">
 
     <ImageView
-        android:id="@+id/full_image_view_buyer"
+        android:id="@+id/full_image_view_query"
         android:layout_width="150dp"
         android:layout_height="90dp"
         android:layout_x="7dp"
         android:layout_y="15dp" />
 
     <TextView
-        android:id="@+id/textMake"
+        android:id="@+id/textMake_query"
         android:layout_width="165dp"
         android:layout_height="70dp"
         android:layout_x="163dp"
@@ -30,7 +30,7 @@
         android:layout_y="133dp"
         android:orientation="horizontal">
         <TextView
-            android:id="@+id/textViewModel"
+            android:id="@+id/textViewModel_query"
             android:layout_width="105dp"
             android:layout_height="wrap_content"
             android:layout_x="20dp"
@@ -39,7 +39,7 @@
             android:text="Model"
             android:textSize="18dp" />
         <TextView
-            android:id="@+id/textViewColor"
+            android:id="@+id/textViewColor_query"
             android:layout_width="105dp"
             android:layout_height="wrap_content"
             android:layout_x="20dp"
@@ -56,7 +56,7 @@
         android:layout_y="164dp"
         android:orientation="horizontal">
         <Spinner
-            android:id="@+id/spinnerModel"
+            android:id="@+id/spinnerModel_query"
             android:layout_width="150dp"
             android:layout_height="40dp"
             android:layout_x="13dp"
@@ -64,7 +64,7 @@
             android:textSize="18dp" />
 
         <Spinner
-            android:id="@+id/spinnerColor"
+            android:id="@+id/spinnerColor_query"
             android:layout_width="150dp"
             android:layout_height="40dp"
             android:layout_marginLeft="40dp"
@@ -80,7 +80,7 @@
         android:layout_y="217dp"
         android:orientation="horizontal">
         <TextView
-            android:id="@+id/textViewMinPrice"
+            android:id="@+id/textViewMinPrice_query"
             android:layout_width="105dp"
             android:layout_height="wrap_content"
             android:layout_x="20dp"
@@ -89,7 +89,7 @@
             android:text="Price min"
             android:textSize="18dp" />
         <TextView
-            android:id="@+id/textViewMaxPrice"
+            android:id="@+id/textViewMaxPrice_query"
             android:layout_width="105dp"
             android:layout_height="wrap_content"
             android:layout_x="20dp"
@@ -106,14 +106,14 @@
         android:layout_y="259dp"
         android:orientation="horizontal">
         <Spinner
-            android:id="@+id/spinnerMinPrice"
+            android:id="@+id/spinnerMinPrice_query"
             android:layout_width="150dp"
             android:layout_height="40dp"
             android:layout_x="13dp"
             android:layout_y="171dp"
             android:textSize="18dp" />
         <Spinner
-            android:id="@+id/spinnerMaxPrice"
+            android:id="@+id/spinnerMaxPrice_query"
             android:layout_width="150dp"
             android:layout_height="40dp"
             android:layout_marginLeft="40dp"
@@ -129,7 +129,7 @@
         android:layout_y="312dp"
         android:orientation="horizontal">
         <TextView
-            android:id="@+id/textViewMinMileage"
+            android:id="@+id/textViewMinMileage_query"
             android:layout_width="105dp"
             android:layout_height="wrap_content"
             android:layout_x="20dp"
@@ -138,7 +138,7 @@
             android:text="Mileage min"
             android:textSize="18dp" />
         <TextView
-            android:id="@+id/textViewMaxMileage"
+            android:id="@+id/textViewMaxMileage_query"
             android:layout_width="105dp"
             android:layout_height="wrap_content"
             android:layout_x="20dp"
@@ -155,14 +155,14 @@
         android:layout_y="349dp"
         android:orientation="horizontal">
         <Spinner
-            android:id="@+id/spinnerMinMileage"
+            android:id="@+id/spinnerMinMileage_query"
             android:layout_width="150dp"
             android:layout_height="40dp"
             android:layout_x="13dp"
             android:layout_y="171dp"
             android:textSize="18dp" />
         <Spinner
-            android:id="@+id/spinnerMaxMileage"
+            android:id="@+id/spinnerMaxMileage_query"
             android:layout_width="150dp"
             android:layout_height="40dp"
             android:layout_marginLeft="40dp"
@@ -178,22 +178,22 @@
         android:layout_y="420dp"
         android:orientation="horizontal">
         <Button
-            android:id="@+id/buttonToMyAccount"
+            android:id="@+id/buttonToMyAccount_query"
             android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:layout_x="20dp"
             android:layout_y="333dp"
             android:layout_marginLeft="7dp"
-            android:text="Back to my queries"
+            android:text="Back to my ads"
             android:textSize="12dp" />
         <Button
-            android:id="@+id/buttonAddNewAdv"
+            android:id="@+id/buttonAddNewAdv_query"
             android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:layout_x="20dp"
             android:layout_y="237dp"
             android:layout_marginLeft="80dp"
-            android:text="Add a new query"
+            android:text="Add new ad"
             android:textSize="12dp" />
     </LinearLayout>
 

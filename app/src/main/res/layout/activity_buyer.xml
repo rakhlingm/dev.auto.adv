@@ -5,13 +5,13 @@
     android:orientation="vertical"
     android:background="#FFFFFF">
     <TextView
-        android:id="@+id/info"
+        android:id="@+id/infoBuyer"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="" />
 
     <GridView
-        android:id="@+id/gridView1"
+        android:id="@+id/gridViewBuyer"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:columnWidth="90dp"

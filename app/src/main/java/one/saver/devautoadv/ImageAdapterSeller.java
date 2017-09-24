@@ -7,10 +7,10 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
-public class ImageAdapter extends BaseAdapter {
+public class ImageAdapterSeller extends BaseAdapter {
     private Context mContext;
 
-    public ImageAdapter(Context c) {
+    public ImageAdapterSeller(Context c) {
         mContext = c;
     }
 

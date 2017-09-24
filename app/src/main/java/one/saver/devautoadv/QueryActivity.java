@@ -17,7 +17,7 @@ import android.widget.Toast;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AdvertActivity extends Activity {
+public class QueryActivity extends Activity {
     TextView textMake;
     Spinner spinnerPrice;
     Spinner spinnerMinPrice;
@@ -47,24 +47,28 @@ public class AdvertActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_advert);
-        textMake = (TextView) findViewById(R.id.textMake);
-        spinnerModel = (Spinner) findViewById(R.id.spinnerModel);
-        spinnerMinPrice = (Spinner) findViewById(R.id.spinnerMinPrice);
-        spinnerMaxPrice = (Spinner) findViewById(R.id.spinnerMaxPrice);
-        spinnerMinMileage = (Spinner) findViewById(R.id.spinnerMinMileage);
-        spinnerMaxMileage = (Spinner) findViewById(R.id.spinnerMaxMileage);
-        spinnerColor = (Spinner) findViewById(R.id.spinnerColor);
-        buttonToMyAccount = (Button) findViewById(R.id.buttonToMyAccount);
-        buttonAddNewAdv = (Button) findViewById(R.id.buttonAddNewAdv);
+        setContentView(R.layout.activity_query);
+        textMake = (TextView) findViewById(R.id.textMake_query);
+        spinnerModel = (Spinner) findViewById(R.id.spinnerModel_query);
+        spinnerMinPrice = (Spinner) findViewById(R.id.spinnerMinPrice_query);
+        spinnerMaxPrice = (Spinner) findViewById(R.id.spinnerMaxPrice_query);
+        spinnerMinMileage = (Spinner) findViewById(R.id.spinnerMinMileage_query);
+        spinnerMaxMileage = (Spinner) findViewById(R.id.spinnerMaxMileage_query);
+        spinnerColor = (Spinner) findViewById(R.id.spinnerColor_query);
+        buttonToMyAccount = (Button) findViewById(R.id.buttonToMyAccount_query);
+        buttonAddNewAdv = (Button) findViewById(R.id.buttonAddNewAdv_query);
         // get intent data
         Intent intent = getIntent();
         // Selected image id
         int position = intent.getExtras().getInt("id");
-        ImageAdapterBayer imageAdapter = new ImageAdapterBayer(this);
-        ImageView imageView = (ImageView) findViewById(R.id.full_image_view_buyer);
+        ImageAdapterSeller imageAdapter = new ImageAdapterSeller(this);
+        ImageView imageView = (ImageView) findViewById(R.id.full_image_view_query);
         imageView.setImageResource(imageAdapter.mThumbIds[position]);
-        textMake.setText(getResources().getStringArray(R.array.makeArray)[position]);
+        if(position != 0) {
+            textMake.setText(getResources().getStringArray(R.array.makeArray_query)[position]);
+        } else {
+            textMake.setText("");
+        }
 
   /*      ArrayAdapter<String> adapterPrice = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, price);
         // Определяем разметку для использования при выборе элемента
@@ -136,7 +140,7 @@ public class AdvertActivity extends Activity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if(spinnerMinPrice.getSelectedItemPosition() > spinnerMaxPrice.getSelectedItemPosition()
                         && spinnerMaxPrice.getSelectedItemPosition() != 0
-                       ) {
+                        ) {
                     Toast toast = Toast.makeText(getApplicationContext(),
                             "Min price cannot be bigger than max price", Toast.LENGTH_SHORT);
                     TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
@@ -157,11 +161,11 @@ public class AdvertActivity extends Activity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if(spinnerMinPrice.getSelectedItemPosition() > spinnerMaxPrice.getSelectedItemPosition()
                         && spinnerMaxPrice.getSelectedItemPosition() != 0) {
-                        Toast toast = Toast.makeText(getApplicationContext(),
-                                "Max price cannot be less than min price", Toast.LENGTH_SHORT);
+                    Toast toast = Toast.makeText(getApplicationContext(),
+                            "Max price cannot be less than min price", Toast.LENGTH_SHORT);
                     TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
                     if( v != null) v.setGravity(Gravity.CENTER);
-                        toast.show();
+                    toast.show();
                 } else {
 
                 }
@@ -218,28 +222,28 @@ public class AdvertActivity extends Activity {
         buttonAddNewAdv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               if(((spinnerMinPrice.getSelectedItemPosition() > spinnerMaxPrice.getSelectedItemPosition()
-                       && spinnerMaxPrice.getSelectedItemPosition() != 0) ||
-                       (spinnerMinPrice.getSelectedItemPosition() > spinnerMaxPrice.getSelectedItemPosition()
-                       && spinnerMaxPrice.getSelectedItemPosition() != 0)
-               || ((spinnerMinPrice.getSelectedItemPosition() > spinnerMaxPrice.getSelectedItemPosition()
-                       && spinnerMaxPrice.getSelectedItemPosition() == 0) ||
-                       (spinnerMinPrice.getSelectedItemPosition() > spinnerMaxPrice.getSelectedItemPosition()
-                               && spinnerMaxPrice.getSelectedItemPosition() == 0)))
-                       ) {
-                   Log.e("buttonAddNewAdv", "Please, check parameters of your query!");
+                if(((spinnerMinPrice.getSelectedItemPosition() > spinnerMaxPrice.getSelectedItemPosition()
+                        && spinnerMaxPrice.getSelectedItemPosition() != 0) ||
+                        (spinnerMinPrice.getSelectedItemPosition() > spinnerMaxPrice.getSelectedItemPosition()
+                                && spinnerMaxPrice.getSelectedItemPosition() != 0)
+                        || ((spinnerMinPrice.getSelectedItemPosition() > spinnerMaxPrice.getSelectedItemPosition()
+                        && spinnerMaxPrice.getSelectedItemPosition() == 0) ||
+                        (spinnerMinPrice.getSelectedItemPosition() > spinnerMaxPrice.getSelectedItemPosition()
+                                && spinnerMaxPrice.getSelectedItemPosition() == 0)))
+                        ) {
+                    Log.e("buttonAddNewAdv", "Please, check parameters of your query!");
                 /*           "Please, check parameters of your query!", Toast.LENGTH_SHORT);
                    TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
                    if( tv != null) tv.setGravity(Gravity.CENTER);
                    toast.show(); */
-               } else {
-                   Log.e("buttonAddNewAdv", "Your advert is adding know!");
+                } else {
+                    Log.e("buttonAddNewAdv", "Your advert is adding know!");
              /*      Toast toast = Toast.makeText(getApplicationContext(),
                            "Your advert is adding know!", Toast.LENGTH_SHORT);
                    TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
                    if( tv != null) tv.setGravity(Gravity.CENTER);
                    toast.show();   */
-               }
+                }
             }
         });
 

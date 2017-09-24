@@ -19,8 +19,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Buyer"></activity>
-        <activity android:name=".AdvertActivity"></activity>
+        <activity android:name=".Buyer" />
+        <activity android:name=".AdvertActivity" />
+        <activity android:name=".Seller" />
+        <activity android:name=".QueryActivity"></activity>
     </application>
 
 </manifest>
