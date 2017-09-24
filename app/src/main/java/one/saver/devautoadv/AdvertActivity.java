@@ -61,8 +61,8 @@ public class AdvertActivity extends Activity {
         Intent intent = getIntent();
         // Selected image id
         int position = intent.getExtras().getInt("id");
-        ImageAdapterBayer imageAdapter = new ImageAdapterBayer(this);
-        ImageView imageView = (ImageView) findViewById(R.id.full_image_view_buyer);
+        ImageAdapterSeller imageAdapter = new ImageAdapterSeller(this);
+        ImageView imageView = (ImageView) findViewById(R.id.full_image_view_advert);
         imageView.setImageResource(imageAdapter.mThumbIds[position]);
         textMake.setText(getResources().getStringArray(R.array.makeArray)[position]);
 
@@ -95,7 +95,7 @@ public class AdvertActivity extends Activity {
         models_arrays.put(19, getResources().getStringArray(R.array.toyotaModels));
         models_arrays.put(20, getResources().getStringArray(R.array.volvoModels));
 
-        model = models_arrays.get(position);
+        model = models_arrays.get(position+1);
         ArrayAdapter<String> adapterModel = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,
                 model);
         adapterModel.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

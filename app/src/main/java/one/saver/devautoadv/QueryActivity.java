@@ -61,7 +61,7 @@ public class QueryActivity extends Activity {
         Intent intent = getIntent();
         // Selected image id
         int position = intent.getExtras().getInt("id");
-        ImageAdapterSeller imageAdapter = new ImageAdapterSeller(this);
+        ImageAdapterBuyer imageAdapter = new ImageAdapterBuyer(this);
         ImageView imageView = (ImageView) findViewById(R.id.full_image_view_query);
         imageView.setImageResource(imageAdapter.mThumbIds[position]);
         if(position != 0) {

@@ -33,7 +33,7 @@ public class Seller extends AppCompatActivity {
 
             // Sending image id to FullScreenActivity
             Intent i = new Intent(getApplicationContext(),
-                    QueryActivity.class);
+                    AdvertActivity.class);
             // passing array index
             i.putExtra("id", position);
             startActivity(i);

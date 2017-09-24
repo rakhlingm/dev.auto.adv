@@ -20,7 +20,7 @@ public class Buyer extends Activity {
 
         mSelectText = (TextView) findViewById(R.id.infoBuyer);
         GridView gridview = (GridView) findViewById(R.id.gridViewBuyer);
-        gridview.setAdapter(new ImageAdapterBayer(this));
+        gridview.setAdapter(new ImageAdapterBuyer(this));
 
         gridview.setOnItemClickListener(gridviewOnItemClickListener);
     }
@@ -33,7 +33,7 @@ public class Buyer extends Activity {
 
             // Sending image id to FullScreenActivity
             Intent i = new Intent(getApplicationContext(),
-                    AdvertActivity.class);
+                    QueryActivity.class);
             // passing array index
             i.putExtra("id", position);
             startActivity(i);
