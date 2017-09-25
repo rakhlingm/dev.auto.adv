@@ -241,6 +241,8 @@ public class AdvertActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Log.e("ImageView 1", "ImageView 1 was pressed");
+                Log.e("Opening Activity", "opening ImageAttachmentActivity.Activity");
+                startActivity(new Intent(AdvertActivity.this, ImageAttachmentActivity.class));
             }
         });
         image_2.setOnClickListener(new View.OnClickListener() {
