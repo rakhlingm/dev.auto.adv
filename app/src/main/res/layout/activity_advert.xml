@@ -200,7 +200,7 @@
             android:layout_height="wrap_content"
             android:layout_x="20dp"
             android:layout_y="333dp"
-            android:layout_marginLeft="7dp"
+            android:layout_marginLeft="23dp"
             android:text="Back to my queries"
             android:textSize="12dp" />
         <Button
@@ -208,8 +208,8 @@
             android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:layout_x="20dp"
-            android:layout_y="233dp"
-            android:layout_marginLeft="80dp"
+            android:layout_y="223dp"
+            android:layout_marginLeft="52dp"
             android:text="Add a new query"
             android:textSize="12dp" />
     </LinearLayout>
