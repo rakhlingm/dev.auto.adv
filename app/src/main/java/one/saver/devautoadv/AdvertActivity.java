@@ -34,6 +34,8 @@ public class AdvertActivity extends Activity {
     String[] colors ;
     Button buttonToMyAccount;
     Button buttonAddNewAdv;
+    ImageView image_1;
+    ImageView image_2;
     boolean isMinPriceCorrect = false;
     boolean isMaxPriceCorrect = false;
     boolean isMinMileageCorrect = false;
@@ -57,6 +59,8 @@ public class AdvertActivity extends Activity {
         spinnerColor = (Spinner) findViewById(R.id.spinnerColor);
         buttonToMyAccount = (Button) findViewById(R.id.buttonToMyAccount);
         buttonAddNewAdv = (Button) findViewById(R.id.buttonAddNewAdv);
+        image_1 = (ImageView) findViewById(R.id.imageView_1);
+        image_2 = (ImageView) findViewById(R.id.imageView_2);
         // get intent data
         Intent intent = getIntent();
         // Selected image id
@@ -228,18 +232,21 @@ public class AdvertActivity extends Activity {
                                && spinnerMaxPrice.getSelectedItemPosition() == 0)))
                        ) {
                    Log.e("buttonAddNewAdv", "Please, check parameters of your query!");
-                /*           "Please, check parameters of your query!", Toast.LENGTH_SHORT);
-                   TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
-                   if( tv != null) tv.setGravity(Gravity.CENTER);
-                   toast.show(); */
                } else {
                    Log.e("buttonAddNewAdv", "Your advert is adding know!");
-             /*      Toast toast = Toast.makeText(getApplicationContext(),
-                           "Your advert is adding know!", Toast.LENGTH_SHORT);
-                   TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
-                   if( tv != null) tv.setGravity(Gravity.CENTER);
-                   toast.show();   */
                }
+            }
+        });
+        image_1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e("ImageView 1", "ImageView 1 was pressed");
+            }
+        });
+        image_2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e("ImageView 2", "ImageView 2 was pressed");
             }
         });
 

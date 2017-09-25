@@ -177,21 +177,23 @@
         android:layout_x="13dp"
         android:layout_y="420dp"
         android:orientation="horizontal">
+
         <Button
             android:id="@+id/buttonToMyAccount_query"
             android:layout_width="120dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="7dp"
             android:layout_x="20dp"
             android:layout_y="333dp"
-            android:layout_marginLeft="7dp"
-            android:text="Back to my ads"
+            android:text="To my ads"
             android:textSize="12dp" />
+
         <Button
             android:id="@+id/buttonAddNewAdv_query"
             android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:layout_x="20dp"
-            android:layout_y="237dp"
+            android:layout_y="233dp"
             android:layout_marginLeft="80dp"
             android:text="Add new ad"
             android:textSize="12dp" />
