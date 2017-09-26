@@ -1,8 +1,14 @@
 package one.saver.devautoadv;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -14,10 +20,15 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AdvertActivity extends Activity {
+public class AdvertActivity extends Activity implements Imageutils.ImageAttachmentListener{
     TextView textMake;
     Spinner spinnerPrice;
     Spinner spinnerMinPrice;
@@ -36,6 +47,12 @@ public class AdvertActivity extends Activity {
     Button buttonAddNewAdv;
     ImageView image_1;
     ImageView image_2;
+    ImageView iv_attachment;
+    //For Image Attachment
+    private Bitmap bitmap;
+    private String file_name;
+    int imageViewSelected = 0;
+    Imageutils imageutils;
     boolean isMinPriceCorrect = false;
     boolean isMaxPriceCorrect = false;
     boolean isMinMileageCorrect = false;
@@ -237,20 +254,106 @@ public class AdvertActivity extends Activity {
                }
             }
         });
+        imageutils =new Imageutils(this);
         image_1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.e("ImageView 1", "ImageView 1 was pressed");
                 Log.e("Opening Activity", "opening ImageAttachmentActivity.Activity");
-                startActivity(new Intent(AdvertActivity.this, ImageAttachmentActivity.class));
+          //      startActivity(new Intent(AdvertActivity.this, ImageAttachmentActivity.class));
+                imageViewSelected = 1;
+                imageutils.imagepicker(1);
             }
         });
         image_2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.e("ImageView 2", "ImageView 2 was pressed");
+                Log.e("Opening Activity", "opening ImageAttachmentActivity.Activity");
+                imageViewSelected = 2;
+                imageutils.imagepicker(1);
             }
         });
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        imageutils.onActivityResult(requestCode, resultCode, data);
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        imageutils.request_permission_result(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    public void image_attachment(int from, String filename, Bitmap file, Uri uri) {
+        this.bitmap=file;
+        this.file_name=filename;
+ //       iv_attachment.setImageBitmap(file);
+        switch (imageViewSelected) {
+            case 1: {
+                image_1.setImageBitmap(file);
+                break;
+            }
+            case 2: {
+                image_2.setImageBitmap(file);
+                break;
+            }
+        }
+  //      imageViewSelected = 0;
+
+        String path =  Environment.getExternalStorageDirectory() + File.separator + "ImageAttach" + File.separator;
+        imageutils.createImage(file,filename,path,false);
+        Log.e("Filename", filename.toString());
+
+        if (!Environment.getExternalStorageState().equals(
+                Environment.MEDIA_MOUNTED)) {
+            Log.e("Log", "SD-карта не доступна: " + Environment.getExternalStorageState());
+            return;
+        }
+        // получаем путь к SD
+        File sdPath = Environment.getExternalStorageDirectory();
+        // добавляем свой каталог к пути
+        sdPath = new File(sdPath.getAbsolutePath() + "/" + "MyFiles");
+        // создаем каталог
+        sdPath.mkdirs();
+        //receiving IMEI (Phone ID)
+        TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+        String device_id = tm.getDeviceId();
+        // формируем объект File, который содержит путь к файлу
+        File sdFile = new File(sdPath, device_id + ".png");
+        try {
+            // открываем поток для записи
+            BufferedWriter bw = new BufferedWriter(new FileWriter(sdFile));
+            // пишем данные
+            bw.write("Содержимое файла на SD");
+            // закрываем поток
+            bw.close();
+            Log.d("Log", "Файл записан на SD: " + sdFile.getAbsolutePath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        FileOutputStream out = null;
+        try {
+            out = new FileOutputStream(sdFile);
+            file.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
+            // PNG is a lossless format, the compression factor (100) is ignored
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (out != null) {
+                    out.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
     }
 }
