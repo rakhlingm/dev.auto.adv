@@ -26,6 +26,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class AdvertActivity extends Activity implements Imageutils.ImageAttachmentListener{
@@ -45,6 +46,8 @@ public class AdvertActivity extends Activity implements Imageutils.ImageAttachme
     String[] colors ;
     Button buttonToMyAccount;
     Button buttonAddNewAdv;
+    Button getButtonToMyAccount;
+    Button getButtonAddNewAdv;
     ImageView image_1;
     ImageView image_2;
     ImageView iv_attachment;
@@ -53,6 +56,7 @@ public class AdvertActivity extends Activity implements Imageutils.ImageAttachme
     private String file_name;
     int imageViewSelected = 0;
     Imageutils imageutils;
+    DataBaseHelper dbHelp;
     boolean isMinPriceCorrect = false;
     boolean isMaxPriceCorrect = false;
     boolean isMinMileageCorrect = false;
@@ -62,6 +66,15 @@ public class AdvertActivity extends Activity implements Imageutils.ImageAttachme
     int minMileageCounter = 0;
     int maxMileageCounter = 0;
     int counter = 1;
+    String strMake;
+    String strModel;
+    String strColor;
+    int intMinPrice;
+    int intMaxPrice;
+    int intMinMileage;
+    int intMaxMileage;
+    String pathImage_1 = "";
+    String pathImage_2 = "";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -76,6 +89,7 @@ public class AdvertActivity extends Activity implements Imageutils.ImageAttachme
         spinnerColor = (Spinner) findViewById(R.id.spinnerColor);
         buttonToMyAccount = (Button) findViewById(R.id.buttonToMyAccount);
         buttonAddNewAdv = (Button) findViewById(R.id.buttonAddNewAdv);
+        getButtonAddNewAdv = (Button) findViewById(R.id.buttonAddNewAdv);
         image_1 = (ImageView) findViewById(R.id.imageView_1);
         image_2 = (ImageView) findViewById(R.id.imageView_2);
         // get intent data
@@ -86,6 +100,8 @@ public class AdvertActivity extends Activity implements Imageutils.ImageAttachme
         ImageView imageView = (ImageView) findViewById(R.id.full_image_view_advert);
         imageView.setImageResource(imageAdapter.mThumbIds[position]);
         textMake.setText(getResources().getStringArray(R.array.makeArray)[position]);
+        strMake = textMake.getText().toString();
+        Log.e("Make", strMake);
 
   /*      ArrayAdapter<String> adapterPrice = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, price);
         // Определяем разметку для использования при выборе элемента
@@ -152,6 +168,32 @@ public class AdvertActivity extends Activity implements Imageutils.ImageAttachme
         adapterMaxMileage.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerMaxMileage.setAdapter(adapterMaxMileage);
 
+        AdapterView.OnItemSelectedListener spinnerModelListener = new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                strModel = spinnerModel.getSelectedItem().toString();
+                Log.e("Model", strModel);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        };
+        spinnerModel.setOnItemSelectedListener(spinnerModelListener);
+        AdapterView.OnItemSelectedListener spinnerColorlListener = new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                strColor = spinnerColor.getSelectedItem().toString();
+                Log.e("Color", strColor);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        };
+        spinnerColor.setOnItemSelectedListener(spinnerColorlListener);
         AdapterView.OnItemSelectedListener spinnerMinPriceListener = new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -164,7 +206,61 @@ public class AdvertActivity extends Activity implements Imageutils.ImageAttachme
                     if( v != null) v.setGravity(Gravity.CENTER);
                     toast.show();
                 } else {
-
+                    switch (spinnerMinPrice.getSelectedItemPosition()) {
+                        case 0: {
+                            intMinPrice = 0;
+                            break;
+                        }
+                        case 21: {
+                            intMinPrice = 25000;
+                            break;
+                        }
+                        case 22: {
+                            intMinPrice = 30000;
+                            break;
+                        }
+                        case 23: {
+                            intMinPrice = 35000;
+                            break;
+                        }
+                        case 24: {
+                            intMinPrice = 40000;
+                            break;
+                        }
+                        case 25: {
+                            intMinPrice = 45000;
+                            break;
+                        }
+                        case 26: {
+                            intMinPrice = 50000;
+                            break;
+                        }
+                        case 27: {
+                            intMinPrice = 60000;
+                            break;
+                        }
+                        case 28: {
+                            intMinPrice = 70000;
+                            break;
+                        }
+                        case 29: {
+                            intMinPrice = 80000;
+                            break;
+                        }
+                        case 30: {
+                            intMinPrice = 90000;
+                            break;
+                        }
+                        case 31: {
+                            intMinPrice = 100000;
+                            break;
+                        }
+                        default: {
+                            intMinPrice = (spinnerMinPrice.getSelectedItemPosition()) * 1000;
+                            break;
+                        }
+                    }
+                    Log.e("Min price", Integer.toString(intMinPrice));
                 }
             }
             @Override
@@ -184,7 +280,60 @@ public class AdvertActivity extends Activity implements Imageutils.ImageAttachme
                     if( v != null) v.setGravity(Gravity.CENTER);
                         toast.show();
                 } else {
-
+                    switch (spinnerMaxPrice.getSelectedItemPosition()) {
+                        case 0: {
+                            intMaxPrice = 1000000;
+                            break;
+                        }
+                        case 21: {
+                            intMaxPrice = 25000;
+                            break;
+                        }
+                        case 22: {
+                            intMaxPrice = 30000;
+                            break;
+                        }
+                        case 23: {
+                            intMaxPrice = 35000;
+                            break;
+                        }
+                        case 24: {
+                            intMaxPrice = 40000;
+                            break;
+                        }
+                        case 25: {
+                            intMaxPrice = 45000;
+                            break;
+                        }
+                        case 26: {
+                            intMaxPrice = 50000;
+                            break;
+                        }
+                        case 27: {
+                            intMaxPrice = 60000;
+                            break;
+                        }
+                        case 28: {
+                            intMaxPrice = 70000;
+                            break;
+                        }
+                        case 29: {
+                            intMaxPrice = 80000;
+                            break;
+                        }
+                        case 30: {
+                            intMaxPrice = 90000;
+                            break;
+                        }
+                        case 31: {
+                            intMaxPrice = 100000;
+                            break;
+                        }
+                        default: {
+                            intMaxPrice = spinnerMaxPrice.getSelectedItemPosition() * 1000;
+                        }
+                    }
+                    Log.e("Max price", Integer.toString(intMaxPrice));
                 }
             }
             @Override
@@ -204,6 +353,36 @@ public class AdvertActivity extends Activity implements Imageutils.ImageAttachme
                     if( v != null) v.setGravity(Gravity.CENTER);
                     toast.show();
                 } else {
+                    switch (spinnerMinMileage.getSelectedItemPosition()) {
+                        case 0: {
+                            intMinMileage = 0;
+                            break;
+                        }
+                        case 1: {
+                            intMinMileage = 1000;
+                            break;
+                        }
+                        case 2: {
+                            intMinMileage = 5000;
+                            break;
+                        }
+                        case 13: {
+                            intMinMileage = 125000;
+                            break;
+                        }
+                        case 14: {
+                            intMinMileage = 150000;
+                            break;
+                        }
+                        case 15: {
+                            intMinMileage = 200000;
+                            break;
+                        }
+                        default: {
+                            intMinMileage = (spinnerMinMileage.getSelectedItemPosition() - 2) * 10000;
+                        }
+                    }
+                    Log.e("Min mileage", Integer.toString(intMinMileage));
                 }
             }
             @Override
@@ -222,6 +401,36 @@ public class AdvertActivity extends Activity implements Imageutils.ImageAttachme
                     if( v != null) v.setGravity(Gravity.CENTER);
                     toast.show();
                 } else {
+                    switch (spinnerMaxMileage.getSelectedItemPosition()) {
+                        case 0: {
+                            intMaxMileage = 1000000;
+                            break;
+                        }
+                        case 1: {
+                            intMaxMileage = 1000;
+                            break;
+                        }
+                        case 2: {
+                            intMaxMileage = 5000;
+                            break;
+                        }
+                        case 13: {
+                            intMaxMileage = 125000;
+                            break;
+                        }
+                        case 14: {
+                            intMaxMileage = 150000;
+                            break;
+                        }
+                        case 15: {
+                            intMaxMileage = 200000;
+                            break;
+                        }
+                        default: {
+                            intMaxMileage = (spinnerMaxMileage.getSelectedItemPosition() - 2) * 10000;
+                        }
+                    }
+                    Log.e("Max mileage", Integer.toString(intMaxMileage));
                 }
             }
             @Override
@@ -274,7 +483,31 @@ public class AdvertActivity extends Activity implements Imageutils.ImageAttachme
                 imageutils.imagepicker(1);
             }
         });
+        dbHelp = new DataBaseHelper(this);
+        buttonAddNewAdv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+                Advert advert = new Advert();
+                advert.setIMEI(tm.getDeviceId());
+                advert.setMake(strMake);
+                advert.setModel(strModel);
+                advert.setColor(strColor);
+                advert.setMinPrice(intMinPrice);
+                advert.setMaxPrice(intMaxPrice);
+                advert.setMinMileage(intMinMileage);
+                advert.setMaxMileage(intMaxMileage);
+                advert.setImage_1(pathImage_1);
+                advert.setImage_2(pathImage_2);
+                Log.e("Advert", advert.toString());
+                dbHelp.addAdvert(advert);
+                List<Advert> adverts = dbHelp.getAllAdverts();
 
+                for (Advert adv : adverts) {
+                    Log.e("Adverts from DB: ", adv.toString());
+                }
+            }
+        });
     }
 
     @Override
@@ -294,23 +527,44 @@ public class AdvertActivity extends Activity implements Imageutils.ImageAttachme
     public void image_attachment(int from, String filename, Bitmap file, Uri uri) {
         this.bitmap=file;
         this.file_name=filename;
- //       iv_attachment.setImageBitmap(file);
+ //     iv_attachment.setImageBitmap(file);
         switch (imageViewSelected) {
             case 1: {
                 image_1.setImageBitmap(file);
+                String path =  Environment.getExternalStorageDirectory() + File.separator + Constants.DIRECTORY + File.separator;
+                TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE); //receiving IMEI (Phone ID)
+                String device_id = tm.getDeviceId();
+                Long tsLong = System.currentTimeMillis()/1000;
+                String ts = tsLong.toString();
+                filename = device_id + "_" + ts + ".png";
+                imageutils.createImage(file,filename,path,false);
+                Log.e("Filename", filename.toString());
+                pathImage_1 = path + filename;
+                Log.e("Image_1 path", pathImage_1);
+                //   imageSaving(file);
                 break;
             }
             case 2: {
                 image_2.setImageBitmap(file);
+                String path =  Environment.getExternalStorageDirectory() + File.separator + Constants.DIRECTORY + File.separator;
+                //receiving IMEI (Phone ID)
+                TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+                String device_id = tm.getDeviceId();
+                Long tsLong = System.currentTimeMillis()/1000;
+                String ts = tsLong.toString();
+                filename = device_id + "_" + ts + ".png";
+                imageutils.createImage(file,filename,path,false);
+                Log.e("Filename", filename.toString());
+                pathImage_2 = path + filename;
+                Log.e("Image_2 path", pathImage_2);
+                //   imageSaving(file);
                 break;
             }
         }
-  //      imageViewSelected = 0;
 
-        String path =  Environment.getExternalStorageDirectory() + File.separator + "ImageAttach" + File.separator;
-        imageutils.createImage(file,filename,path,false);
-        Log.e("Filename", filename.toString());
+    }
 
+    private void imageSaving(Bitmap file) {
         if (!Environment.getExternalStorageState().equals(
                 Environment.MEDIA_MOUNTED)) {
             Log.e("Log", "SD-карта не доступна: " + Environment.getExternalStorageState());
@@ -354,6 +608,5 @@ public class AdvertActivity extends Activity implements Imageutils.ImageAttachme
                 e.printStackTrace();
             }
         }
-
     }
 }

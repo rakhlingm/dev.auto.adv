@@ -119,7 +119,6 @@
     </string-array>
     <string-array name="minMileage">
         <item>Any</item>
-        <item>0 km</item>
         <item>1,000 km</item>
         <item>5,000 km</item>
         <item>10,000 km</item>
@@ -138,6 +137,7 @@
     </string-array>
     <string-array name="maxMileage">
         <item>Any</item>
+        <item>1,000 km</item>
         <item>5,000 km</item>
         <item>10,000 km</item>
         <item>20,000 km</item>
