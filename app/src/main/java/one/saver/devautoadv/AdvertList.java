@@ -14,6 +14,7 @@ import java.util.List;
 public class AdvertList extends Activity {
     ListView list;
     DataBaseHelper dbHelper;
+    AdvertSender as;
     String[] itemname ={
             "Safari",
             "Camera",
@@ -25,11 +26,17 @@ public class AdvertList extends Activity {
             "Cold War"
     };
 
-    Integer[] imgid={
+ /*   Integer[] imgid={
             R.drawable.any_car, R.drawable.audi, R.drawable.bmw, R.drawable.citroen,
             R.drawable.fiatlogo, R.drawable.ford, R.drawable.honda, R.drawable.hyundai
 
-    };
+    };   */
+ public	Integer[] mThumbIds = { R.drawable.audi, R.drawable.bmw, R.drawable.citroen,
+         R.drawable.fiatlogo, R.drawable.ford, R.drawable.honda, R.drawable.hyundai, R.drawable.landrover,
+         R.drawable.lexus, R.drawable.mazda, R.drawable.mercedes_benz, R.drawable.mitsubishi, R.drawable.nissan,
+         R.drawable.opel, R.drawable.seat, R.drawable.skoda, R.drawable.subaru,
+         R.drawable.thumbsvolkswagen, R.drawable.toyota, R.drawable.volvo};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,10 +46,11 @@ public class AdvertList extends Activity {
         advertList = dbHelper.getAllAdverts();
         String[] makeArray = new String[advertList.size()];
         String[] modelArray = new String[advertList.size()];
-
+        Integer[] imgid = new Integer[advertList.size()];
         for (int i = 0; i < makeArray.length; i++) {
             makeArray[i] = advertList.get(i).getMake();
             modelArray[i] = advertList.get(i).getModel();
+            imgid[i] = mThumbIds[advertList.get(i).getMakeIndex()];
             Log.e("makeArray", Integer.toString(i));
             Log.e("Make", makeArray[i]);
             Log.e("Model", modelArray[i]);
@@ -50,6 +58,12 @@ public class AdvertList extends Activity {
         AdvertListAdapter adapter=new AdvertListAdapter(this, makeArray, modelArray, imgid);
         list=(ListView)findViewById(R.id.list);
         list.setAdapter(adapter);
+        try {
+            as = new AdvertSender();
+            as.execute();
+        }catch (Exception e) {
+
+        }
 
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
