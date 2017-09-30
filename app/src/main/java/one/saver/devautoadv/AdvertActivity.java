@@ -31,6 +31,7 @@ import java.util.Map;
 
 public class AdvertActivity extends Activity implements Imageutils.ImageAttachmentListener{
     TextView textMake;
+    int position;
     Spinner spinnerPrice;
     Spinner spinnerMinPrice;
     Spinner spinnerMaxPrice;
@@ -66,6 +67,8 @@ public class AdvertActivity extends Activity implements Imageutils.ImageAttachme
     int minMileageCounter = 0;
     int maxMileageCounter = 0;
     int counter = 1;
+    int makeIndex;
+    int modelIndex;
     String strMake;
     String strModel;
     String strColor;
@@ -95,7 +98,7 @@ public class AdvertActivity extends Activity implements Imageutils.ImageAttachme
         // get intent data
         Intent intent = getIntent();
         // Selected image id
-        int position = intent.getExtras().getInt("id");
+        position = intent.getExtras().getInt("id");
         ImageAdapterSeller imageAdapter = new ImageAdapterSeller(this);
         ImageView imageView = (ImageView) findViewById(R.id.full_image_view_advert);
         imageView.setImageResource(imageAdapter.mThumbIds[position]);
@@ -445,22 +448,13 @@ public class AdvertActivity extends Activity implements Imageutils.ImageAttachme
 
             }
         });
-        buttonAddNewAdv.setOnClickListener(new View.OnClickListener() {
+        buttonToMyAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               if(((spinnerMinPrice.getSelectedItemPosition() > spinnerMaxPrice.getSelectedItemPosition()
-                       && spinnerMaxPrice.getSelectedItemPosition() != 0) ||
-                       (spinnerMinPrice.getSelectedItemPosition() > spinnerMaxPrice.getSelectedItemPosition()
-                       && spinnerMaxPrice.getSelectedItemPosition() != 0)
-               || ((spinnerMinPrice.getSelectedItemPosition() > spinnerMaxPrice.getSelectedItemPosition()
-                       && spinnerMaxPrice.getSelectedItemPosition() == 0) ||
-                       (spinnerMinPrice.getSelectedItemPosition() > spinnerMaxPrice.getSelectedItemPosition()
-                               && spinnerMaxPrice.getSelectedItemPosition() == 0)))
-                       ) {
-                   Log.e("buttonAddNewAdv", "Please, check parameters of your query!");
-               } else {
-                   Log.e("buttonAddNewAdv", "Your advert is adding know!");
-               }
+                Log.e("Button Seller", "opening Seller.Activity");
+                startActivity(new Intent(AdvertActivity.this, AdvertList.class));
+                   Log.e("buttonAddNewAdv", "AdvertList activity is opening.");
+
             }
         });
         imageutils =new Imageutils(this);
@@ -490,6 +484,8 @@ public class AdvertActivity extends Activity implements Imageutils.ImageAttachme
                 TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
                 Advert advert = new Advert();
                 advert.setIMEI(tm.getDeviceId());
+                advert.setMakeIndex(position);
+                advert.setModelIndex(spinnerModel.getSelectedItemPosition());
                 advert.setMake(strMake);
                 advert.setModel(strModel);
                 advert.setColor(strColor);

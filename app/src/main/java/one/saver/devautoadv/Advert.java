@@ -4,6 +4,8 @@ package one.saver.devautoadv;
 public class Advert {
     private int indexNumber;
     private String IMEI;
+    private int makeIndex;
+    private int modelIndex;
     private String make;
     private String model;
     private String color;
@@ -17,9 +19,11 @@ public class Advert {
     public Advert() {
     }
 
-    public Advert(int indexNumber, String IMEI, String make, String model, String color, int minPrice, int maxPrice, int minMileage, int maxMileage, String image_1, String image_2) {
+    public Advert(int indexNumber, String IMEI, int makeIndex, int modelIndex, String make, String model, String color, int minPrice, int maxPrice, int minMileage, int maxMileage, String image_1, String image_2) {
         this.indexNumber = indexNumber;
         this.IMEI = IMEI;
+        this.makeIndex = makeIndex;
+        this.modelIndex = modelIndex;
         this.make = make;
         this.model = model;
         this.color = color;
@@ -37,6 +41,14 @@ public class Advert {
 
     public String getIMEI() {
         return IMEI;
+    }
+
+    public int getMakeIndex() {
+        return makeIndex;
+    }
+
+    public int getModelIndex() {
+        return modelIndex;
     }
 
     public String getMake() {
@@ -77,6 +89,14 @@ public class Advert {
 
     public void setIndexNumber(int indexNumber) {
         this.indexNumber = indexNumber;
+    }
+
+    public void setMakeIndex(int makeIndex) {
+        this.makeIndex = makeIndex;
+    }
+
+    public void setModelIndex(int modelIndex) {
+        this.modelIndex = modelIndex;
     }
 
     public void setIMEI(String IMEI) {
@@ -124,6 +144,8 @@ public class Advert {
         return "Advert{" +
                 "indexNumber=" + indexNumber +
                 ", IMEI='" + IMEI + '\'' +
+                ", makeIndex='" + makeIndex + '\'' +
+                ", modelIndex='" + modelIndex + '\'' +
                 ", make='" + make + '\'' +
                 ", model='" + model + '\'' +
                 ", color='" + color + '\'' +

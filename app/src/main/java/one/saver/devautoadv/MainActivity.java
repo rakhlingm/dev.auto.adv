@@ -20,6 +20,8 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     Button buyer;
     Button seller;
+    Button myQueries;
+    Button myAdverts;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +48,8 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         buyer = (Button)findViewById(R.id.Button1);
         seller = (Button)findViewById(R.id.Button2);
+        myQueries = (Button) findViewById(R.id.button3);
+        myAdverts = (Button) findViewById(R.id.button4);
         buyer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -58,6 +62,19 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View v) {
                 Log.e("Button Seller", "opening Seller.Activity");
                 startActivity(new Intent(MainActivity.this, Seller.class));
+            }
+        });
+        myQueries.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e("To my queries", "QueriesList activity is opening.");
+            }
+        });
+        myAdverts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, AdvertList.class));
+                Log.e("To my adverts", "AdvertList activity is opening.");
             }
         });
     }

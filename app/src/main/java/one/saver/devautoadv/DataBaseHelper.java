@@ -25,6 +25,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     // Contacts Table Columns names
     private static final String KEY_ID = "indexNumber";
     private static final String KEY_IMEI = "IMEI";
+    private static final String KEY_MAKE_INDEX = "makeIndex";
+    private static final String KEY_MODEL_INDEX = "modelIndex";
     private static final String KEY_MAKE = "make";
     private static final String KEY_MODEL = "model";
     private static final String KEY_COLOR = "color";
@@ -45,6 +47,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String CREATE_CONTACTS_TABLE = "CREATE TABLE " + TABLE_ADVERTS + "("
                 + KEY_ID + " INTEGER PRIMARY KEY," + KEY_IMEI + " TEXT,"
+                + KEY_MAKE_INDEX + " INTEGER," + KEY_MODEL_INDEX+ " INTEGER,"
                 + KEY_MAKE + " TEXT," + KEY_MODEL + " TEXT," + KEY_COLOR + " TEXT,"
                 + KEY_MIN_PRICE + " INTEGER," + KEY_MAX_PRICE + " INTEGER," + KEY_MIN_MIL + " INTEGER,"
                 + KEY_MAX_MIL + " INTEGER," + KEY_IMAGE_1 + " TEXT," + KEY_IMAGE_2 + " TEXT" + ")";
@@ -71,6 +74,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_IMEI, advert.getIMEI()); // Contact Name
+        values.put(KEY_MAKE_INDEX, advert.getMakeIndex()); // Contact Phone
+        values.put(KEY_MODEL_INDEX, advert.getModelIndex()); // Contact Name
         values.put(KEY_MAKE, advert.getMake()); // Contact Phone
         values.put(KEY_MODEL, advert.getModel()); // Contact Name
         values.put(KEY_COLOR, advert.getColor()); // Contact Phone
@@ -115,15 +120,17 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 Advert advert = new Advert();
                 advert.setIndexNumber(Integer.parseInt(cursor.getString(0)));
                 advert.setIMEI(cursor.getString(1));
-                advert.setMake(cursor.getString(2));
-                advert.setModel(cursor.getString(3));
-                advert.setColor(cursor.getString(4));
-                advert.setMinPrice(cursor.getInt(5));
-                advert.setMaxPrice(cursor.getInt(6));
-                advert.setMinMileage(cursor.getInt(7));
-                advert.setMaxMileage(cursor.getInt(8));
-                advert.setImage_1(cursor.getString(9));
-                advert.setImage_2(cursor.getString(10));
+                advert.setMakeIndex(cursor.getInt(2));
+                advert.setModelIndex(cursor.getInt(3));
+                advert.setMake(cursor.getString(4));
+                advert.setModel(cursor.getString(5));
+                advert.setColor(cursor.getString(6));
+                advert.setMinPrice(cursor.getInt(7));
+                advert.setMaxPrice(cursor.getInt(8));
+                advert.setMinMileage(cursor.getInt(9));
+                advert.setMaxMileage(cursor.getInt(10));
+                advert.setImage_1(cursor.getString(11));
+                advert.setImage_2(cursor.getString(12));
                 // Adding contact to list
                 advertList.add(advert);
             } while (cursor.moveToNext());
