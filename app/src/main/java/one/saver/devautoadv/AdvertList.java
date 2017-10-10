@@ -14,7 +14,7 @@ import java.util.List;
 public class AdvertList extends Activity {
     ListView list;
     DataBaseHelper dbHelper;
-    AdvertSender as;
+
     String[] itemname ={
             "Safari",
             "Camera",
@@ -58,12 +58,7 @@ public class AdvertList extends Activity {
         AdvertListAdapter adapter=new AdvertListAdapter(this, makeArray, modelArray, imgid);
         list=(ListView)findViewById(R.id.list);
         list.setAdapter(adapter);
-        try {
-            as = new AdvertSender();
-            as.execute();
-        }catch (Exception e) {
 
-        }
 
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 

@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 public class AdvertActivity extends Activity implements Imageutils.ImageAttachmentListener{
+    AdvertSender as;
     TextView textMake;
     int position;
     Spinner spinnerPrice;
@@ -445,12 +446,6 @@ public class AdvertActivity extends Activity implements Imageutils.ImageAttachme
         buttonToMyAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-            }
-        });
-        buttonToMyAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
                 Log.e("Button Seller", "opening Seller.Activity");
                 startActivity(new Intent(AdvertActivity.this, AdvertList.class));
                    Log.e("buttonAddNewAdv", "AdvertList activity is opening.");
@@ -498,10 +493,16 @@ public class AdvertActivity extends Activity implements Imageutils.ImageAttachme
                 Log.e("Advert", advert.toString());
                 dbHelp.addAdvert(advert);
                 List<Advert> adverts = dbHelp.getAllAdverts();
-
                 for (Advert adv : adverts) {
                     Log.e("Adverts from DB: ", adv.toString());
                 }
+                try {
+                    as = new AdvertSender();
+                    as.execute(pathImage_1, pathImage_2);
+                }catch (Exception e) {
+                    e.printStackTrace();
+                }
+
             }
         });
     }
@@ -553,6 +554,7 @@ public class AdvertActivity extends Activity implements Imageutils.ImageAttachme
                 Log.e("Filename", filename.toString());
                 pathImage_2 = path + filename;
                 Log.e("Image_2 path", pathImage_2);
+
                 //   imageSaving(file);
                 break;
             }
