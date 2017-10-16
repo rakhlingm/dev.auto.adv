@@ -1,6 +1,7 @@
 package one.saver.devautoadv;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,7 +15,7 @@ import java.util.List;
 public class AdvertList extends Activity {
     ListView list;
     DataBaseHelper dbHelper;
-
+    List<Advert> advertList = new ArrayList<Advert>();
     String[] itemname ={
             "Safari",
             "Camera",
@@ -42,7 +43,7 @@ public class AdvertList extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_advert_list);
         dbHelper = new DataBaseHelper(this);
-        List<Advert> advertList = new ArrayList<Advert>();
+
         advertList = dbHelper.getAllAdverts();
         String[] makeArray = new String[advertList.size()];
         String[] modelArray = new String[advertList.size()];
@@ -61,16 +62,28 @@ public class AdvertList extends Activity {
 
 
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 // TODO Auto-generated method stub
                 String Slecteditem= itemname[+position];
                 Toast.makeText(getApplicationContext(), Slecteditem, Toast.LENGTH_SHORT).show();
-
+                Intent i = new Intent(getApplicationContext(),
+                        AdvertFromList.class);
+                // passing array index
+                i.putExtra("makeIndex", advertList.get(position).getMakeIndex());
+                i.putExtra("indexNumber", advertList.get(position).getIndexNumber());
+                startActivity(i);
+       //         dbHelper.deleteAdvert(advertList.get(position));
             }
         });
+    }
+
+    @Override
+    public void onRestart() {
+        super.onRestart();
+        finish();
+        startActivity(getIntent());
     }
 }
 

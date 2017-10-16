@@ -92,20 +92,25 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     }
 
     // Getting single contact
- /*   Advert getContact(int id) {
+    Advert getAdvert(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.query(TABLE_ADVERTS, new String[] { KEY_ID,
-                        KEY_NAME, KEY_PH_NO }, KEY_ID + "=?",
+  /*      Cursor cursor = db.query(TABLE_ADVERTS, new String[] { KEY_ID, KEY_IMEI, KEY_MAKE_INDEX,
+                        KEY_MODEL_INDEX, KEY_MAKE, KEY_MODEL, KEY_COLOR, KEY_MIN_PRICE, KEY_MAX_PRICE,
+                        KEY_MIN_MIL, KEY_MAX_MIL, KEY_IMAGE_1, KEY_IMAGE_2}, KEY_ID + "=?",
+                new String[] { String.valueOf(id) }, null, null, null, null);  */
+        Cursor cursor = db.query(TABLE_ADVERTS, null, KEY_ID + "=?",
                 new String[] { String.valueOf(id) }, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
 
-        Contact contact = new Contact(Integer.parseInt(cursor.getString(0)),
-                cursor.getString(1), cursor.getString(2));
+        Advert advert = new Advert(Integer.parseInt(cursor.getString(0)), cursor.getString(1), Integer.parseInt(cursor.getString(2)),
+                Integer.parseInt(cursor.getString(3)), cursor.getString(4), cursor.getString(5), cursor.getString(6),
+                Integer.parseInt(cursor.getString(7)), Integer.parseInt(cursor.getString(8)), Integer.parseInt(cursor.getString(9)),
+                Integer.parseInt(cursor.getString(10)), cursor.getString(11), cursor.getString(12));
         // return contact
-        return contact;
-    }  */
+        return advert;
+    }
 
     // Getting All Contacts
     public List<Advert> getAllAdverts() {
@@ -133,6 +138,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 advert.setImage_2(cursor.getString(12));
                 // Adding contact to list
                 advertList.add(advert);
+                Log.e("Get all adverts", advert.toString());
             } while (cursor.moveToNext());
         }
 
@@ -152,16 +158,16 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return db.update(TABLE_CONTACTS, values, KEY_ID + " = ?",
                 new String[] { String.valueOf(contact.getID()) });
     }
-
+*/
     // Deleting single contact
-    public void deleteContact(Contact contact) {
+    public void deleteAdvert(Advert advert) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_CONTACTS, KEY_ID + " = ?",
-                new String[] { String.valueOf(contact.getID()) });
+        db.delete(TABLE_ADVERTS, KEY_ID + " = ?", new String[] {Integer.toString(advert.getIndexNumber())});
         db.close();
+        Log.e("Advert was removed", advert.toString());
     }
 
-
+/*
     // Getting contacts Count
     public int getContactsCount() {
         String countQuery = "SELECT  * FROM " + TABLE_CONTACTS;

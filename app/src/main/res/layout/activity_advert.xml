@@ -201,7 +201,7 @@
             android:layout_x="20dp"
             android:layout_y="333dp"
             android:layout_marginLeft="23dp"
-            android:text="Back to my queries"
+            android:text="To my ad list"
             android:textSize="12dp" />
         <Button
             android:id="@+id/buttonAddNewAdv"
@@ -210,7 +210,7 @@
             android:layout_x="20dp"
             android:layout_y="223dp"
             android:layout_marginLeft="52dp"
-            android:text="Add a new query"
+            android:text="Add new ad"
             android:textSize="12dp" />
     </LinearLayout>
 
