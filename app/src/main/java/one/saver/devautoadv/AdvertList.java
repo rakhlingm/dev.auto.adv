@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,11 +31,12 @@ public class AdvertList extends Activity {
             R.drawable.fiatlogo, R.drawable.ford, R.drawable.honda, R.drawable.hyundai
 
     };   */
- public	Integer[] mThumbIds = { R.drawable.audi, R.drawable.bmw, R.drawable.citroen,
+ public	Integer[] makeLogoIds = { R.drawable.audi, R.drawable.bmw, R.drawable.citroen,
          R.drawable.fiatlogo, R.drawable.ford, R.drawable.honda, R.drawable.hyundai, R.drawable.landrover,
          R.drawable.lexus, R.drawable.mazda, R.drawable.mercedes_benz, R.drawable.mitsubishi, R.drawable.nissan,
          R.drawable.opel, R.drawable.seat, R.drawable.skoda, R.drawable.subaru,
          R.drawable.thumbsvolkswagen, R.drawable.toyota, R.drawable.volvo};
+public	Integer[] isMainLogoIds = { android.R.drawable.btn_star_big_off, android.R.drawable.btn_star_big_on};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,16 +47,19 @@ public class AdvertList extends Activity {
         advertList = dbHelper.getAllAdverts();
         String[] makeArray = new String[advertList.size()];
         String[] modelArray = new String[advertList.size()];
-        Integer[] imgid = new Integer[advertList.size()];
+        Integer[] makeLogoImgid = new Integer[advertList.size()];
+        Integer[] isMainImgid = new Integer[advertList.size()];
         for (int i = 0; i < makeArray.length; i++) {
             makeArray[i] = advertList.get(i).getMake();
             modelArray[i] = advertList.get(i).getModel();
-            imgid[i] = mThumbIds[advertList.get(i).getMakeIndex()];
+            makeLogoImgid[i] = makeLogoIds[advertList.get(i).getMakeIndex()];
+            isMainImgid[i] = isMainLogoIds[advertList.get(i).getIsMain()];
             Log.e("makeArray", Integer.toString(i));
             Log.e("Make", makeArray[i]);
             Log.e("Model", modelArray[i]);
+            Log.e("Is main", Integer.toString(isMainImgid[i]));
         }
-        AdvertListAdapter adapter=new AdvertListAdapter(this, makeArray, modelArray, imgid);
+        AdvertListAdapter adapter=new AdvertListAdapter(this, makeArray, modelArray, makeLogoImgid, isMainImgid);
         list=(ListView)findViewById(R.id.list);
         list.setAdapter(adapter);
 
@@ -67,7 +70,7 @@ public class AdvertList extends Activity {
                                     int position, long id) {
                 // TODO Auto-generated method stub
                 String Slecteditem= itemname[+position];
-                Toast.makeText(getApplicationContext(), Slecteditem, Toast.LENGTH_SHORT).show();
+         //       Toast.makeText(getApplicationContext(), Slecteditem, Toast.LENGTH_SHORT).show();
                 Intent i = new Intent(getApplicationContext(),
                         AdvertFromList.class);
                 // passing array index

@@ -36,6 +36,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     private static final String KEY_MAX_MIL = "maxMileage";
     private static final String KEY_IMAGE_1 = "image_1";
     private static final String KEY_IMAGE_2 = "image_2";
+    private static final String IS_MAIN = "isMain";
+
 
 
     public DataBaseHelper(Context context) {
@@ -50,7 +52,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 + KEY_MAKE_INDEX + " INTEGER," + KEY_MODEL_INDEX+ " INTEGER,"
                 + KEY_MAKE + " TEXT," + KEY_MODEL + " TEXT," + KEY_COLOR + " TEXT,"
                 + KEY_MIN_PRICE + " INTEGER," + KEY_MAX_PRICE + " INTEGER," + KEY_MIN_MIL + " INTEGER,"
-                + KEY_MAX_MIL + " INTEGER," + KEY_IMAGE_1 + " TEXT," + KEY_IMAGE_2 + " TEXT" + ")";
+                + KEY_MAX_MIL + " INTEGER," + KEY_IMAGE_1 + " TEXT," + KEY_IMAGE_2 + " TEXT," + IS_MAIN + " INTEGER" + ")";
         db.execSQL(CREATE_CONTACTS_TABLE);
         Log.e("Table Adverts", "Table Adverts was created");
     }
@@ -85,7 +87,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         values.put(KEY_MAX_MIL, advert.getMaxMileage()); // Contact Phone
         values.put(KEY_IMAGE_1, advert.getImage_1()); // Contact Name
         values.put(KEY_IMAGE_2, advert.getImage_2()); // Contact Phone
-
+        values.put(IS_MAIN, advert.getIsMain()); // Contact Phone
         // Inserting Row
         db.insert(TABLE_ADVERTS, null, values);
         db.close(); // Closing database connection
@@ -107,7 +109,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         Advert advert = new Advert(Integer.parseInt(cursor.getString(0)), cursor.getString(1), Integer.parseInt(cursor.getString(2)),
                 Integer.parseInt(cursor.getString(3)), cursor.getString(4), cursor.getString(5), cursor.getString(6),
                 Integer.parseInt(cursor.getString(7)), Integer.parseInt(cursor.getString(8)), Integer.parseInt(cursor.getString(9)),
-                Integer.parseInt(cursor.getString(10)), cursor.getString(11), cursor.getString(12));
+                Integer.parseInt(cursor.getString(10)), cursor.getString(11), cursor.getString(12), Integer.parseInt(cursor.getString(13)));
         // return contact
         return advert;
     }
@@ -136,6 +138,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 advert.setMaxMileage(cursor.getInt(10));
                 advert.setImage_1(cursor.getString(11));
                 advert.setImage_2(cursor.getString(12));
+                advert.setIsMain(Integer.parseInt(cursor.getString(13)));
                 // Adding contact to list
                 advertList.add(advert);
                 Log.e("Get all adverts", advert.toString());
@@ -147,18 +150,16 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     }
 
     // Updating single contact
- /*   public int updateContact(Contact contact) {
+    public int updateAdvert(Advert advert) {
         SQLiteDatabase db = this.getWritableDatabase();
-
         ContentValues values = new ContentValues();
-        values.put(KEY_NAME, contact.getName());
-        values.put(KEY_PH_NO, contact.getPhoneNumber());
-
+        values.put(IS_MAIN, advert.getIsMain());
+        Log.e("Updating advert", "Updated successfully");
         // updating row
-        return db.update(TABLE_CONTACTS, values, KEY_ID + " = ?",
-                new String[] { String.valueOf(contact.getID()) });
+        return db.update(TABLE_ADVERTS, values, KEY_ID + " = ?",
+                new String[] { String.valueOf(advert.getIndexNumber()) });
     }
-*/
+
     // Deleting single contact
     public void deleteAdvert(Advert advert) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -167,16 +168,15 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         Log.e("Advert was removed", advert.toString());
     }
 
-/*
+
     // Getting contacts Count
-    public int getContactsCount() {
-        String countQuery = "SELECT  * FROM " + TABLE_CONTACTS;
+    public int getAdvertCount() {
+        String countQuery = "SELECT * FROM " + TABLE_ADVERTS;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
-        cursor.close();
-
+ //       cursor.close();
         // return count
         return cursor.getCount();
-    }   */
+    }
 
 }

@@ -44,7 +44,7 @@ public class ImageAdapterSeller extends BaseAdapter {
     }
 
     // references to our images
-   /* public	Integer[] mThumbIds = { R.drawable.traffic_jump, R.drawable.card2,
+   /* public	Integer[] makeLogoIds = { R.drawable.traffic_jump, R.drawable.card2,
             R.drawable.card3, R.drawable.card4, R.drawable.card5,
             R.drawable.card6, R.drawable.card7, R.drawable.card8,
             R.drawable.card9, R.drawable.card10, R.drawable.card11,

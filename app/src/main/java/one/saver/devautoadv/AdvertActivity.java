@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -29,9 +30,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static android.R.drawable.btn_star_big_off;
+
 public class AdvertActivity extends Activity implements Imageutils.ImageAttachmentListener{
     AdvertSender as;
     TextView textMake;
+    ImageButton imageButton;
     int position;
     Spinner spinnerPrice;
     Spinner spinnerMinPrice;
@@ -46,6 +50,7 @@ public class AdvertActivity extends Activity implements Imageutils.ImageAttachme
     String[] mileageMax ;
     String[] model ;
     String[] colors ;
+    int isMain = 0;
     Button buttonToMyAccount;
     Button buttonAddNewAdv;
     Button getButtonToMyAccount;
@@ -106,7 +111,24 @@ public class AdvertActivity extends Activity implements Imageutils.ImageAttachme
         textMake.setText(getResources().getStringArray(R.array.makeArray)[position]);
         strMake = textMake.getText().toString();
         Log.e("Make", strMake);
-
+        imageButton = (ImageButton) findViewById(R.id.imageButtonIsMain);
+        imageButton.setTag(android.R.drawable.btn_star_big_off);
+        imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(imageButton.getTag().equals(android.R.drawable.btn_star_big_off)) {
+                    imageButton.setTag(android.R.drawable.btn_star_big_on);
+                    imageButton.setImageResource(android.R.drawable.btn_star_big_on);
+                    isMain = 1;
+                    Log.e("Is the advert main","TRUE");
+                } else {
+                    imageButton.setTag(android.R.drawable.btn_star_big_off);
+                    imageButton.setImageResource(android.R.drawable.btn_star_big_off);
+                    isMain = 0;
+                    Log.e("Is the advert main","FALSE");
+                }
+            }
+        });
   /*      ArrayAdapter<String> adapterPrice = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, price);
         // Определяем разметку для использования при выборе элемента
         adapterPrice.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -446,9 +468,8 @@ public class AdvertActivity extends Activity implements Imageutils.ImageAttachme
         buttonToMyAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("Button Seller", "opening Seller.Activity");
                 startActivity(new Intent(AdvertActivity.this, AdvertList.class));
-                   Log.e("buttonAddNewAdv", "AdvertList activity is opening.");
+                   Log.e("buttonToMyAccount", "AdvertList activity is opening.");
 
             }
         });
@@ -490,6 +511,7 @@ public class AdvertActivity extends Activity implements Imageutils.ImageAttachme
                 advert.setMaxMileage(intMaxMileage);
                 advert.setImage_1(pathImage_1);
                 advert.setImage_2(pathImage_2);
+                advert.setIsMain(isMain);
                 Log.e("Advert", advert.toString());
                 dbHelp.addAdvert(advert);
                 List<Advert> adverts = dbHelp.getAllAdverts();
@@ -502,6 +524,8 @@ public class AdvertActivity extends Activity implements Imageutils.ImageAttachme
                 }catch (Exception e) {
                     e.printStackTrace();
                 }
+                startActivity(new Intent(AdvertActivity.this, AdvertList.class));
+                Log.e("buttonAddNewAdv", "AdvertList activity is opening.");
 
             }
         });

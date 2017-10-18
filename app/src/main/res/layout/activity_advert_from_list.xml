@@ -22,6 +22,14 @@
         android:paddingTop="15dp"
         android:text="Audi"
         android:textSize="24dp" />
+    <ImageButton
+        android:id="@+id/imageButtonIsMain"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:layout_x="285dp"
+        android:layout_y="31dp"
+        android:background="#FFFFFF"
+        android:src="@android:drawable/btn_star_big_off" />
 
     <LinearLayout
         android:layout_width="353dp"
@@ -200,7 +208,7 @@
             android:layout_height="wrap_content"
             android:layout_x="20dp"
             android:layout_y="333dp"
-            android:layout_marginLeft="23dp"
+            android:layout_marginLeft="0dp"
             android:text="To my ad list"
             android:textSize="12dp" />
         <Button
@@ -209,8 +217,17 @@
             android:layout_height="wrap_content"
             android:layout_x="20dp"
             android:layout_y="223dp"
-            android:layout_marginLeft="52dp"
+            android:layout_marginLeft="0dp"
             android:text="Remove the ad"
+            android:textSize="12dp" />
+        <Button
+            android:id="@+id/buttonUpdateAdvert"
+            android:layout_width="110dp"
+            android:layout_height="wrap_content"
+            android:layout_x="20dp"
+            android:layout_y="223dp"
+            android:layout_marginLeft="0dp"
+            android:text="Update"
             android:textSize="12dp" />
     </LinearLayout>
 

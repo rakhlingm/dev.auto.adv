@@ -13,16 +13,19 @@ public class AdvertListAdapter extends ArrayAdapter<String> {
     private final Activity context;
     private final String[] imake;
     private final String[] imodel;
-    private final Integer[] imgid;
+    private final Integer[] imgLogoId;
+    private final Integer[] imgIsMainId;
 
-    public AdvertListAdapter(Activity context, String[] itemmake, String[] itemmodel, Integer[] imgid) {
+
+    public AdvertListAdapter(Activity context, String[] itemmake, String[] itemmodel, Integer[] img_logo_id, Integer[] img_is_main_id) {
         super(context, R.layout.advert_list, itemmake);
         // TODO Auto-generated constructor stub
 
-        this.context=context;
-        this.imake =itemmake;
-        this.imodel =itemmodel;
-        this.imgid=imgid;
+        this.context= context;
+        this.imake = itemmake;
+        this.imodel = itemmodel;
+        this.imgLogoId = img_logo_id;
+        this.imgIsMainId = img_is_main_id;
     }
 
     public View getView(int position,View view,ViewGroup parent) {
@@ -30,10 +33,12 @@ public class AdvertListAdapter extends ArrayAdapter<String> {
         View rowView=inflater.inflate(R.layout.advert_list, null,true);
 
         TextView txtTitle = (TextView) rowView.findViewById(R.id.item);
-        ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
+        ImageView imageViewLogo = (ImageView) rowView.findViewById(R.id.icon);
         TextView extratxt = (TextView) rowView.findViewById(R.id.textView1);
+        ImageView imageViewIsMain = (ImageView) rowView.findViewById(R.id.iconIsMain);
         txtTitle.setText(imake[position]);
-        imageView.setImageResource(imgid[position]);
+        imageViewLogo.setImageResource(imgLogoId[position]);
+        imageViewIsMain.setImageResource(imgIsMainId[position]);
         extratxt.setText(imodel[position]);
         return rowView;
 
