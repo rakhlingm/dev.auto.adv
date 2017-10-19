@@ -513,11 +513,23 @@ public class AdvertActivity extends Activity implements Imageutils.ImageAttachme
                 advert.setImage_2(pathImage_2);
                 advert.setIsMain(isMain);
                 Log.e("Advert", advert.toString());
-                dbHelp.addAdvert(advert);
                 List<Advert> adverts = dbHelp.getAllAdverts();
-                for (Advert adv : adverts) {
-                    Log.e("Adverts from DB: ", adv.toString());
+                switch (isMain){
+                    case 0: {
+
+                        break;
+                    }
+                    case 1: {
+                        for (int i = 0; i < adverts.size(); i++) {
+                                Advert advertUpdate = adverts.get(i);
+                                Log.e("Advert != indexNumber", advertUpdate.toString());
+                                advertUpdate.setIsMain(0);
+                                dbHelp.updateAdvert(advertUpdate);
+                        }
+                        break;
+                    }
                 }
+                dbHelp.addAdvert(advert);
                 try {
                     as = new AdvertSender();
                     as.execute(pathImage_1, pathImage_2);

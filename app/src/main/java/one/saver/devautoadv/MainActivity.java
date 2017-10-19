@@ -1,5 +1,7 @@
 package one.saver.devautoadv;
 
+import android.bluetooth.le.AdvertiseCallback;
+import android.bluetooth.le.AdvertiseSettings;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -15,6 +17,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+
+import org.altbeacon.beacon.Beacon;
+import org.altbeacon.beacon.BeaconParser;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -75,6 +80,26 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, AdvertList.class));
                 Log.e("To my adverts", "AdvertList activity is opening.");
+            }
+        });
+        bleTransmission();
+    }
+
+    private void bleTransmission() {
+        Log.i("Transmission: ", "Starting...");
+        BeaconLayout beaconLayout = new BeaconLayout();
+        Beacon beacon = beaconLayout.beaconLayout("");
+        BeaconParser beaconParser = beaconLayout.beaconParser();
+        org.altbeacon.beacon.BeaconTransmitter beaconTransmitter =
+                new org.altbeacon.beacon.BeaconTransmitter(getApplicationContext(), beaconParser);
+        beaconTransmitter.startAdvertising(beacon, new AdvertiseCallback() {
+            @Override
+            public void onStartSuccess(AdvertiseSettings settingsInEffect) {
+                super.onStartSuccess(settingsInEffect);
+                Log.e("BEACON", "Advertisement start succeeded");
+            }
+            public void onStartFailure(int errorCode) {
+                Log.e("BEACON", "Advertisement start failed wiht code: " + errorCode);
             }
         });
     }
