@@ -168,7 +168,21 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         Log.e("Advert was removed", advert.toString());
     }
 
+    Advert getMainAdvert(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_ADVERTS, null, IS_MAIN + "=?",
+                new String[] { String.valueOf(id) }, null, null, null, null);
+        if (cursor != null)
+            cursor.moveToFirst();
 
+        Advert advert = new Advert(Integer.parseInt(cursor.getString(0)), cursor.getString(1), Integer.parseInt(cursor.getString(2)),
+                Integer.parseInt(cursor.getString(3)), cursor.getString(4), cursor.getString(5), cursor.getString(6),
+                Integer.parseInt(cursor.getString(7)), Integer.parseInt(cursor.getString(8)), Integer.parseInt(cursor.getString(9)),
+                Integer.parseInt(cursor.getString(10)), cursor.getString(11), cursor.getString(12), Integer.parseInt(cursor.getString(13)));
+        // return contact
+        Log.e("Main advert", advert.toString());
+        return advert;
+    }
     // Getting contacts Count
     public int getAdvertCount() {
         String countQuery = "SELECT * FROM " + TABLE_ADVERTS;

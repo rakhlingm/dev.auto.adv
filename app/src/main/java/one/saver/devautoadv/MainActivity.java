@@ -3,6 +3,7 @@ package one.saver.devautoadv;
 import android.bluetooth.le.AdvertiseCallback;
 import android.bluetooth.le.AdvertiseSettings;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -27,6 +28,8 @@ public class MainActivity extends AppCompatActivity
     Button seller;
     Button myQueries;
     Button myAdverts;
+    DataBaseHelper dbHelper;
+    BeaconTransmission bt;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,13 +85,36 @@ public class MainActivity extends AppCompatActivity
                 Log.e("To my adverts", "AdvertList activity is opening.");
             }
         });
-        bleTransmission();
+        dbHelper = new DataBaseHelper(this);
+   //     startTransmission();
+        bt = new BeaconTransmission();
+        bt.execute();
     }
 
-    private void bleTransmission() {
+ /*   private void startTransmission() {
+        while(true) {
+            Advert advert = dbHelper.getMainAdvert(1);
+            bleTransmission(advert);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }  */
+
+    private void bleTransmission(Advert advert) {
         Log.i("Transmission: ", "Starting...");
         BeaconLayout beaconLayout = new BeaconLayout();
-        Beacon beacon = beaconLayout.beaconLayout("");
+        String strLayout = "";
+        if(advert.getMakeIndex() < 10) {
+            strLayout = "0" + Integer.toString(advert.getMakeIndex());
+        }
+        if(advert.getMakeIndex() > 9) {
+            strLayout = Integer.toString(advert.getMakeIndex());
+        }
+        Log.e("strLayout", strLayout);
+        Beacon beacon = beaconLayout.beaconLayout(strLayout);
         BeaconParser beaconParser = beaconLayout.beaconParser();
         org.altbeacon.beacon.BeaconTransmitter beaconTransmitter =
                 new org.altbeacon.beacon.BeaconTransmitter(getApplicationContext(), beaconParser);
@@ -99,7 +125,7 @@ public class MainActivity extends AppCompatActivity
                 Log.e("BEACON", "Advertisement start succeeded");
             }
             public void onStartFailure(int errorCode) {
-                Log.e("BEACON", "Advertisement start failed wiht code: " + errorCode);
+                Log.e("BEACON", "Advertisement start failed with code: " + errorCode);
             }
         });
     }
@@ -159,5 +185,39 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+    class BeaconTransmission extends AsyncTask<Void, Void, Void> {
+  //      DataBaseHelper dbHelper = new DataBaseHelper(this);
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            Log.e("BLE Transmission", "Starting...");
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            try {
+                while (true) {
+                    Log.e("BLE Transmission", "Transmitting");
+                    Advert advert = dbHelper.getMainAdvert(1);
+            //        Log.e("Advert in new thread", advert.toString());
+                    bleTransmission(advert);
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            Log.e("BLE Transmission", "Started");
+        }
     }
 }
