@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity
     Button myAdverts;
     DataBaseHelper dbHelper;
     BeaconTransmission bt;
+    org.altbeacon.beacon.BeaconTransmitter beaconTransmitter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,7 +117,7 @@ public class MainActivity extends AppCompatActivity
         Log.e("strLayout", strLayout);
         Beacon beacon = beaconLayout.beaconLayout(strLayout);
         BeaconParser beaconParser = beaconLayout.beaconParser();
-        org.altbeacon.beacon.BeaconTransmitter beaconTransmitter =
+        beaconTransmitter =
                 new org.altbeacon.beacon.BeaconTransmitter(getApplicationContext(), beaconParser);
         beaconTransmitter.startAdvertising(beacon, new AdvertiseCallback() {
             @Override
@@ -196,15 +197,25 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         protected Void doInBackground(Void... params) {
-
+            int indexMainAdvert = 0;
+            Advert advert;
             try {
+                advert = dbHelper.getMainAdvert(1);
+                indexMainAdvert = advert.getIndexNumber();
+                Log.e("Advert in new thread", advert.toString());
+                bleTransmission(advert);
                 while (true) {
                     Log.e("BLE Transmission", "Transmitting");
-                    Advert advert = dbHelper.getMainAdvert(1);
-            //        Log.e("Advert in new thread", advert.toString());
-                    bleTransmission(advert);
+                    advert = dbHelper.getMainAdvert(1);
+                    if(indexMainAdvert != advert.getIndexNumber() || advert != null) {
+                        indexMainAdvert = advert.getIndexNumber();
+                        beaconTransmitter.stopAdvertising();
+                        bleTransmission(advert);
+                    } else {
+                        
+                    }
                     try {
-                        Thread.sleep(1000);
+                        Thread.sleep(500);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
