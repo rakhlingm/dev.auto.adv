@@ -104,16 +104,39 @@ public class MainActivity extends AppCompatActivity
         }
     }  */
 
-    private void bleTransmission(Advert advert) {
+    private boolean bleTransmission(Advert advert) {
         Log.i("Transmission: ", "Starting...");
         BeaconLayout beaconLayout = new BeaconLayout();
         String strLayout = "";
+        StringBuffer sbIMEI = new StringBuffer (advert.getIMEI());
+        String strInsert = "-";
+        sbIMEI.insert (0, "0");
+        sbIMEI.insert (6, strInsert);
+        sbIMEI.insert (11, strInsert);
+        sbIMEI.insert (16, strInsert);
+        String IMEI = sbIMEI.toString();
+        StringBuffer sbIndexNumber = new StringBuffer (Integer.toString(advert.getIndexNumber()));
+        String indexNumber = "";
+        if(advert.getIndexNumber() < 10) {
+            indexNumber = sbIndexNumber.insert(0, "00-0").toString();
+        }
+        if(advert.getIndexNumber() > 9 && advert.getIndexNumber() < 100) {
+            indexNumber = sbIndexNumber.insert(0, "00-").toString();
+        }
+        if(advert.getIndexNumber() > 99) {
+            sbIndexNumber.insert(0, "0");
+            indexNumber = sbIndexNumber.insert(2, strInsert).toString();
+        }
+        StringBuffer sbMakeIndex = new StringBuffer (Integer.toString(advert.getMakeIndex()));
+        String makeIndex = "";
         if(advert.getMakeIndex() < 10) {
-            strLayout = "0" + Integer.toString(advert.getMakeIndex());
+            sbMakeIndex.insert(0, "0");
+            makeIndex = sbMakeIndex.toString();
         }
         if(advert.getMakeIndex() > 9) {
-            strLayout = Integer.toString(advert.getMakeIndex());
+            makeIndex = sbMakeIndex.toString();
         }
+        strLayout = IMEI + indexNumber + makeIndex;
         Log.e("strLayout", strLayout);
         Beacon beacon = beaconLayout.beaconLayout(strLayout);
         BeaconParser beaconParser = beaconLayout.beaconParser();
@@ -129,6 +152,7 @@ public class MainActivity extends AppCompatActivity
                 Log.e("BEACON", "Advertisement start failed with code: " + errorCode);
             }
         });
+        return  true;
     }
 
     @Override
@@ -192,27 +216,56 @@ public class MainActivity extends AppCompatActivity
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            Log.e("BLE Transmission", "Starting...");
+            Log.e("BLE AsyncTask", "Starting...");
         }
 
         @Override
         protected Void doInBackground(Void... params) {
             int indexMainAdvert = 0;
-            Advert advert;
-            try {
-                advert = dbHelper.getMainAdvert(1);
-                indexMainAdvert = advert.getIndexNumber();
-                Log.e("Advert in new thread", advert.toString());
-                bleTransmission(advert);
-                while (true) {
-                    Log.e("BLE Transmission", "Transmitting");
+            boolean isBLETransmission = false;
+            Advert advert = null;
+       //     try {
+                try{
                     advert = dbHelper.getMainAdvert(1);
-                    if(indexMainAdvert != advert.getIndexNumber() || advert != null) {
-                        indexMainAdvert = advert.getIndexNumber();
-                        beaconTransmitter.stopAdvertising();
-                        bleTransmission(advert);
+                } catch (Exception e) {
+                    Log.e("Advert in null", "Advert is null");
+                }
+
+                if(advert != null){
+                    indexMainAdvert = advert.getIndexNumber();
+                    Log.e("Advert is not null", advert.toString());
+                    isBLETransmission = bleTransmission(advert);
+                } else {
+                    Log.e("Advert in null", "Advert is null");
+                }
+
+                while (true) {
+                    Log.e("BLE While", "True");
+                    try{
+                        advert = dbHelper.getMainAdvert(1);
+                    } catch (Exception e) {
+                        Log.e("Advert in null", "Advert is null");
+                        advert = null;
+                    }
+                    if(advert != null) {
+                        if(indexMainAdvert != advert.getIndexNumber()) {
+                            indexMainAdvert = advert.getIndexNumber();
+                            Log.e("MainAdvert was changed", Integer.toString(indexMainAdvert));
+                            if(isBLETransmission) {
+                                beaconTransmitter.stopAdvertising();
+                                isBLETransmission = false;
+                            }
+                            isBLETransmission = bleTransmission(advert);
+                        }
+
                     } else {
-                        
+                      if(advert == null)   {
+                          if(isBLETransmission) {
+                              beaconTransmitter.stopAdvertising();
+                              isBLETransmission = false;
+                          }
+                          indexMainAdvert = 0;
+                      }
                     }
                     try {
                         Thread.sleep(500);
@@ -220,10 +273,10 @@ public class MainActivity extends AppCompatActivity
                         e.printStackTrace();
                     }
                 }
-            } catch (Exception e) {
+        /*    } catch (Exception e) {
                 e.printStackTrace();
-            }
-            return null;
+            }   */
+      //      return null;
         }
         @Override
         protected void onPostExecute(Void result) {
