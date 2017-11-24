@@ -58,12 +58,11 @@ public class QueryList extends AppCompatActivity {
                 // TODO Auto-generated method stub
                 //       Toast.makeText(getApplicationContext(), Slecteditem, Toast.LENGTH_SHORT).show();
                 Intent i = new Intent(getApplicationContext(),
-                        AdvertFromList.class);
+                        QueryFromList.class);
                 // passing array index
                 i.putExtra("makeIndex", queryList.get(position).getMakeIndex());
                 i.putExtra("indexNumber", queryList.get(position).getIndexNumber());
                 startActivity(i);
-                //         dbHelper.deleteAdvert(queryList.get(position));
             }
         });
     }

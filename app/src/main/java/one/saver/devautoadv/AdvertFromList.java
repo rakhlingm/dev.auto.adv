@@ -87,7 +87,7 @@ public class AdvertFromList extends Activity {
                         dbHelper.updateAdvert(advertUpdate);
                     } else {
                         Advert advertUpdate = queryList.get(i);
-                        advertUpdate.setIsMain(isMain);
+                        advertUpdate.setIsMain(isActive);
                         dbHelper.updateAdvert(advertUpdate);
                     }
                 }  */

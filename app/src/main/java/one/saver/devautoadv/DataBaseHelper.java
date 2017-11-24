@@ -39,7 +39,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     private static final String KEY_MAX_MIL = "maxMileage";
     private static final String KEY_IMAGE_1 = "image_1";
     private static final String KEY_IMAGE_2 = "image_2";
-    private static final String IS_MAIN = "isMain";  /* For advert */
+    private static final String IS_MAIN = "isActive";  /* For advert */
     private static final String IS_ACTIVE = "isActive";  /* For BLE listening */
 
 
@@ -251,7 +251,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         Log.e("Advert was removed", advert.toString());
     }
     // Deleting single query
-    public void deleteAdvert(Query query) {
+    public void deleteQuery(Query query) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_QUERIES, KEY_ID + " = ?", new String[] {Integer.toString(query.getIndexNumber())});
         db.close();
@@ -317,7 +317,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return cursor.getCount();
     }
     // Getting query Count
-    public int getQuerytCount() {
+    public int getQueryCount() {
         String countQuery = "SELECT * FROM " + TABLE_QUERIES;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);

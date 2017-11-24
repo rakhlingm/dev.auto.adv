@@ -208,7 +208,7 @@ public class Advert {
                 ", maxMileage=" + maxMileage +
                 ", image_1='" + image_1 + '\'' +
                 ", image_2='" + image_2 + '\'' +
-                ", isMain=" + isMain +
+                ", isActive=" + isMain +
                 '}';
     }
 }
