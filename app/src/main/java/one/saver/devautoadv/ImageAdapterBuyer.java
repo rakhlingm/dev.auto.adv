@@ -15,11 +15,11 @@ public class ImageAdapterBuyer extends BaseAdapter {
     }
 
     public int getCount() {
-        return mThumbIds.length;
+        return makeLogoIds.length;
     }
 
     public Object getItem(int position) {
-        return mThumbIds[position];
+        return makeLogoIds[position];
     }
 
     public long getItemId(int position) {
@@ -39,7 +39,7 @@ public class ImageAdapterBuyer extends BaseAdapter {
             imageView = (ImageView) convertView;
         }
 
-        imageView.setImageResource(mThumbIds[position]);
+        imageView.setImageResource(makeLogoIds[position]);
         return imageView;
     }
 
@@ -52,7 +52,7 @@ public class ImageAdapterBuyer extends BaseAdapter {
             R.drawable.card15, R.drawable.card16, R.drawable.card17,
             R.drawable.card18, R.drawable.card19, R.drawable.card20,
             R.drawable.card21 };  */
-    public	Integer[] mThumbIds = { R.drawable.any_car, R.drawable.audi, R.drawable.bmw, R.drawable.citroen,
+    public	Integer[] makeLogoIds = { R.drawable.any_car, R.drawable.audi, R.drawable.bmw, R.drawable.citroen,
             R.drawable.fiatlogo, R.drawable.ford, R.drawable.honda, R.drawable.hyundai, R.drawable.landrover,
             R.drawable.lexus, R.drawable.mazda, R.drawable.mercedes_benz, R.drawable.mitsubishi, R.drawable.nissan,
             R.drawable.opel, R.drawable.seat, R.drawable.skoda, R.drawable.subaru,

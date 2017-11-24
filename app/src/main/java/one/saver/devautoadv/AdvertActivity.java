@@ -30,8 +30,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static android.R.drawable.btn_star_big_off;
-
 public class AdvertActivity extends Activity implements Imageutils.ImageAttachmentListener{
     AdvertSender as;
     TextView textMake;
@@ -107,7 +105,7 @@ public class AdvertActivity extends Activity implements Imageutils.ImageAttachme
         position = intent.getExtras().getInt("id");
         ImageAdapterSeller imageAdapter = new ImageAdapterSeller(this);
         ImageView imageView = (ImageView) findViewById(R.id.full_image_view_advert);
-        imageView.setImageResource(imageAdapter.mThumbIds[position]);
+        imageView.setImageResource(imageAdapter.makeLogoIds[position]);
         textMake.setText(getResources().getStringArray(R.array.makeArray)[position]);
         strMake = textMake.getText().toString();
         Log.e("Make", strMake);
@@ -537,7 +535,7 @@ public class AdvertActivity extends Activity implements Imageutils.ImageAttachme
                     e.printStackTrace();
                 }
                 startActivity(new Intent(AdvertActivity.this, AdvertList.class));
-                Log.e("buttonAddNewAdv", "AdvertList activity is opening.");
+                Log.e("buttonAddNewQuery", "AdvertList activity is opening.");
 
             }
         });

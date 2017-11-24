@@ -31,10 +31,10 @@ dependencies {
     compile files('libs/httpcore-4.2.4.jar')
     compile files('libs/httpmime-4.2.5.jar')
     compile files('libs/org.apache.commons.logging-1.1.1.jar')
+    compile project(':android-beacon-library-2.11')
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:support-v4:25.3.1'
     compile 'com.android.support:design:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
-    compile project(':android-beacon-library-2.11')
 }

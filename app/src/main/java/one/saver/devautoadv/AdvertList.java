@@ -15,22 +15,6 @@ public class AdvertList extends Activity {
     ListView list;
     DataBaseHelper dbHelper;
     List<Advert> advertList = new ArrayList<Advert>();
-    String[] itemname ={
-            "Safari",
-            "Camera",
-            "Global",
-            "FireFox",
-            "UC Browser",
-            "Android Folder",
-            "VLC Player",
-            "Cold War"
-    };
-
- /*   Integer[] imgid={
-            R.drawable.any_car, R.drawable.audi, R.drawable.bmw, R.drawable.citroen,
-            R.drawable.fiatlogo, R.drawable.ford, R.drawable.honda, R.drawable.hyundai
-
-    };   */
  public	Integer[] makeLogoIds = { R.drawable.audi, R.drawable.bmw, R.drawable.citroen,
          R.drawable.fiatlogo, R.drawable.ford, R.drawable.honda, R.drawable.hyundai, R.drawable.landrover,
          R.drawable.lexus, R.drawable.mazda, R.drawable.mercedes_benz, R.drawable.mitsubishi, R.drawable.nissan,
@@ -69,7 +53,6 @@ public	Integer[] isMainLogoIds = { android.R.drawable.btn_star_big_off, android.
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 // TODO Auto-generated method stub
-                String Slecteditem= itemname[+position];
          //       Toast.makeText(getApplicationContext(), Slecteditem, Toast.LENGTH_SHORT).show();
                 Intent i = new Intent(getApplicationContext(),
                         AdvertFromList.class);
@@ -77,11 +60,16 @@ public	Integer[] isMainLogoIds = { android.R.drawable.btn_star_big_off, android.
                 i.putExtra("makeIndex", advertList.get(position).getMakeIndex());
                 i.putExtra("indexNumber", advertList.get(position).getIndexNumber());
                 startActivity(i);
-       //         dbHelper.deleteAdvert(advertList.get(position));
+       //         dbHelper.deleteAdvert(queryList.get(position));
             }
         });
     }
-
+    public void onBackPressed(){
+        Intent in = new Intent(getApplicationContext(),
+                MainActivity.class);
+        startActivity(in);
+        finish();
+    }
     @Override
     public void onRestart() {
         super.onRestart();
@@ -97,10 +85,10 @@ public	Integer[] isMainLogoIds = { android.R.drawable.btn_star_big_off, android.
                 "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
                 "Linux", "OS/2" };
         dbHelper = new DataBaseHelper(this);
-        List<Advert> advertList = new ArrayList<Advert>();
-        advertList = dbHelper.getAllAdverts();
+        List<Advert> queryList = new ArrayList<Advert>();
+        queryList = dbHelper.getAllAdverts();
         ArrayAdapter<Advert> adapter = new ArrayAdapter<Advert>(this,
-                android.R.layout.simple_list_item_1, advertList);
+                android.R.layout.simple_list_item_1, queryList);
         setListAdapter(adapter);
     }
 

@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 Log.e("To my queries", "QueriesList activity is opening.");
+                startActivity(new Intent(MainActivity.this, QueryList.class));
             }
         });
         myAdverts.setOnClickListener(new View.OnClickListener() {
@@ -228,7 +229,7 @@ public class MainActivity extends AppCompatActivity
                 try{
                     advert = dbHelper.getMainAdvert(1);
                 } catch (Exception e) {
-                    Log.e("Advert in null", "Advert is null");
+                    Log.e("Advert is null", "Advert is null");
                 }
 
                 if(advert != null){
@@ -236,7 +237,7 @@ public class MainActivity extends AppCompatActivity
                     Log.e("Advert is not null", advert.toString());
                     isBLETransmission = bleTransmission(advert);
                 } else {
-                    Log.e("Advert in null", "Advert is null");
+                    Log.e("Advert is null", "Advert is null");
                 }
 
                 while (true) {

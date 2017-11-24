@@ -1,14 +1,17 @@
 package one.saver.devautoadv;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -18,7 +21,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class QueryActivity extends Activity {
+    int position;
     TextView textMake;
+    ImageButton imageButton;
     Spinner spinnerPrice;
     Spinner spinnerMinPrice;
     Spinner spinnerMaxPrice;
@@ -32,8 +37,9 @@ public class QueryActivity extends Activity {
     String[] mileageMax ;
     String[] model ;
     String[] colors ;
+    int isActive = 0;
     Button buttonToMyAccount;
-    Button buttonAddNewAdv;
+    Button buttonAddNewQuery;
     boolean isMinPriceCorrect = false;
     boolean isMaxPriceCorrect = false;
     boolean isMinMileageCorrect = false;
@@ -43,6 +49,18 @@ public class QueryActivity extends Activity {
     int minMileageCounter = 0;
     int maxMileageCounter = 0;
     int counter = 1;
+    int makeIndex;
+    int modelIndex;
+    String strMake;
+    String strModel;
+    String strColor;
+    int intMinPrice;
+    int intMaxPrice;
+    int intMinMileage;
+    int intMaxMileage;
+    String pathImage_1 = "";
+    String pathImage_2 = "";
+    DataBaseHelper dbHelp;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,16 +74,17 @@ public class QueryActivity extends Activity {
         spinnerMaxMileage = (Spinner) findViewById(R.id.spinnerMaxMileage_query);
         spinnerColor = (Spinner) findViewById(R.id.spinnerColor_query);
         buttonToMyAccount = (Button) findViewById(R.id.buttonToMyAccount_query);
-        buttonAddNewAdv = (Button) findViewById(R.id.buttonAddNewAdv_query);
+        buttonAddNewQuery = (Button) findViewById(R.id.buttonAddNewAdv_query);
         // get intent data
         Intent intent = getIntent();
         // Selected image id
-        int position = intent.getExtras().getInt("id");
+        position = intent.getExtras().getInt("id");
         ImageAdapterBuyer imageAdapter = new ImageAdapterBuyer(this);
         ImageView imageView = (ImageView) findViewById(R.id.full_image_view_query);
-        imageView.setImageResource(imageAdapter.mThumbIds[position]);
+        imageView.setImageResource(imageAdapter.makeLogoIds[position]);
         if(position != 0) {
             textMake.setText(getResources().getStringArray(R.array.makeArray_query)[position]);
+            strMake = textMake.getText().toString();
         } else {
             textMake.setText("");
         }
@@ -75,7 +94,24 @@ public class QueryActivity extends Activity {
         adapterPrice.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Применяем адаптер к элементу spinner
         spinnerPrice.setAdapter(adapterPrice);   */
-
+        imageButton = (ImageButton) findViewById(R.id.imageButtonIsMain);
+        imageButton.setTag(android.R.drawable.btn_star_big_off);
+        imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(imageButton.getTag().equals(android.R.drawable.btn_star_big_off)) {
+                    imageButton.setTag(android.R.drawable.btn_star_big_on);
+                    imageButton.setImageResource(android.R.drawable.btn_star_big_on);
+                    isActive = 1;
+                    Log.e("Is the query active","TRUE");
+                } else {
+                    imageButton.setTag(android.R.drawable.btn_star_big_off);
+                    imageButton.setImageResource(android.R.drawable.btn_star_big_off);
+                    isActive = 0;
+                    Log.e("Is the query active","FALSE");
+                }
+            }
+        });
         Map<Integer, String[]> models_arrays = new HashMap<Integer, String[]>();
         models_arrays.put(0, new String []{"All models"});
         models_arrays.put(1, getResources().getStringArray(R.array.audiModels));
@@ -104,7 +140,6 @@ public class QueryActivity extends Activity {
                 model);
         adapterModel.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerModel.setAdapter(adapterModel);
-
         colors = getResources().getStringArray(R.array.colors);
         ArrayAdapter<String> adapterColor = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,
                 colors);
@@ -134,7 +169,32 @@ public class QueryActivity extends Activity {
                 mileageMax);
         adapterMaxMileage.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerMaxMileage.setAdapter(adapterMaxMileage);
+        AdapterView.OnItemSelectedListener spinnerModelListener = new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                strModel = spinnerModel.getSelectedItem().toString();
+                Log.e("Model", strModel);
+            }
 
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        };
+        spinnerModel.setOnItemSelectedListener(spinnerModelListener);
+        AdapterView.OnItemSelectedListener spinnerColorlListener = new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                strColor = spinnerColor.getSelectedItem().toString();
+                Log.e("Color", strColor);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        };
+        spinnerColor.setOnItemSelectedListener(spinnerColorlListener);
         AdapterView.OnItemSelectedListener spinnerMinPriceListener = new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -147,7 +207,61 @@ public class QueryActivity extends Activity {
                     if( v != null) v.setGravity(Gravity.CENTER);
                     toast.show();
                 } else {
-
+                    switch (spinnerMinPrice.getSelectedItemPosition()) {
+                        case 0: {
+                            intMinPrice = 0;
+                            break;
+                        }
+                        case 21: {
+                            intMinPrice = 25000;
+                            break;
+                        }
+                        case 22: {
+                            intMinPrice = 30000;
+                            break;
+                        }
+                        case 23: {
+                            intMinPrice = 35000;
+                            break;
+                        }
+                        case 24: {
+                            intMinPrice = 40000;
+                            break;
+                        }
+                        case 25: {
+                            intMinPrice = 45000;
+                            break;
+                        }
+                        case 26: {
+                            intMinPrice = 50000;
+                            break;
+                        }
+                        case 27: {
+                            intMinPrice = 60000;
+                            break;
+                        }
+                        case 28: {
+                            intMinPrice = 70000;
+                            break;
+                        }
+                        case 29: {
+                            intMinPrice = 80000;
+                            break;
+                        }
+                        case 30: {
+                            intMinPrice = 90000;
+                            break;
+                        }
+                        case 31: {
+                            intMinPrice = 100000;
+                            break;
+                        }
+                        default: {
+                            intMinPrice = (spinnerMinPrice.getSelectedItemPosition()) * 1000;
+                            break;
+                        }
+                    }
+                    Log.e("Min price", Integer.toString(intMinPrice));
                 }
             }
             @Override
@@ -167,7 +281,60 @@ public class QueryActivity extends Activity {
                     if( v != null) v.setGravity(Gravity.CENTER);
                     toast.show();
                 } else {
-
+                    switch (spinnerMaxPrice.getSelectedItemPosition()) {
+                        case 0: {
+                            intMaxPrice = 1000000;
+                            break;
+                        }
+                        case 21: {
+                            intMaxPrice = 25000;
+                            break;
+                        }
+                        case 22: {
+                            intMaxPrice = 30000;
+                            break;
+                        }
+                        case 23: {
+                            intMaxPrice = 35000;
+                            break;
+                        }
+                        case 24: {
+                            intMaxPrice = 40000;
+                            break;
+                        }
+                        case 25: {
+                            intMaxPrice = 45000;
+                            break;
+                        }
+                        case 26: {
+                            intMaxPrice = 50000;
+                            break;
+                        }
+                        case 27: {
+                            intMaxPrice = 60000;
+                            break;
+                        }
+                        case 28: {
+                            intMaxPrice = 70000;
+                            break;
+                        }
+                        case 29: {
+                            intMaxPrice = 80000;
+                            break;
+                        }
+                        case 30: {
+                            intMaxPrice = 90000;
+                            break;
+                        }
+                        case 31: {
+                            intMaxPrice = 100000;
+                            break;
+                        }
+                        default: {
+                            intMaxPrice = spinnerMaxPrice.getSelectedItemPosition() * 1000;
+                        }
+                    }
+                    Log.e("Max price", Integer.toString(intMaxPrice));
                 }
             }
             @Override
@@ -187,6 +354,36 @@ public class QueryActivity extends Activity {
                     if( v != null) v.setGravity(Gravity.CENTER);
                     toast.show();
                 } else {
+                    switch (spinnerMinMileage.getSelectedItemPosition()) {
+                        case 0: {
+                            intMinMileage = 0;
+                            break;
+                        }
+                        case 1: {
+                            intMinMileage = 1000;
+                            break;
+                        }
+                        case 2: {
+                            intMinMileage = 5000;
+                            break;
+                        }
+                        case 13: {
+                            intMinMileage = 125000;
+                            break;
+                        }
+                        case 14: {
+                            intMinMileage = 150000;
+                            break;
+                        }
+                        case 15: {
+                            intMinMileage = 200000;
+                            break;
+                        }
+                        default: {
+                            intMinMileage = (spinnerMinMileage.getSelectedItemPosition() - 2) * 10000;
+                        }
+                    }
+                    Log.e("Min mileage", Integer.toString(intMinMileage));
                 }
             }
             @Override
@@ -205,6 +402,36 @@ public class QueryActivity extends Activity {
                     if( v != null) v.setGravity(Gravity.CENTER);
                     toast.show();
                 } else {
+                    switch (spinnerMaxMileage.getSelectedItemPosition()) {
+                        case 0: {
+                            intMaxMileage = 1000000;
+                            break;
+                        }
+                        case 1: {
+                            intMaxMileage = 1000;
+                            break;
+                        }
+                        case 2: {
+                            intMaxMileage = 5000;
+                            break;
+                        }
+                        case 13: {
+                            intMaxMileage = 125000;
+                            break;
+                        }
+                        case 14: {
+                            intMaxMileage = 150000;
+                            break;
+                        }
+                        case 15: {
+                            intMaxMileage = 200000;
+                            break;
+                        }
+                        default: {
+                            intMaxMileage = (spinnerMaxMileage.getSelectedItemPosition() - 2) * 10000;
+                        }
+                    }
+                    Log.e("Max mileage", Integer.toString(intMaxMileage));
                 }
             }
             @Override
@@ -219,7 +446,8 @@ public class QueryActivity extends Activity {
 
             }
         });
-        buttonAddNewAdv.setOnClickListener(new View.OnClickListener() {
+        dbHelp = new DataBaseHelper(this);
+        buttonAddNewQuery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(((spinnerMinPrice.getSelectedItemPosition() > spinnerMaxPrice.getSelectedItemPosition()
@@ -231,13 +459,32 @@ public class QueryActivity extends Activity {
                         (spinnerMinPrice.getSelectedItemPosition() > spinnerMaxPrice.getSelectedItemPosition()
                                 && spinnerMaxPrice.getSelectedItemPosition() == 0)))
                         ) {
-                    Log.e("buttonAddNewAdv", "Please, check parameters of your query!");
+                    Log.e("buttonAddNewQuery", "Please, check parameters of your query!");
                 /*           "Please, check parameters of your query!", Toast.LENGTH_SHORT);
                    TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
                    if( tv != null) tv.setGravity(Gravity.CENTER);
                    toast.show(); */
                 } else {
-                    Log.e("buttonAddNewAdv", "Your advert is adding know!");
+                    Log.e("buttonAddNewQuery", "Your query is adding know!");
+                    TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+                    Query query = new Query();
+                    query.setIMEI(tm.getDeviceId());
+                    query.setMakeIndex(position);
+                    query.setModelIndex(spinnerModel.getSelectedItemPosition());
+                    query.setMake(strMake);
+                    query.setModel(strModel);
+                    query.setColor(strColor);
+                    query.setMinPrice(intMinPrice);
+                    query.setMaxPrice(intMaxPrice);
+                    query.setMinMileage(intMinMileage);
+                    query.setMaxMileage(intMaxMileage);
+                    query.setImage_1(pathImage_1);
+                    query.setImage_2(pathImage_2);
+                    query.setIsActive(isActive);
+                    Log.e("Query", query.toString());
+                    dbHelp.addQuery(query);
+                    startActivity(new Intent(QueryActivity.this, QueryList.class));
+                    Log.e("buttonAddNewQuery", "AdvertList activity is opening.");
              /*      Toast toast = Toast.makeText(getApplicationContext(),
                            "Your advert is adding know!", Toast.LENGTH_SHORT);
                    TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);

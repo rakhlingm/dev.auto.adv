@@ -23,6 +23,15 @@
         android:text="Audi"
         android:textSize="24dp" />
 
+    <ImageButton
+        android:id="@+id/imageButtonIsMain"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:layout_x="285dp"
+        android:layout_y="31dp"
+        android:background="#FFFFFF"
+        android:src="@android:drawable/btn_star_big_off" />
+
     <LinearLayout
         android:layout_width="353dp"
         android:layout_height="50dp"

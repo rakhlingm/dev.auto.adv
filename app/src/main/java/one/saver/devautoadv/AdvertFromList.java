@@ -78,15 +78,15 @@ public class AdvertFromList extends Activity {
                     isMain = 0;
                     Log.e("Is the advert main","FALSE");
                 }
-      /*          List<Advert> advertList = new ArrayList<Advert>();
-                advertList = dbHelper.getAllAdverts();
-                for (int i = 0; i < advertList.size(); i++) {
+      /*          List<Advert> queryList = new ArrayList<Advert>();
+                queryList = dbHelper.getAllAdverts();
+                for (int i = 0; i < queryList.size(); i++) {
                     if(advert.getIndexNumber() == indexNumber) {
-                        Advert advertUpdate = advertList.get(i);
+                        Advert advertUpdate = queryList.get(i);
                         advertUpdate.setIsMain(0);
                         dbHelper.updateAdvert(advertUpdate);
                     } else {
-                        Advert advertUpdate = advertList.get(i);
+                        Advert advertUpdate = queryList.get(i);
                         advertUpdate.setIsMain(isMain);
                         dbHelper.updateAdvert(advertUpdate);
                     }
