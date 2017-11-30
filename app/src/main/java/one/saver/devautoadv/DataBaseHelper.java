@@ -227,6 +227,16 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public int updateAdvert(Advert advert) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
+        values.put(KEY_MODEL_INDEX, advert.getModelIndex()); // indexModel
+        values.put(KEY_MAKE, advert.getMake()); // Make
+        values.put(KEY_MODEL, advert.getModel()); // Model
+        values.put(KEY_COLOR, advert.getColor()); // Color
+        values.put(KEY_MIN_PRICE, advert.getMinPrice()); // Min price
+        values.put(KEY_MAX_PRICE, advert.getMaxPrice()); // Max price
+        values.put(KEY_MIN_MIL, advert.getMinMileage()); // Min mileage
+        values.put(KEY_MAX_MIL, advert.getMaxMileage()); // Max mileage
+        values.put(KEY_IMAGE_1, advert.getImage_1()); // Image #1
+        values.put(KEY_IMAGE_2, advert.getImage_2()); // Image #2
         values.put(IS_MAIN, advert.getIsMain());
         Log.e("Updating advert", "Updated successfully");
         // updating row
@@ -237,6 +247,14 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public int updateQuery(Query query) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
+        values.put(KEY_MODEL_INDEX, query.getModelIndex()); // indexModel
+        values.put(KEY_MAKE, query.getMake()); // Make
+        values.put(KEY_MODEL, query.getModel()); // Model
+        values.put(KEY_COLOR, query.getColor()); // Color
+        values.put(KEY_MIN_PRICE, query.getMinPrice()); // Min price
+        values.put(KEY_MAX_PRICE, query.getMaxPrice()); // Max price
+        values.put(KEY_MIN_MIL, query.getMinMileage()); // Min mileage
+        values.put(KEY_MAX_MIL, query.getMaxMileage()); // Max mileage
         values.put(IS_ACTIVE, query.getIsActive());
         Log.e("Updating query", "Updated successfully");
         // updating row

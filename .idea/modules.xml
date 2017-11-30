@@ -3,11 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/android-beacon-library-2.11/android-beacon-library-2.11.iml" filepath="$PROJECT_DIR$/android-beacon-library-2.11/android-beacon-library-2.11.iml" />
-      <module fileurl="file://C:\Users\Doron Yechezkel\AndroidStudioProjects\dev.auto.adv\android-beacon-library-2.11\android-beacon-library-2.11.iml" filepath="C:\Users\Doron Yechezkel\AndroidStudioProjects\dev.auto.adv\android-beacon-library-2.11\android-beacon-library-2.11.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://C:\Users\Doron Yechezkel\AndroidStudioProjects\dev.auto.adv\app\app.iml" filepath="C:\Users\Doron Yechezkel\AndroidStudioProjects\dev.auto.adv\app\app.iml" />
       <module fileurl="file://$PROJECT_DIR$/dev.auto.adv.iml" filepath="$PROJECT_DIR$/dev.auto.adv.iml" />
-      <module fileurl="file://C:\Users\Doron Yechezkel\AndroidStudioProjects\dev.auto.adv\dev.auto.adv.iml" filepath="C:\Users\Doron Yechezkel\AndroidStudioProjects\dev.auto.adv\dev.auto.adv.iml" />
     </modules>
   </component>
 </project>

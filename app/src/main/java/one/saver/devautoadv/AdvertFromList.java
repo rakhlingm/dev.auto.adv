@@ -1,13 +1,16 @@
 package one.saver.devautoadv;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
@@ -33,7 +36,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AdvertFromList extends Activity implements Imageutils.ImageAttachmentListener{
+public class AdvertFromList extends Activity implements Imageutils.ImageAttachmentListener {
     Button remove;
     Button toMyAdList;
     Button update;
@@ -53,6 +56,9 @@ public class AdvertFromList extends Activity implements Imageutils.ImageAttachme
     String[] mileageMin;
     String[] mileageMax;
     DataBaseHelper dbHelper;
+    int modelIndex;
+    String strModel;
+    String strColor;
     int makeIndex;
     int indexNumber;
     int isMain = 0;
@@ -69,11 +75,12 @@ public class AdvertFromList extends Activity implements Imageutils.ImageAttachme
     String pathImage_1 = "";
     String pathImage_2 = "";
     Advert advert;
-    public	Integer[] mThumbIds = { R.drawable.audi, R.drawable.bmw, R.drawable.citroen,
+    public Integer[] mThumbIds = {R.drawable.audi, R.drawable.bmw, R.drawable.citroen,
             R.drawable.fiatlogo, R.drawable.ford, R.drawable.honda, R.drawable.hyundai, R.drawable.landrover,
             R.drawable.lexus, R.drawable.mazda, R.drawable.mercedes_benz, R.drawable.mitsubishi, R.drawable.nissan,
             R.drawable.opel, R.drawable.seat, R.drawable.skoda, R.drawable.subaru,
             R.drawable.thumbsvolkswagen, R.drawable.toyota, R.drawable.volvo};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,19 +110,20 @@ public class AdvertFromList extends Activity implements Imageutils.ImageAttachme
         advert = dbHelper.getAdvert(indexNumber);
         Log.e("Advert from DB", advert.toString());
         textMake.setText(advert.getMake());
-        if(advert.getIsMain() == 1) {
+        modelIndex = advert.getModelIndex();
+        if (advert.getIsMain() == 1) {
             imgIsMain.setTag(android.R.drawable.btn_star_big_on);
             imgIsMain.setImageResource(android.R.drawable.btn_star_big_on);
             isMain = 1;
-            Log.e("Is the advert main","TRUE");
+            Log.e("Is the advert main", "TRUE");
         } else {
             imgIsMain.setTag(android.R.drawable.btn_star_big_off);
             imgIsMain.setImageResource(android.R.drawable.btn_star_big_off);
             isMain = 0;
-            Log.e("Is the advert main","FALSE");
+            Log.e("Is the advert main", "FALSE");
         }
         Map<Integer, String[]> models_arrays = new HashMap<Integer, String[]>();
-        models_arrays.put(0, new String []{"All models"});
+        models_arrays.put(0, new String[]{"All models"});
         models_arrays.put(1, getResources().getStringArray(R.array.audiModels));
         models_arrays.put(2, getResources().getStringArray(R.array.bmwModels));
         models_arrays.put(3, getResources().getStringArray(R.array.citroenModels));
@@ -149,10 +157,10 @@ public class AdvertFromList extends Activity implements Imageutils.ImageAttachme
         adapterColor.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerColor.setAdapter(adapterColor);
         int indexColor = 0;
-        for(int i = 0; i < colors.length; i++) {
-            if(colors[i].toString().equals(advert.getColor())) {
+        for (int i = 0; i < colors.length; i++) {
+            if (colors[i].toString().equals(advert.getColor())) {
                 indexColor = i;
-                Log.e("indexColor",Integer.toString(i));
+                Log.e("indexColor", Integer.toString(i));
             }
         }
         spinnerColor.setSelection(indexColor);
@@ -350,12 +358,12 @@ public class AdvertFromList extends Activity implements Imageutils.ImageAttachme
             }
         }
         spinnerMaxMileage.setSelection(indexMaxMileage);
-        if(advert.getImage_1().contains(".png")) {
+        if (advert.getImage_1().contains(".png")) {
             image_1.setImageBitmap(BitmapFactory.decodeFile(advert.getImage_1()));
         } else {
             image_1.setImageResource(R.drawable.ph_add_image);
         }
-        if(advert.getImage_2().contains(".png")) {
+        if (advert.getImage_2().contains(".png")) {
             image_2.setImageBitmap(BitmapFactory.decodeFile(advert.getImage_2()));
         } else {
             image_2.setImageResource(R.drawable.ph_add_image);
@@ -363,13 +371,13 @@ public class AdvertFromList extends Activity implements Imageutils.ImageAttachme
         AdapterView.OnItemSelectedListener spinnerMinPriceListener = new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(spinnerMinPrice.getSelectedItemPosition() > spinnerMaxPrice.getSelectedItemPosition()
+                if (spinnerMinPrice.getSelectedItemPosition() > spinnerMaxPrice.getSelectedItemPosition()
                         && spinnerMaxPrice.getSelectedItemPosition() != 0
                         ) {
                     Toast toast = Toast.makeText(getApplicationContext(),
                             "Min price cannot be bigger than max price", Toast.LENGTH_SHORT);
                     TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
-                    if( v != null) v.setGravity(Gravity.CENTER);
+                    if (v != null) v.setGravity(Gravity.CENTER);
                     toast.show();
                 } else {
                     switch (spinnerMinPrice.getSelectedItemPosition()) {
@@ -429,6 +437,7 @@ public class AdvertFromList extends Activity implements Imageutils.ImageAttachme
                     Log.e("Min price", Integer.toString(intMinPrice));
                 }
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 return;
@@ -438,12 +447,12 @@ public class AdvertFromList extends Activity implements Imageutils.ImageAttachme
         AdapterView.OnItemSelectedListener spinnerMaxPriceListener = new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(spinnerMinPrice.getSelectedItemPosition() > spinnerMaxPrice.getSelectedItemPosition()
+                if (spinnerMinPrice.getSelectedItemPosition() > spinnerMaxPrice.getSelectedItemPosition()
                         && spinnerMaxPrice.getSelectedItemPosition() != 0) {
                     Toast toast = Toast.makeText(getApplicationContext(),
                             "Max price cannot be less than min price", Toast.LENGTH_SHORT);
                     TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
-                    if( v != null) v.setGravity(Gravity.CENTER);
+                    if (v != null) v.setGravity(Gravity.CENTER);
                     toast.show();
                 } else {
                     switch (spinnerMaxPrice.getSelectedItemPosition()) {
@@ -502,6 +511,7 @@ public class AdvertFromList extends Activity implements Imageutils.ImageAttachme
                     Log.e("Max price", Integer.toString(intMaxPrice));
                 }
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 return;
@@ -511,12 +521,12 @@ public class AdvertFromList extends Activity implements Imageutils.ImageAttachme
         AdapterView.OnItemSelectedListener spinnerMinMileageListener = new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(spinnerMinMileage.getSelectedItemPosition() > spinnerMaxMileage.getSelectedItemPosition()
+                if (spinnerMinMileage.getSelectedItemPosition() > spinnerMaxMileage.getSelectedItemPosition()
                         && spinnerMaxMileage.getSelectedItemPosition() != 0) {
                     Toast toast = Toast.makeText(getApplicationContext(),
                             "Min mileage cannot be bigger than max mileage", Toast.LENGTH_SHORT);
                     TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
-                    if( v != null) v.setGravity(Gravity.CENTER);
+                    if (v != null) v.setGravity(Gravity.CENTER);
                     toast.show();
                 } else {
                     switch (spinnerMinMileage.getSelectedItemPosition()) {
@@ -551,6 +561,7 @@ public class AdvertFromList extends Activity implements Imageutils.ImageAttachme
                     Log.e("Min mileage", Integer.toString(intMinMileage));
                 }
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 return;
@@ -560,11 +571,11 @@ public class AdvertFromList extends Activity implements Imageutils.ImageAttachme
         AdapterView.OnItemSelectedListener spinnerMaxMileageListener = new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(spinnerMinMileage.getSelectedItemPosition() > spinnerMaxMileage.getSelectedItemPosition()) {
+                if (spinnerMinMileage.getSelectedItemPosition() > spinnerMaxMileage.getSelectedItemPosition()) {
                     Toast toast = Toast.makeText(getApplicationContext(),
                             "Max mileage cannot be less than min mileage", Toast.LENGTH_SHORT);
                     TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
-                    if( v != null) v.setGravity(Gravity.CENTER);
+                    if (v != null) v.setGravity(Gravity.CENTER);
                     toast.show();
                 } else {
                     switch (spinnerMaxMileage.getSelectedItemPosition()) {
@@ -599,25 +610,53 @@ public class AdvertFromList extends Activity implements Imageutils.ImageAttachme
                     Log.e("Max mileage", Integer.toString(intMaxMileage));
                 }
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 return;
             }
         };
         spinnerMaxMileage.setOnItemSelectedListener(spinnerMaxMileageListener);
+        AdapterView.OnItemSelectedListener spinnerModelListener = new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                modelIndex = spinnerModel.getSelectedItemPosition();
+                strModel = spinnerModel.getSelectedItem().toString();
+                Log.e("Model", strModel);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        };
+        spinnerModel.setOnItemSelectedListener(spinnerModelListener);
+        AdapterView.OnItemSelectedListener spinnerColorlListener = new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                strColor = spinnerColor.getSelectedItem().toString();
+                Log.e("Color", strColor);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        };
+        spinnerColor.setOnItemSelectedListener(spinnerColorlListener);
         imgIsMain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(imgIsMain.getTag().equals(android.R.drawable.btn_star_big_off)) {
+                if (imgIsMain.getTag().equals(android.R.drawable.btn_star_big_off)) {
                     imgIsMain.setTag(android.R.drawable.btn_star_big_on);
                     imgIsMain.setImageResource(android.R.drawable.btn_star_big_on);
                     isMain = 1;
-                    Log.e("Is the advert main?","TRUE");
+                    Log.e("Is the advert main?", "TRUE");
                 } else {
                     imgIsMain.setTag(android.R.drawable.btn_star_big_off);
                     imgIsMain.setImageResource(android.R.drawable.btn_star_big_off);
                     isMain = 0;
-                    Log.e("Is the advert main?","FALSE");
+                    Log.e("Is the advert main?", "FALSE");
                 }
       /*          List<Advert> queryList = new ArrayList<Advert>();
                 queryList = dbHelper.getAllAdverts();
@@ -632,8 +671,8 @@ public class AdvertFromList extends Activity implements Imageutils.ImageAttachme
                         dbHelper.updateAdvert(advertUpdate);
                     }
                 }  */
-    //            String advertCount = Integer.toString(dbHelper.getAdvertCount());
-    //            Log.e("Count of adverts", advertCount);
+                //            String advertCount = Integer.toString(dbHelper.getAdvertCount());
+                //            Log.e("Count of adverts", advertCount);
             }
         });
         remove.setOnClickListener(new View.OnClickListener() {
@@ -662,27 +701,50 @@ public class AdvertFromList extends Activity implements Imageutils.ImageAttachme
                 List<Advert> advertList = new ArrayList<Advert>();
                 advertList = dbHelper.getAllAdverts();
                 for (int i = 0; i < advertList.size(); i++) {
-                    if(advertList.get(i).getIndexNumber() != indexNumber) {
+                    if (advertList.get(i).getIndexNumber() != indexNumber && isMain == 1) {
                         Advert advertUpdate = advertList.get(i);
-                        Log.e("Advert != indexNumber", advertUpdate.toString());
+              /*        advertUpdate.setModelIndex(modelIndex);
+                        advertUpdate.setModel(strModel);
+                        advertUpdate.setColor(strColor);
+                        advertUpdate.setMinPrice(intMinPrice);
+                        advertUpdate.setMaxPrice(intMaxPrice);
+                        advertUpdate.setMinMileage(intMinMileage);
+                        advertUpdate.setMaxMileage(intMaxMileage);
+                        advertUpdate.setImage_1(pathImage_1);
+                        advertUpdate.setImage_2(pathImage_2);
+              */        Log.e("Update: Adv != indNum", advertUpdate.toString());
                         advertUpdate.setIsMain(0);
                         dbHelper.updateAdvert(advertUpdate);
 
                     } else {
-                        advert.setIsMain(isMain);
+                        if(isMain == 1) {
+                            advert.setIsMain(isMain);
+                        } else {
+                            advert.setIsMain(0);
+                        }
+                        advert.setModelIndex(modelIndex);
+                        advert.setModel(strModel);
+                        advert.setColor(strColor);
+                        advert.setMinPrice(intMinPrice);
+                        advert.setMaxPrice(intMaxPrice);
+                        advert.setMinMileage(intMinMileage);
+                        advert.setMaxMileage(intMaxMileage);
+                        advert.setImage_1(pathImage_1);
+                        advert.setImage_2(pathImage_2);
+                        Log.e("Update: Adv == indNum", advert.toString());
                         dbHelper.updateAdvert(advert);
                     }
                 }
                 startActivity(new Intent(AdvertFromList.this, AdvertList.class));
             }
         });
-        imageutils =new Imageutils(this);
+        imageutils = new Imageutils(this);
         image_1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.e("ImageView 1", "ImageView 1 was pressed");
                 Log.e("Opening Activity", "opening ImageAttachmentActivity.Activity");
-               //       startActivity(new Intent(AdvertFromList.this, ImageAttachmentActivity.class));
+                //       startActivity(new Intent(AdvertFromList.this, ImageAttachmentActivity.class));
                 imageViewSelected = 1;
                 imageutils.imagepicker(1);
             }
@@ -697,58 +759,59 @@ public class AdvertFromList extends Activity implements Imageutils.ImageAttachme
             }
         });
     }
- /*   public void image_attachment(int from, String filename, Bitmap file, Uri uri) {
-        this.bitmap=file;
-        this.file_name=filename;
-        //     iv_attachment.setImageBitmap(file);
-        switch (imageViewSelected) {
-            case 1: {
-                image_1.setImageBitmap(file);
-                String path =  Environment.getExternalStorageDirectory() + File.separator + Constants.DIRECTORY + File.separator;
-                TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE); //receiving IMEI (Phone ID)
-                String device_id = tm.getDeviceId();
-                Long tsLong = System.currentTimeMillis()/1000;
-                String ts = tsLong.toString();
-                filename = device_id + "_" + ts + ".png";
-                imageutils.createImage(file,filename,path,false);
-                Log.e("Filename", filename.toString());
-                pathImage_1 = path + filename;
-                Log.e("Image_1 path", pathImage_1);
-                //   imageSaving(file);
-                break;
-            }
-            case 2: {
-                image_2.setImageBitmap(file);
-                String path =  Environment.getExternalStorageDirectory() + File.separator + Constants.DIRECTORY + File.separator;
-                //receiving IMEI (Phone ID)
-                TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-                String device_id = tm.getDeviceId();
-                Long tsLong = System.currentTimeMillis()/1000;
-                String ts = tsLong.toString();
-                filename = device_id + "_" + ts + ".png";
-                imageutils.createImage(file,filename,path,false);
-                Log.e("Filename", filename.toString());
-                pathImage_2 = path + filename;
-                Log.e("Image_2 path", pathImage_2);
 
-                //   imageSaving(file);
-                break;
-            }
-        }
+    /*   public void image_attachment(int from, String filename, Bitmap file, Uri uri) {
+           this.bitmap=file;
+           this.file_name=filename;
+           //     iv_attachment.setImageBitmap(file);
+           switch (imageViewSelected) {
+               case 1: {
+                   image_1.setImageBitmap(file);
+                   String path =  Environment.getExternalStorageDirectory() + File.separator + Constants.DIRECTORY + File.separator;
+                   TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE); //receiving IMEI (Phone ID)
+                   String device_id = tm.getDeviceId();
+                   Long tsLong = System.currentTimeMillis()/1000;
+                   String ts = tsLong.toString();
+                   filename = device_id + "_" + ts + ".png";
+                   imageutils.createImage(file,filename,path,false);
+                   Log.e("Filename", filename.toString());
+                   pathImage_1 = path + filename;
+                   Log.e("Image_1 path", pathImage_1);
+                   //   imageSaving(file);
+                   break;
+               }
+               case 2: {
+                   image_2.setImageBitmap(file);
+                   String path =  Environment.getExternalStorageDirectory() + File.separator + Constants.DIRECTORY + File.separator;
+                   //receiving IMEI (Phone ID)
+                   TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+                   String device_id = tm.getDeviceId();
+                   Long tsLong = System.currentTimeMillis()/1000;
+                   String ts = tsLong.toString();
+                   filename = device_id + "_" + ts + ".png";
+                   imageutils.createImage(file,filename,path,false);
+                   Log.e("Filename", filename.toString());
+                   pathImage_2 = path + filename;
+                   Log.e("Image_2 path", pathImage_2);
 
-    }  */
- @Override
- protected void onActivityResult(int requestCode, int resultCode, Intent data)
- {
-     super.onActivityResult(requestCode, resultCode, data);
-     imageutils.onActivityResult(requestCode, resultCode, data);
+                   //   imageSaving(file);
+                   break;
+               }
+           }
 
- }
+       }  */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        imageutils.onActivityResult(requestCode, resultCode, data);
+
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         imageutils.request_permission_result(requestCode, permissions, grantResults);
     }
+
     private void imageSaving(Bitmap file) {
         if (!Environment.getExternalStorageState().equals(
                 Environment.MEDIA_MOUNTED)) {
@@ -762,7 +825,17 @@ public class AdvertFromList extends Activity implements Imageutils.ImageAttachme
         // создаем каталог
         sdPath.mkdirs();
         //receiving IMEI (Phone ID)
-        TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+        TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
         String device_id = tm.getDeviceId();
         // формируем объект File, который содержит путь к файлу
         File sdFile = new File(sdPath, device_id + ".png");
@@ -794,11 +867,12 @@ public class AdvertFromList extends Activity implements Imageutils.ImageAttachme
             }
         }
     }
+
     @Override
     public void onRestart() {
         super.onRestart();
-   //     finish();
-   //     startActivity(getIntent());
+        //     finish();
+        //     startActivity(getIntent());
         remove.setText("Re-save");
         remove.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -810,14 +884,24 @@ public class AdvertFromList extends Activity implements Imageutils.ImageAttachme
 
     @Override
     public void image_attachment(int from, String filename, Bitmap file, Uri uri) {
-        this.bitmap=file;
-        this.file_name=filename;
+        this.bitmap = file;
+        this.file_name = filename;
         //     iv_attachment.setImageBitmap(file);
         switch (imageViewSelected) {
             case 1: {
                 image_1.setImageBitmap(file);
-                String path =  Environment.getExternalStorageDirectory() + File.separator + Constants.DIRECTORY + File.separator;
-                TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE); //receiving IMEI (Phone ID)
+                String path = Environment.getExternalStorageDirectory() + File.separator + Constants.DIRECTORY + File.separator;
+                TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE); //receiving IMEI (Phone ID)
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return;
+                }
                 String device_id = tm.getDeviceId();
                 Long tsLong = System.currentTimeMillis()/1000;
                 String ts = tsLong.toString();

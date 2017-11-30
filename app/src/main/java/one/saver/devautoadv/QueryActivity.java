@@ -1,9 +1,12 @@
 package one.saver.devautoadv;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Gravity;
@@ -34,9 +37,9 @@ public class QueryActivity extends Activity {
     String[] priceMin;
     String[] priceMax;
     String[] mileageMin;
-    String[] mileageMax ;
-    String[] model ;
-    String[] colors ;
+    String[] mileageMax;
+    String[] model;
+    String[] colors;
     int isActive = 0;
     Button buttonToMyAccount;
     Button buttonAddNewQuery;
@@ -82,7 +85,7 @@ public class QueryActivity extends Activity {
         ImageAdapterBuyer imageAdapter = new ImageAdapterBuyer(this);
         ImageView imageView = (ImageView) findViewById(R.id.full_image_view_query);
         imageView.setImageResource(imageAdapter.makeLogoIds[position]);
-        if(position != 0) {
+        if (position != 0) {
             textMake.setText(getResources().getStringArray(R.array.makeArray_query)[position]);
             strMake = textMake.getText().toString();
         } else {
@@ -99,21 +102,21 @@ public class QueryActivity extends Activity {
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(imageButton.getTag().equals(android.R.drawable.btn_star_big_off)) {
+                if (imageButton.getTag().equals(android.R.drawable.btn_star_big_off)) {
                     imageButton.setTag(android.R.drawable.btn_star_big_on);
                     imageButton.setImageResource(android.R.drawable.btn_star_big_on);
                     isActive = 1;
-                    Log.e("Is the query active","TRUE");
+                    Log.e("Is the query active", "TRUE");
                 } else {
                     imageButton.setTag(android.R.drawable.btn_star_big_off);
                     imageButton.setImageResource(android.R.drawable.btn_star_big_off);
                     isActive = 0;
-                    Log.e("Is the query active","FALSE");
+                    Log.e("Is the query active", "FALSE");
                 }
             }
         });
         Map<Integer, String[]> models_arrays = new HashMap<Integer, String[]>();
-        models_arrays.put(0, new String []{"All models"});
+        models_arrays.put(0, new String[]{"All models"});
         models_arrays.put(1, getResources().getStringArray(R.array.audiModels));
         models_arrays.put(2, getResources().getStringArray(R.array.bmwModels));
         models_arrays.put(3, getResources().getStringArray(R.array.citroenModels));
@@ -198,13 +201,13 @@ public class QueryActivity extends Activity {
         AdapterView.OnItemSelectedListener spinnerMinPriceListener = new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(spinnerMinPrice.getSelectedItemPosition() > spinnerMaxPrice.getSelectedItemPosition()
+                if (spinnerMinPrice.getSelectedItemPosition() > spinnerMaxPrice.getSelectedItemPosition()
                         && spinnerMaxPrice.getSelectedItemPosition() != 0
                         ) {
                     Toast toast = Toast.makeText(getApplicationContext(),
                             "Min price cannot be bigger than max price", Toast.LENGTH_SHORT);
                     TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
-                    if( v != null) v.setGravity(Gravity.CENTER);
+                    if (v != null) v.setGravity(Gravity.CENTER);
                     toast.show();
                 } else {
                     switch (spinnerMinPrice.getSelectedItemPosition()) {
@@ -264,6 +267,7 @@ public class QueryActivity extends Activity {
                     Log.e("Min price", Integer.toString(intMinPrice));
                 }
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 return;
@@ -273,12 +277,12 @@ public class QueryActivity extends Activity {
         AdapterView.OnItemSelectedListener spinnerMaxPriceListener = new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(spinnerMinPrice.getSelectedItemPosition() > spinnerMaxPrice.getSelectedItemPosition()
+                if (spinnerMinPrice.getSelectedItemPosition() > spinnerMaxPrice.getSelectedItemPosition()
                         && spinnerMaxPrice.getSelectedItemPosition() != 0) {
                     Toast toast = Toast.makeText(getApplicationContext(),
                             "Max price cannot be less than min price", Toast.LENGTH_SHORT);
                     TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
-                    if( v != null) v.setGravity(Gravity.CENTER);
+                    if (v != null) v.setGravity(Gravity.CENTER);
                     toast.show();
                 } else {
                     switch (spinnerMaxPrice.getSelectedItemPosition()) {
@@ -337,6 +341,7 @@ public class QueryActivity extends Activity {
                     Log.e("Max price", Integer.toString(intMaxPrice));
                 }
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 return;
@@ -346,12 +351,12 @@ public class QueryActivity extends Activity {
         AdapterView.OnItemSelectedListener spinnerMinMileageListener = new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(spinnerMinMileage.getSelectedItemPosition() > spinnerMaxMileage.getSelectedItemPosition()
+                if (spinnerMinMileage.getSelectedItemPosition() > spinnerMaxMileage.getSelectedItemPosition()
                         && spinnerMaxMileage.getSelectedItemPosition() != 0) {
                     Toast toast = Toast.makeText(getApplicationContext(),
                             "Min mileage cannot be bigger than max mileage", Toast.LENGTH_SHORT);
                     TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
-                    if( v != null) v.setGravity(Gravity.CENTER);
+                    if (v != null) v.setGravity(Gravity.CENTER);
                     toast.show();
                 } else {
                     switch (spinnerMinMileage.getSelectedItemPosition()) {
@@ -386,6 +391,7 @@ public class QueryActivity extends Activity {
                     Log.e("Min mileage", Integer.toString(intMinMileage));
                 }
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 return;
@@ -395,11 +401,11 @@ public class QueryActivity extends Activity {
         AdapterView.OnItemSelectedListener spinnerMaxMileageListener = new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(spinnerMinMileage.getSelectedItemPosition() > spinnerMaxMileage.getSelectedItemPosition()) {
+                if (spinnerMinMileage.getSelectedItemPosition() > spinnerMaxMileage.getSelectedItemPosition()) {
                     Toast toast = Toast.makeText(getApplicationContext(),
                             "Max mileage cannot be less than min mileage", Toast.LENGTH_SHORT);
                     TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
-                    if( v != null) v.setGravity(Gravity.CENTER);
+                    if (v != null) v.setGravity(Gravity.CENTER);
                     toast.show();
                 } else {
                     switch (spinnerMaxMileage.getSelectedItemPosition()) {
@@ -434,6 +440,7 @@ public class QueryActivity extends Activity {
                     Log.e("Max mileage", Integer.toString(intMaxMileage));
                 }
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 return;
@@ -450,7 +457,7 @@ public class QueryActivity extends Activity {
         buttonAddNewQuery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(((spinnerMinPrice.getSelectedItemPosition() > spinnerMaxPrice.getSelectedItemPosition()
+                if (((spinnerMinPrice.getSelectedItemPosition() > spinnerMaxPrice.getSelectedItemPosition()
                         && spinnerMaxPrice.getSelectedItemPosition() != 0) ||
                         (spinnerMinPrice.getSelectedItemPosition() > spinnerMaxPrice.getSelectedItemPosition()
                                 && spinnerMaxPrice.getSelectedItemPosition() != 0)
@@ -466,8 +473,18 @@ public class QueryActivity extends Activity {
                    toast.show(); */
                 } else {
                     Log.e("buttonAddNewQuery", "Your query is adding know!");
-                    TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+                    TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
                     Query query = new Query();
+                    if (ActivityCompat.checkSelfPermission(getBaseContext(), Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                        // TODO: Consider calling
+                        //    ActivityCompat#requestPermissions
+                        // here to request the missing permissions, and then overriding
+                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                        //                                          int[] grantResults)
+                        // to handle the case where the user grants the permission. See the documentation
+                        // for ActivityCompat#requestPermissions for more details.
+                        return;
+                    }
                     query.setIMEI(tm.getDeviceId());
                     query.setMakeIndex(position);
                     query.setModelIndex(spinnerModel.getSelectedItemPosition());
