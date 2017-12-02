@@ -47,7 +47,8 @@ public class AdvertSender extends AsyncTask <String, Void, String> {
     }
     @Override
     protected String doInBackground(String... paths) {
-        String strURL = "http://37.46.32.119:8080/CarsApp/rest/Admin/sendAdvert";
+        Log.e("HTTP", "HTTP is alive");
+  /*      String strURL = "http://37.46.32.119:8080/CarsApp/rest/Admin/sendAdvert";
         Advert advert = new Advert();
         advert.setIndexNumber(1);
         advert.setIMEI("a");
@@ -80,8 +81,8 @@ public class AdvertSender extends AsyncTask <String, Void, String> {
             catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-
+        }  */
+//loginAdmin();
         return null;
     }
     public static String advertSender(String url, Advert advert)
@@ -94,7 +95,7 @@ public class AdvertSender extends AsyncTask <String, Void, String> {
         con.setRequestProperty("Accept", "application/json");
         con.setRequestMethod("POST");
         JSONObject advertJson   = new JSONObject();
-   //     advertJson.put("adv", "adv");
+        //     advertJson.put("adv", "adv");
         advertJson.put("indexNumber", advert.getIndexNumber());
         advertJson.put("imei", advert.getIMEI());
         advertJson.put("makeIndex", advert.getMakeIndex());
@@ -125,7 +126,7 @@ public class AdvertSender extends AsyncTask <String, Void, String> {
             }
             br.close();
             //        System.out.println("" + sb.toString());
-            Log.e("Server responce: ", "" + sb.toString());
+            Log.e("Server response: ", "" + sb.toString());
 
         } else {
             System.out.println(con.getResponseMessage());
@@ -166,26 +167,26 @@ public class AdvertSender extends AsyncTask <String, Void, String> {
     }
     private void loginAdmin() {
         try{
-        url = new URL("http://37.46.32.119:8080/CarsApp/rest/Admin/loginAdmin/user/1234");
-        urlConnection = (HttpURLConnection) url
-                .openConnection();
-        responseCode = urlConnection.getResponseCode();
+            url = new URL("http://37.46.32.119:8080/CarsApp/rest/Admin/loginAdmin/user/1234");
+            urlConnection = (HttpURLConnection) url
+                    .openConnection();
+            responseCode = urlConnection.getResponseCode();
 
-        BufferedReader in = new BufferedReader(new InputStreamReader(
-                urlConnection.getInputStream()));
-        String inputLine;
-        while ((inputLine = in.readLine()) != null) {
-            sessionId = inputLine;
-        }
-        Log.e("Session Id", "" + sessionId);
-        String toSplit = sessionId;
-        String result[] = toSplit.split("\"");
-        String returnValue = result[result.length - 2];
-        Log.e("returnValue: ", "" + returnValue);
-        sessionId = returnValue;
+            BufferedReader in = new BufferedReader(new InputStreamReader(
+                    urlConnection.getInputStream()));
+            String inputLine;
+            while ((inputLine = in.readLine()) != null) {
+                sessionId = inputLine;
+            }
+            Log.e("Session Id", "" + sessionId);
+            String toSplit = sessionId;
+            String result[] = toSplit.split("\"");
+            String returnValue = result[result.length - 2];
+            Log.e("returnValue: ", "" + returnValue);
+            sessionId = returnValue;
             Log.e("Session ID", sessionId);
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

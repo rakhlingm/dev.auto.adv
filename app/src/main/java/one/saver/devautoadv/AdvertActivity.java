@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
@@ -552,6 +553,8 @@ public class AdvertActivity extends Activity implements Imageutils.ImageAttachme
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                Helper hp = new Helper();
+                hp.execute();
                 startActivity(new Intent(AdvertActivity.this, AdvertList.class));
                 Log.e("buttonAddNewQuery", "AdvertList activity is opening.");
 
@@ -676,6 +679,14 @@ public class AdvertActivity extends Activity implements Imageutils.ImageAttachme
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+    }
+    public class Helper extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            Log.e("HTTP", "HTTP is alive");
+            return null;
         }
     }
 }
