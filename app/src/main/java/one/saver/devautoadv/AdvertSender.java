@@ -44,11 +44,12 @@ public class AdvertSender extends AsyncTask <String, Void, String> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
+        Log.e("Why2???", "I'm here...");
     }
     @Override
     protected String doInBackground(String... paths) {
         Log.e("HTTP", "HTTP is alive");
-  /*      String strURL = "http://37.46.32.119:8080/CarsApp/rest/Admin/sendAdvert";
+        String strURL = "http://37.46.32.119:8080/CarsApp/rest/Admin/sendAdvert";
         Advert advert = new Advert();
         advert.setIndexNumber(1);
         advert.setIMEI("a");
@@ -63,7 +64,7 @@ public class AdvertSender extends AsyncTask <String, Void, String> {
         advert.setMaxMileage(4);
         advert.setImage_1("image");
         advert.setImage_2("image");
-        Log.e("Advert", advert.toString());
+        Log.e("Advert from AsyncTask", advert.toString());
         try {
             advertSender(strURL,advert);
         } catch (Exception e) {
@@ -81,11 +82,11 @@ public class AdvertSender extends AsyncTask <String, Void, String> {
             catch (Exception e) {
                 e.printStackTrace();
             }
-        }  */
+        }
 //loginAdmin();
         return null;
     }
-    public static String advertSender(String url, Advert advert)
+   public static String advertSender(String url, Advert advert)
             throws Exception {
         URL object=new URL(url);
         HttpURLConnection con = (HttpURLConnection) object.openConnection();

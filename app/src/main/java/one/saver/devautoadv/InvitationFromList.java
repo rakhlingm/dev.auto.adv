@@ -6,13 +6,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Build;
-import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Gravity;
@@ -31,114 +31,97 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AdvertActivity extends Activity implements Imageutils.ImageAttachmentListener {
-    AdvertSender as = new AdvertSender();
-    Helper hlp = new Helper();
+public class InvitationFromList extends Activity implements Imageutils.ImageAttachmentListener {
+    Button remove;
+    Button toMyAdList;
+    Button update;
+    ImageView logoMake;
     TextView textMake;
-    ImageButton imageButton;
-    int position;
-    Spinner spinnerPrice;
+    Spinner spinnerModel;
+    Spinner spinnerColor;
     Spinner spinnerMinPrice;
     Spinner spinnerMaxPrice;
     Spinner spinnerMinMileage;
     Spinner spinnerMaxMileage;
-    Spinner spinnerModel;
-    Spinner spinnerColor;
+    ImageButton imgIsMain;
+    String[] model;
+    String[] colors;
     String[] priceMin;
     String[] priceMax;
     String[] mileageMin;
     String[] mileageMax;
-    String[] model;
-    String[] colors;
-    int isMain = 0;
-    Button buttonToMyAccount;
-    Button buttonAddNewAdv;
-    Button getButtonToMyAccount;
-    Button getButtonAddNewAdv;
-    ImageView image_1;
-    ImageView image_2;
-    ImageView iv_attachment;
-    //For Image Attachment
-    private Bitmap bitmap;
-    private String file_name;
-    int imageViewSelected = 0;
-    Imageutils imageutils;
-    DataBaseHelper dbHelp;
-    boolean isMinPriceCorrect = false;
-    boolean isMaxPriceCorrect = false;
-    boolean isMinMileageCorrect = false;
-    boolean isMaxMileageCorrect = false;
-    int minPriceCounter = 0;
-    int maxPriceCounter = 0;
-    int minMileageCounter = 0;
-    int maxMileageCounter = 0;
-    int counter = 1;
-    int makeIndex;
+    DataBaseHelper dbHelper;
     int modelIndex;
-    String strMake;
     String strModel;
     String strColor;
+    int makeIndex;
+    int indexNumber;
+    int isRead = 0;
     int intMinPrice;
     int intMaxPrice;
     int intMinMileage;
     int intMaxMileage;
+    ImageView image_1;
+    ImageView image_2;
+    int imageViewSelected = 0;
+    Imageutils imageutils;
+    private Bitmap bitmap;
+    private String file_name;
     String pathImage_1 = "";
     String pathImage_2 = "";
+    Invitation invitation;
+    public Integer[] mThumbIds = {R.drawable.audi, R.drawable.bmw, R.drawable.citroen,
+            R.drawable.fiatlogo, R.drawable.ford, R.drawable.honda, R.drawable.hyundai, R.drawable.landrover,
+            R.drawable.lexus, R.drawable.mazda, R.drawable.mercedes_benz, R.drawable.mitsubishi, R.drawable.nissan,
+            R.drawable.opel, R.drawable.seat, R.drawable.skoda, R.drawable.subaru,
+            R.drawable.thumbsvolkswagen, R.drawable.toyota, R.drawable.volvo};
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_advert);
+        setContentView(R.layout.activity_invitation_from_list);
+        remove = (Button) findViewById(R.id.buttonRemoveAd);
+        logoMake = (ImageView) findViewById(R.id.imageView_logoMake);
+        toMyAdList = (Button) findViewById(R.id.buttonToMyAdList);
+        update = (Button) findViewById(R.id.buttonUpdateAdvert);
         textMake = (TextView) findViewById(R.id.textMake);
         spinnerModel = (Spinner) findViewById(R.id.spinnerModel);
+        spinnerColor = (Spinner) findViewById(R.id.spinnerColor);
         spinnerMinPrice = (Spinner) findViewById(R.id.spinnerMinPrice);
         spinnerMaxPrice = (Spinner) findViewById(R.id.spinnerMaxPrice);
         spinnerMinMileage = (Spinner) findViewById(R.id.spinnerMinMileage);
         spinnerMaxMileage = (Spinner) findViewById(R.id.spinnerMaxMileage);
-        spinnerColor = (Spinner) findViewById(R.id.spinnerColor);
-        buttonToMyAccount = (Button) findViewById(R.id.buttonToMyAccount);
-        buttonAddNewAdv = (Button) findViewById(R.id.buttonAddNewAdv);
-        getButtonAddNewAdv = (Button) findViewById(R.id.buttonAddNewAdv);
+        imgIsMain = (ImageButton) findViewById(R.id.imageButtonIsMain);
         image_1 = (ImageView) findViewById(R.id.imageView_1);
         image_2 = (ImageView) findViewById(R.id.imageView_2);
-        // get intent data
         Intent intent = getIntent();
         // Selected image id
-        position = intent.getExtras().getInt("id");
-        ImageAdapterSeller imageAdapter = new ImageAdapterSeller(this);
-        ImageView imageView = (ImageView) findViewById(R.id.full_image_view_advert);
-        imageView.setImageResource(imageAdapter.makeLogoIds[position]);
-        textMake.setText(getResources().getStringArray(R.array.makeArray)[position]);
-        strMake = textMake.getText().toString();
-        Log.e("Make", strMake);
-        imageButton = (ImageButton) findViewById(R.id.imageButtonIsMain);
-        imageButton.setTag(android.R.drawable.btn_star_big_off);
-        imageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (imageButton.getTag().equals(android.R.drawable.btn_star_big_off)) {
-                    imageButton.setTag(android.R.drawable.btn_star_big_on);
-                    imageButton.setImageResource(android.R.drawable.btn_star_big_on);
-                    isMain = 1;
-                    Log.e("Is the advert main", "TRUE");
-                } else {
-                    imageButton.setTag(android.R.drawable.btn_star_big_off);
-                    imageButton.setImageResource(android.R.drawable.btn_star_big_off);
-                    isMain = 0;
-                    Log.e("Is the advert main", "FALSE");
-                }
-            }
-        });
-  /*      ArrayAdapter<String> adapterPrice = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, price);
-        // Определяем разметку для использования при выборе элемента
-        adapterPrice.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Применяем адаптер к элементу spinner
-        spinnerPrice.setAdapter(adapterPrice);   */
-
+        makeIndex = intent.getExtras().getInt("makeIndex");
+        Log.e("makeIndex", Integer.toString(makeIndex));
+        logoMake.setImageResource(mThumbIds[makeIndex]);
+        indexNumber = intent.getExtras().getInt("indexNumber");
+        Log.e("indexNumber", Integer.toString(indexNumber));
+        dbHelper = new DataBaseHelper(this);
+        invitation = dbHelper.getInvitation(indexNumber);
+        Log.e("Advert from DB", invitation.toString());
+        textMake.setText(invitation.getMake());
+        modelIndex = invitation.getModelIndex();
+        if (invitation.getIsRead() == 1) {
+            imgIsMain.setTag(android.R.drawable.btn_star_big_on);
+            imgIsMain.setImageResource(android.R.drawable.btn_star_big_on);
+            isRead = 1;
+            Log.e("Is the advert main", "TRUE");
+        } else {
+            imgIsMain.setTag(android.R.drawable.btn_star_big_off);
+            imgIsMain.setImageResource(android.R.drawable.btn_star_big_off);
+            isRead = 0;
+            Log.e("Is the advert main", "FALSE");
+        }
         Map<Integer, String[]> models_arrays = new HashMap<Integer, String[]>();
         models_arrays.put(0, new String[]{"All models"});
         models_arrays.put(1, getResources().getStringArray(R.array.audiModels));
@@ -162,69 +145,229 @@ public class AdvertActivity extends Activity implements Imageutils.ImageAttachme
         models_arrays.put(19, getResources().getStringArray(R.array.toyotaModels));
         models_arrays.put(20, getResources().getStringArray(R.array.volvoModels));
 
-        model = models_arrays.get(position + 1);
+        model = models_arrays.get(invitation.getMakeIndex() + 1);
         ArrayAdapter<String> adapterModel = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,
                 model);
         adapterModel.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerModel.setAdapter(adapterModel);
-
+        spinnerModel.setSelection(invitation.getModelIndex());
         colors = getResources().getStringArray(R.array.colors);
         ArrayAdapter<String> adapterColor = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,
                 colors);
         adapterColor.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerColor.setAdapter(adapterColor);
-
+        int indexColor = 0;
+        for (int i = 0; i < colors.length; i++) {
+            if (colors[i].toString().equals(invitation.getColor())) {
+                indexColor = i;
+                Log.e("indexColor", Integer.toString(i));
+            }
+        }
+        spinnerColor.setSelection(indexColor);
         priceMin = getResources().getStringArray(R.array.priseMin);
         ArrayAdapter<String> adapterMinPrice = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,
                 priceMin);
         adapterMinPrice.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerMinPrice.setAdapter(adapterMinPrice);
-
+        int indexMinPrice = 0;
+        switch (invitation.getMinPrice()) {
+            case 0: {
+                indexMinPrice = 0;
+                break;
+            }
+            case 25000: {
+                indexMinPrice = 21;
+                break;
+            }
+            case 30000: {
+                indexMinPrice = 22;
+                break;
+            }
+            case 35000: {
+                indexMinPrice = 23;
+                break;
+            }
+            case 40000: {
+                indexMinPrice = 24;
+                break;
+            }
+            case 45000: {
+                indexMinPrice = 25;
+                break;
+            }
+            case 50000: {
+                indexMinPrice = 26;
+                break;
+            }
+            case 60000: {
+                indexMinPrice = 7;
+                break;
+            }
+            case 70000: {
+                indexMinPrice = 28;
+                break;
+            }
+            case 80000: {
+                indexMinPrice = 29;
+                break;
+            }
+            case 90000: {
+                indexMinPrice = 30;
+                break;
+            }
+            case 100000: {
+                indexMinPrice = 31;
+                break;
+            }
+            default: {
+                indexMinPrice = invitation.getMinPrice() / 1000;
+                break;
+            }
+        }
+        spinnerMinPrice.setSelection(indexMinPrice);
         priceMax = getResources().getStringArray(R.array.priseMax);
         ArrayAdapter<String> adapterMaxPrice = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,
                 priceMax);
         adapterMaxPrice.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerMaxPrice.setAdapter(adapterMaxPrice);
-
+        int indexMaxPrice = 0;
+        switch (invitation.getMaxPrice()) {
+            case 1000000: {
+                indexMaxPrice = 0;
+                break;
+            }
+            case 25000: {
+                indexMaxPrice = 21;
+                break;
+            }
+            case 30000: {
+                indexMaxPrice = 22;
+                break;
+            }
+            case 35000: {
+                indexMaxPrice = 23;
+                break;
+            }
+            case 40000: {
+                indexMaxPrice = 24;
+                break;
+            }
+            case 45000: {
+                indexMaxPrice = 25;
+                break;
+            }
+            case 50000: {
+                indexMaxPrice = 26;
+                break;
+            }
+            case 60000: {
+                indexMaxPrice = 7;
+                break;
+            }
+            case 70000: {
+                indexMaxPrice = 28;
+                break;
+            }
+            case 80000: {
+                indexMaxPrice = 29;
+                break;
+            }
+            case 90000: {
+                indexMaxPrice = 30;
+                break;
+            }
+            case 100000: {
+                indexMaxPrice = 31;
+                break;
+            }
+            default: {
+                indexMaxPrice = invitation.getMaxPrice() / 1000;
+                break;
+            }
+        }
+        spinnerMaxPrice.setSelection(indexMaxPrice);
         mileageMin = getResources().getStringArray(R.array.minMileage);
         ArrayAdapter<String> adapterMinMileage = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,
                 mileageMin);
         adapterMinMileage.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerMinMileage.setAdapter(adapterMinMileage);
-
-        mileageMax = getResources().getStringArray(R.array.minMileage);
+        int indexMinMileage = 0;
+        switch (invitation.getMinMileage()) {
+            case 0: {
+                indexMinMileage = 0;
+                break;
+            }
+            case 1000: {
+                indexMinMileage = 1;
+                break;
+            }
+            case 5000: {
+                indexMinMileage = 2;
+                break;
+            }
+            case 125000: {
+                indexMinMileage = 13;
+                break;
+            }
+            case 150000: {
+                indexMinMileage = 14;
+                break;
+            }
+            case 200000: {
+                indexMinMileage = 15;
+                break;
+            }
+            default: {
+                indexMinMileage = invitation.getMinMileage() / 10000 + 2;
+            }
+        }
+        spinnerMinMileage.setSelection(indexMinMileage);
+        mileageMax = getResources().getStringArray(R.array.maxMileage);
         ArrayAdapter<String> adapterMaxMileage = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,
                 mileageMax);
         adapterMaxMileage.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerMaxMileage.setAdapter(adapterMaxMileage);
-
-        AdapterView.OnItemSelectedListener spinnerModelListener = new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                modelIndex = spinnerModel.getSelectedItemPosition();
-                strModel = spinnerModel.getSelectedItem().toString();
-                Log.e("Model", strModel);
+        int indexMaxMileage = 0;
+        switch (invitation.getMaxMileage()) {
+            case 1000000: {
+                indexMaxMileage = 0;
+                break;
             }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
+            case 1000: {
+                indexMaxMileage = 1;
+                break;
             }
-        };
-        spinnerModel.setOnItemSelectedListener(spinnerModelListener);
-        AdapterView.OnItemSelectedListener spinnerColorlListener = new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                strColor = spinnerColor.getSelectedItem().toString();
-                Log.e("Color", strColor);
+            case 5000: {
+                indexMaxMileage = 2;
+                break;
             }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
+            case 125000: {
+                indexMaxMileage = 13;
+                break;
             }
-        };
-        spinnerColor.setOnItemSelectedListener(spinnerColorlListener);
+            case 150000: {
+                indexMaxMileage = 14;
+                break;
+            }
+            case 200000: {
+                indexMaxMileage = 15;
+                break;
+            }
+            default: {
+                indexMaxMileage = invitation.getMaxMileage() / 10000 + 2;
+            }
+        }
+        spinnerMaxMileage.setSelection(indexMaxMileage);
+        if (invitation.getImage_1().contains(".png")) {
+            image_1.setImageBitmap(BitmapFactory.decodeFile(invitation.getImage_1()));
+        } else {
+            image_1.setImageResource(R.drawable.ph_add_image);
+        }
+        if (invitation.getImage_2().contains(".png")) {
+            image_2.setImageBitmap(BitmapFactory.decodeFile(invitation.getImage_2()));
+        } else {
+            image_2.setImageResource(R.drawable.ph_add_image);
+        }
         AdapterView.OnItemSelectedListener spinnerMinPriceListener = new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -474,12 +617,125 @@ public class AdvertActivity extends Activity implements Imageutils.ImageAttachme
             }
         };
         spinnerMaxMileage.setOnItemSelectedListener(spinnerMaxMileageListener);
-        buttonToMyAccount.setOnClickListener(new View.OnClickListener() {
+        AdapterView.OnItemSelectedListener spinnerModelListener = new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                modelIndex = spinnerModel.getSelectedItemPosition();
+                strModel = spinnerModel.getSelectedItem().toString();
+                Log.e("Model", strModel);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        };
+        spinnerModel.setOnItemSelectedListener(spinnerModelListener);
+        AdapterView.OnItemSelectedListener spinnerColorlListener = new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                strColor = spinnerColor.getSelectedItem().toString();
+                Log.e("Color", strColor);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        };
+        spinnerColor.setOnItemSelectedListener(spinnerColorlListener);
+        imgIsMain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(AdvertActivity.this, AdvertList.class));
-                Log.e("buttonToMyAccount", "AdvertList activity is opening.");
+                if (imgIsMain.getTag().equals(android.R.drawable.btn_star_big_off)) {
+                    imgIsMain.setTag(android.R.drawable.btn_star_big_on);
+                    imgIsMain.setImageResource(android.R.drawable.btn_star_big_on);
+                    isRead = 1;
+                    Log.e("Is the invitation read?", "TRUE");
+                } else {
+                    imgIsMain.setTag(android.R.drawable.btn_star_big_off);
+                    imgIsMain.setImageResource(android.R.drawable.btn_star_big_off);
+                    isRead = 0;
+                    Log.e("Is the invitation read?", "FALSE");
+                }
+      /*          List<Advert> queryList = new ArrayList<Advert>();
+                queryList = dbHelper.getAllAdverts();
+                for (int i = 0; i < queryList.size(); i++) {
+                    if(advert.getIndexNumber() == indexNumber) {
+                        Advert advertUpdate = queryList.get(i);
+                        advertUpdate.setIsMain(0);
+                        dbHelper.updateAdvert(advertUpdate);
+                    } else {
+                        Advert advertUpdate = queryList.get(i);
+                        advertUpdate.setIsMain(isActive);
+                        dbHelper.updateAdvert(advertUpdate);
+                    }
+                }  */
+                //            String advertCount = Integer.toString(dbHelper.getAdvertCount());
+                //            Log.e("Count of adverts", advertCount);
+            }
+        });
+        remove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Invitation invitation = dbHelper.getInvitation(indexNumber);
+                Log.e("Invitation from DB", invitation.toString());
+                dbHelper.deleteInvitation(invitation);
+                List<Invitation> invitationList = new ArrayList<Invitation>();
+                invitationList = dbHelper.getAllInvitations();
+                startActivity(new Intent(InvitationFromList.this, InvitationList.class));
 
+            }
+        });
+        toMyAdList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(InvitationFromList.this, InvitationList.class));
+            }
+        });
+        update.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Invitation invitation = dbHelper.getInvitation(indexNumber);
+                Log.e("Invitation from DB", invitation.toString());
+                List<Invitation> invitationList = new ArrayList<Invitation>();
+                invitationList = dbHelper.getAllInvitations();
+                for (int i = 0; i < invitationList.size(); i++) {
+                    if (invitationList.get(i).getIndexNumber() != indexNumber && isRead == 1) {
+                        Invitation invitationUpdate = invitationList.get(i);
+              /*        advertUpdate.setModelIndex(modelIndex);
+                        advertUpdate.setModel(strModel);
+                        advertUpdate.setColor(strColor);
+                        advertUpdate.setMinPrice(intMinPrice);
+                        advertUpdate.setMaxPrice(intMaxPrice);
+                        advertUpdate.setMinMileage(intMinMileage);
+                        advertUpdate.setMaxMileage(intMaxMileage);
+                        advertUpdate.setImage_1(pathImage_1);
+                        advertUpdate.setImage_2(pathImage_2);
+              */        Log.e("Update: Inv != indNum", invitationUpdate.toString());
+                        invitationUpdate.setIsRead(0);
+                        dbHelper.updateInvitation(invitationUpdate);
+
+                    } else {
+                        if(isRead == 1) {
+                            invitation.setIsRead(isRead);
+                        } else {
+                            invitation.setIsRead(0);
+                        }
+                        invitation.setModelIndex(modelIndex);
+                        invitation.setModel(strModel);
+                        invitation.setColor(strColor);
+                        invitation.setMinPrice(intMinPrice);
+                        invitation.setMaxPrice(intMaxPrice);
+                        invitation.setMinMileage(intMinMileage);
+                        invitation.setMaxMileage(intMaxMileage);
+                        invitation.setImage_1(pathImage_1);
+                        invitation.setImage_2(pathImage_2);
+                        Log.e("Update: Inv == indNum", invitation.toString());
+                        dbHelper.updateInvitation(invitation);
+                    }
+                }
+                startActivity(new Intent(InvitationFromList.this, AdvertList.class));
             }
         });
         imageutils = new Imageutils(this);
@@ -488,7 +744,7 @@ public class AdvertActivity extends Activity implements Imageutils.ImageAttachme
             public void onClick(View v) {
                 Log.e("ImageView 1", "ImageView 1 was pressed");
                 Log.e("Opening Activity", "opening ImageAttachmentActivity.Activity");
-                //      startActivity(new Intent(AdvertActivity.this, ImageAttachmentActivity.class));
+                //       startActivity(new Intent(AdvertFromList.this, ImageAttachmentActivity.class));
                 imageViewSelected = 1;
                 imageutils.imagepicker(1);
             }
@@ -502,88 +758,48 @@ public class AdvertActivity extends Activity implements Imageutils.ImageAttachme
                 imageutils.imagepicker(1);
             }
         });
-        dbHelp = new DataBaseHelper(this);
-        buttonAddNewAdv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-                Advert advert = new Advert();
-                if (ActivityCompat.checkSelfPermission(getBaseContext(), Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-                    return;
-                }
-                advert.setIMEI(tm.getDeviceId());
-                advert.setMakeIndex(position);
-                advert.setModelIndex(spinnerModel.getSelectedItemPosition());
-                advert.setMake(strMake);
-                advert.setModel(strModel);
-                advert.setColor(strColor);
-                advert.setMinPrice(intMinPrice);
-                advert.setMaxPrice(intMaxPrice);
-                advert.setMinMileage(intMinMileage);
-                advert.setMaxMileage(intMaxMileage);
-                advert.setImage_1(pathImage_1);
-                advert.setImage_2(pathImage_2);
-                advert.setIsMain(isMain);
-                Log.e("Advert", advert.toString());
-                List<Advert> adverts = dbHelp.getAllAdverts();
-                switch (isMain) {
-                    case 0: {
-
-                        break;
-                    }
-                    case 1: {
-                        for (int i = 0; i < adverts.size(); i++) {
-                            Advert advertUpdate = adverts.get(i);
-                            Log.e("Advert != indexNumber", advertUpdate.toString());
-                            advertUpdate.setIsMain(0);
-                            dbHelp.updateAdvert(advertUpdate);
-                        }
-                        break;
-                    }
-                }
-                dbHelp.addAdvert(advert);
-           /*     try {
-                    Log.e("Why???", "I'm here...");
-                    if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB) {
-                        as.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, pathImage_1, pathImage_2);
-                  //      as.execute(pathImage_1, pathImage_2);
-                    }
-
-                    else
-                    //    as.execute();
-                    as.execute(pathImage_1, pathImage_2);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }  */
-                try {
-                    Log.e("Why???", "I'm here...");
-                    if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB) {
-                        hlp.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, advert);
-                        //      as.execute(pathImage_1, pathImage_2);
-                    }
-
-                    else
-                        //    as.execute();
-                        hlp.execute(advert);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-         //       Helper hp = new Helper();
-         //       hp.execute();
-                startActivity(new Intent(AdvertActivity.this, AdvertList.class));
-                Log.e("buttonAddNewQuery", "AdvertList activity is opening.");
-
-            }
-        });
     }
 
+    /*   public void image_attachment(int from, String filename, Bitmap file, Uri uri) {
+           this.bitmap=file;
+           this.file_name=filename;
+           //     iv_attachment.setImageBitmap(file);
+           switch (imageViewSelected) {
+               case 1: {
+                   image_1.setImageBitmap(file);
+                   String path =  Environment.getExternalStorageDirectory() + File.separator + Constants.DIRECTORY + File.separator;
+                   TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE); //receiving IMEI (Phone ID)
+                   String device_id = tm.getDeviceId();
+                   Long tsLong = System.currentTimeMillis()/1000;
+                   String ts = tsLong.toString();
+                   filename = device_id + "_" + ts + ".png";
+                   imageutils.createImage(file,filename,path,false);
+                   Log.e("Filename", filename.toString());
+                   pathImage_1 = path + filename;
+                   Log.e("Image_1 path", pathImage_1);
+                   //   imageSaving(file);
+                   break;
+               }
+               case 2: {
+                   image_2.setImageBitmap(file);
+                   String path =  Environment.getExternalStorageDirectory() + File.separator + Constants.DIRECTORY + File.separator;
+                   //receiving IMEI (Phone ID)
+                   TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+                   String device_id = tm.getDeviceId();
+                   Long tsLong = System.currentTimeMillis()/1000;
+                   String ts = tsLong.toString();
+                   filename = device_id + "_" + ts + ".png";
+                   imageutils.createImage(file,filename,path,false);
+                   Log.e("Filename", filename.toString());
+                   pathImage_2 = path + filename;
+                   Log.e("Image_2 path", pathImage_2);
+
+                   //   imageSaving(file);
+                   break;
+               }
+           }
+
+       }  */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -594,58 +810,6 @@ public class AdvertActivity extends Activity implements Imageutils.ImageAttachme
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         imageutils.request_permission_result(requestCode, permissions, grantResults);
-    }
-
-    @Override
-    public void image_attachment(int from, String filename, Bitmap file, Uri uri) {
-        this.bitmap = file;
-        this.file_name = filename;
-        //     iv_attachment.setImageBitmap(file);
-        switch (imageViewSelected) {
-            case 1: {
-                image_1.setImageBitmap(file);
-                String path = Environment.getExternalStorageDirectory() + File.separator + Constants.DIRECTORY + File.separator;
-                TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE); //receiving IMEI (Phone ID)
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-                    return;
-                }
-                String device_id = tm.getDeviceId();
-                Long tsLong = System.currentTimeMillis() / 1000;
-                String ts = tsLong.toString();
-                filename = device_id + "_" + ts + ".png";
-                imageutils.createImage(file, filename, path, false);
-                Log.e("Filename", filename.toString());
-                pathImage_1 = path + filename;
-                Log.e("Image_1 path", pathImage_1);
-                //   imageSaving(file);
-                break;
-            }
-            case 2: {
-                image_2.setImageBitmap(file);
-                String path = Environment.getExternalStorageDirectory() + File.separator + Constants.DIRECTORY + File.separator;
-                //receiving IMEI (Phone ID)
-                TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-                String device_id = tm.getDeviceId();
-                Long tsLong = System.currentTimeMillis() / 1000;
-                String ts = tsLong.toString();
-                filename = device_id + "_" + ts + ".png";
-                imageutils.createImage(file, filename, path, false);
-                Log.e("Filename", filename.toString());
-                pathImage_2 = path + filename;
-                Log.e("Image_2 path", pathImage_2);
-
-                //   imageSaving(file);
-                break;
-            }
-        }
-
     }
 
     private void imageSaving(Bitmap file) {
@@ -703,12 +867,69 @@ public class AdvertActivity extends Activity implements Imageutils.ImageAttachme
             }
         }
     }
-/*    public class Helper extends AsyncTask<Void, Void, Void> {
 
-        @Override
-        protected Void doInBackground(Void... voids) {
-            Log.e("HTTP", "HTTP is alive");
-            return null;
+    @Override
+    public void onRestart() {
+        super.onRestart();
+        //     finish();
+        //     startActivity(getIntent());
+        remove.setText("Re-save");
+        remove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(InvitationFromList.this, Seller.class));
+            }
+        });
+    }
+
+    @Override
+    public void image_attachment(int from, String filename, Bitmap file, Uri uri) {
+        this.bitmap = file;
+        this.file_name = filename;
+        //     iv_attachment.setImageBitmap(file);
+        switch (imageViewSelected) {
+            case 1: {
+                image_1.setImageBitmap(file);
+                String path = Environment.getExternalStorageDirectory() + File.separator + Constants.DIRECTORY + File.separator;
+                TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE); //receiving IMEI (Phone ID)
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return;
+                }
+                String device_id = tm.getDeviceId();
+                Long tsLong = System.currentTimeMillis()/1000;
+                String ts = tsLong.toString();
+                filename = device_id + "_" + ts + ".png";
+                imageutils.createImage(file,filename,path,false);
+                Log.e("Filename", filename.toString());
+                pathImage_1 = path + filename;
+                Log.e("Image_1 path", pathImage_1);
+                //   imageSaving(file);
+                break;
+            }
+            case 2: {
+                image_2.setImageBitmap(file);
+                String path =  Environment.getExternalStorageDirectory() + File.separator + Constants.DIRECTORY + File.separator;
+                //receiving IMEI (Phone ID)
+                TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+                String device_id = tm.getDeviceId();
+                Long tsLong = System.currentTimeMillis()/1000;
+                String ts = tsLong.toString();
+                filename = device_id + "_" + ts + ".png";
+                imageutils.createImage(file,filename,path,false);
+                Log.e("Filename", filename.toString());
+                pathImage_2 = path + filename;
+                Log.e("Image_2 path", pathImage_2);
+
+                //   imageSaving(file);
+                break;
+            }
         }
-    }  */
+    }
 }

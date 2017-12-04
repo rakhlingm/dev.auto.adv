@@ -75,7 +75,7 @@
                 android:layout_marginTop="0dp"
                 android:layout_marginBottom="5dp"
                 android:layout_weight="1"
-                android:text="QA mode" />
+                android:text="Invitations" />
 
             <Button
                 android:id="@+id/button6"
@@ -85,7 +85,7 @@
                 android:layout_marginTop="0dp"
                 android:layout_marginBottom="5dp"
                 android:layout_weight="1"
-                android:text="Button" />
+                android:text="QA mode" />
         </TableRow>
 
 

@@ -62,12 +62,17 @@
             android:name=".AdvertFromList"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
-        <activity android:name=".QueryFromList"
+        <activity
+            android:name=".QueryFromList"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
-        <activity android:name=".QA_Query"
+        <activity
+            android:name=".QA_Query"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
+        <activity android:name=".InvitationActivity" />
+        <activity android:name=".InvitationList" />
+        <activity android:name=".InvitationFromList"></activity>
     </application>
 
 </manifest>

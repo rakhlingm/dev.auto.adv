@@ -25,6 +25,10 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     // Queries table name
     private static final String TABLE_QUERIES= "Queries";
 
+    // Invitations table name
+    private static final String TABLE_INVITATIONS= "Queries";
+
+
     // Adverts and Queries Table Columns names
     private static final String KEY_ID = "indexNumber";
     private static final String KEY_IMEI = "IMEI";
@@ -41,6 +45,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     private static final String KEY_IMAGE_2 = "image_2";
     private static final String IS_MAIN = "isActive";  /* For advert */
     private static final String IS_ACTIVE = "isActive";  /* For BLE listening */
+    private static final String IS_READ = "isRead";  /* HTTP response */
 
 
 
@@ -67,6 +72,14 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 + KEY_MAX_MIL + " INTEGER," + KEY_IMAGE_1 + " TEXT," + KEY_IMAGE_2 + " TEXT," + IS_ACTIVE + " INTEGER" + ")";
         db.execSQL(CREATE_QUERIES_TABLE);
         Log.e("Table Queries", "Table Queries was created");
+        String CREATE_INVITATIONS_TABLE = "CREATE TABLE " + TABLE_INVITATIONS + "("
+                + KEY_ID + " INTEGER PRIMARY KEY," + KEY_IMEI + " TEXT,"
+                + KEY_MAKE_INDEX + " INTEGER," + KEY_MODEL_INDEX+ " INTEGER,"
+                + KEY_MAKE + " TEXT," + KEY_MODEL + " TEXT," + KEY_COLOR + " TEXT,"
+                + KEY_MIN_PRICE + " INTEGER," + KEY_MAX_PRICE + " INTEGER," + KEY_MIN_MIL + " INTEGER,"
+                + KEY_MAX_MIL + " INTEGER," + KEY_IMAGE_1 + " TEXT," + KEY_IMAGE_2 + " TEXT," + IS_READ + " INTEGER" + ")";
+        db.execSQL(CREATE_INVITATIONS_TABLE);
+        Log.e("Table Invitations", "Table Invitations was created");
     }
 
     // Upgrading database
@@ -78,6 +91,10 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         onCreate(db);
         // Drop older table if existed
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_QUERIES);
+        // Create tables again
+        onCreate(db);
+        // Drop older table if existed
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_INVITATIONS);
         // Create tables again
         onCreate(db);
     }
@@ -107,7 +124,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.insert(TABLE_ADVERTS, null, values);
         db.close(); // Closing database connection
     }
-    // Adding new advert
+    // Adding new query
     void addQuery(Query query) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -128,7 +145,27 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.insert(TABLE_QUERIES, null, values);
         db.close(); // Closing database connection
     }
-
+    // Adding new invitation
+    void addInvitation(Invitation invitation) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_IMEI, invitation.getIMEI()); // IMEI
+        values.put(KEY_MAKE_INDEX, invitation.getMakeIndex()); // indexMake
+        values.put(KEY_MODEL_INDEX, invitation.getModelIndex()); // indexModel
+        values.put(KEY_MAKE, invitation.getMake()); // Make
+        values.put(KEY_MODEL, invitation.getModel()); // Model
+        values.put(KEY_COLOR, invitation.getColor()); // Color
+        values.put(KEY_MIN_PRICE, invitation.getMinPrice()); // Min price
+        values.put(KEY_MAX_PRICE, invitation.getMaxPrice()); // Max price
+        values.put(KEY_MIN_MIL, invitation.getMinMileage()); // Min mileage
+        values.put(KEY_MAX_MIL, invitation.getMaxMileage()); // Max mileage
+        values.put(KEY_IMAGE_1, invitation.getImage_1()); // Image #1
+        values.put(KEY_IMAGE_2, invitation.getImage_2()); // Image #2
+        values.put(IS_READ, invitation.getIsRead()); // isRead HTTP response
+        // Inserting Row
+        db.insert(TABLE_INVITATIONS, null, values);
+        db.close(); // Closing database connection
+    }
     // Getting single contact
     Advert getAdvert(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -156,6 +193,19 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 Integer.parseInt(cursor.getString(10)), cursor.getString(11), cursor.getString(12), Integer.parseInt(cursor.getString(13)));
         // return query
         return query;
+    }
+    Invitation getInvitation(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_INVITATIONS, null, KEY_ID + "=?",
+                new String[] { String.valueOf(id) }, null, null, null, null);
+        if (cursor != null)
+            cursor.moveToFirst();
+        Invitation invitation = new Invitation(Integer.parseInt(cursor.getString(0)), cursor.getString(1), Integer.parseInt(cursor.getString(2)),
+                Integer.parseInt(cursor.getString(3)), cursor.getString(4), cursor.getString(5), cursor.getString(6),
+                Integer.parseInt(cursor.getString(7)), Integer.parseInt(cursor.getString(8)), Integer.parseInt(cursor.getString(9)),
+                Integer.parseInt(cursor.getString(10)), cursor.getString(11), cursor.getString(12), Integer.parseInt(cursor.getString(13)));
+        // return invitation
+        return invitation;
     }
     // Getting All Adverts
     public List<Advert> getAllAdverts() {
@@ -223,6 +273,38 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         // return query list
         return queryList;
     }
+    // Getting All Queries
+    public List<Invitation> getAllInvitations() {
+        List<Invitation> invitationList = new ArrayList<Invitation>();
+        // Select All Invitations
+        String selectInvitation = "SELECT  * FROM " + TABLE_INVITATIONS;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectInvitation, null);
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                Invitation invitation = new Invitation();
+                invitation.setIndexNumber(Integer.parseInt(cursor.getString(0)));
+                invitation.setIMEI(cursor.getString(1));
+                invitation.setMakeIndex(cursor.getInt(2));
+                invitation.setModelIndex(cursor.getInt(3));
+                invitation.setMake(cursor.getString(4));
+                invitation.setModel(cursor.getString(5));
+                invitation.setColor(cursor.getString(6));
+                invitation.setMinPrice(cursor.getInt(7));
+                invitation.setMaxPrice(cursor.getInt(8));
+                invitation.setMinMileage(cursor.getInt(9));
+                invitation.setMaxMileage(cursor.getInt(10));
+                invitation.setImage_1(cursor.getString(11));
+                invitation.setImage_2(cursor.getString(12));
+                invitation.setIsRead(Integer.parseInt(cursor.getString(13)));
+                invitationList.add(invitation);
+                Log.e("Get all invitations", invitation.toString());
+            } while (cursor.moveToNext());
+        }
+        // return invitation list
+        return invitationList;
+    }
     // Updating single advert
     public int updateAdvert(Advert advert) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -261,6 +343,24 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return db.update(TABLE_QUERIES, values, KEY_ID + " = ?",
                 new String[] { String.valueOf(query.getIndexNumber()) });
     }
+    // Updating single invitation
+    public int updateInvitation(Invitation invitation) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_MODEL_INDEX, invitation.getModelIndex()); // indexModel
+        values.put(KEY_MAKE, invitation.getMake()); // Make
+        values.put(KEY_MODEL, invitation.getModel()); // Model
+        values.put(KEY_COLOR, invitation.getColor()); // Color
+        values.put(KEY_MIN_PRICE, invitation.getMinPrice()); // Min price
+        values.put(KEY_MAX_PRICE, invitation.getMaxPrice()); // Max price
+        values.put(KEY_MIN_MIL, invitation.getMinMileage()); // Min mileage
+        values.put(KEY_MAX_MIL, invitation.getMaxMileage()); // Max mileage
+        values.put(IS_ACTIVE, invitation.getIsRead());
+        Log.e("Updating invitation", "Updated successfully");
+        // updating row
+        return db.update(TABLE_INVITATIONS, values, KEY_ID + " = ?",
+                new String[] { String.valueOf(invitation.getIndexNumber()) });
+    }
     // Deleting single advert
     public void deleteAdvert(Advert advert) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -274,6 +374,13 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.delete(TABLE_QUERIES, KEY_ID + " = ?", new String[] {Integer.toString(query.getIndexNumber())});
         db.close();
         Log.e("Query was removed", query.toString());
+    }
+    // Deleting single invitation
+    public void deleteInvitation(Invitation invitation) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_INVITATIONS, KEY_ID + " = ?", new String[] {Integer.toString(invitation.getIndexNumber())});
+        db.close();
+        Log.e("Invitation was removed", invitation.toString());
     }
     // Getting Main advert
     Advert getMainAdvert(int id) {
@@ -324,6 +431,38 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         // return query list
         return queryList;
     }
+    // Getting Read invitation
+    public List<Invitation> getAllReadInvitation() {
+        List<Invitation> invitationList = new ArrayList<Invitation>();
+        // Select All Active Invitation
+        String selectInvitation = "SELECT  * FROM " + TABLE_INVITATIONS + IS_READ + "`=1";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectInvitation, null);
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                Invitation invitation = new Invitation();
+                invitation.setIndexNumber(Integer.parseInt(cursor.getString(0)));
+                invitation.setIMEI(cursor.getString(1));
+                invitation.setMakeIndex(cursor.getInt(2));
+                invitation.setModelIndex(cursor.getInt(3));
+                invitation.setMake(cursor.getString(4));
+                invitation.setModel(cursor.getString(5));
+                invitation.setColor(cursor.getString(6));
+                invitation.setMinPrice(cursor.getInt(7));
+                invitation.setMaxPrice(cursor.getInt(8));
+                invitation.setMinMileage(cursor.getInt(9));
+                invitation.setMaxMileage(cursor.getInt(10));
+                invitation.setImage_1(cursor.getString(11));
+                invitation.setImage_2(cursor.getString(12));
+                invitation.setIsRead(Integer.parseInt(cursor.getString(13)));
+                invitationList.add(invitation);
+                Log.e("Get all invitations", invitation.toString());
+            } while (cursor.moveToNext());
+        }
+        // return invitation list
+        return invitationList;
+    }
 
     // Getting adverts Count
     public int getAdvertCount() {
@@ -339,6 +478,15 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         String countQuery = "SELECT * FROM " + TABLE_QUERIES;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
+        //       cursor.close();
+        // return count
+        return cursor.getCount();
+    }
+    // Getting invitation Count
+    public int getInvitationCount() {
+        String countInvitation = "SELECT * FROM " + TABLE_INVITATIONS;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(countInvitation, null);
         //       cursor.close();
         // return count
         return cursor.getCount();

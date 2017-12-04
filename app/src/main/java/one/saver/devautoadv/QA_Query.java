@@ -177,9 +177,6 @@ public class QA_Query extends AppCompatActivity {
         MediaPlayer player = null;
         @Override
         protected Void doInBackground(Void... params) {
-            //       MediaPlayer player = MediaPlayer.create(MainActivity.this, makeAudioFile[indexMakeAudioFile]);
-            //      for(int i = 0; i < 3; i++){
-            //     Log.e("File size", Integer.toString(makeAudioFile[indexMakeAudioFile]));
             player = MediaPlayer.create(QA_Query.this, makeAudioFile[indexMakeAudioFile]);
             player.setVolume(100,100);
 
@@ -219,24 +216,7 @@ public class QA_Query extends AppCompatActivity {
                     runner.onCancelled();
                 }
             });
-    /*        player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mp) {
-                    player.stop();
-                    player = MediaPlayer.create(MainActivity.this, R.raw.word_near_you);
-                    player.setVolume(100,100);
-                    player.start();
-                }
-            });  */
             player.start();
-
-
-            // play next audio file
-
-            //             }  }
-            //        player.setLooping(true); // Set looping
-            //      });  player.setVolume(100,100);
-            //    player.start();
             return null;
         }
     }

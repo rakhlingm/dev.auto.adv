@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity
     Button seller;
     Button myQueries;
     Button myAdverts;
+    Button invitations;
     Button QA_Query;
     DataBaseHelper dbHelper;
     BeaconTransmission bt;
@@ -92,7 +93,8 @@ public class MainActivity extends AppCompatActivity
         seller = (Button)findViewById(R.id.Button2);
         myQueries = (Button) findViewById(R.id.button3);
         myAdverts = (Button) findViewById(R.id.button4);
-        QA_Query = (Button) findViewById(R.id.button5);
+        invitations = (Button) findViewById(R.id.button5);
+        QA_Query = (Button) findViewById(R.id.button6);
         buyer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -119,6 +121,13 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, AdvertList.class));
                 Log.e("To my adverts", "AdvertList activity is opening.");
+            }
+        });
+        invitations.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, InvitationList.class));
+                Log.e("To QA_QUERY", "InvitationList activity is opening.");
             }
         });
         QA_Query.setOnClickListener(new View.OnClickListener() {
