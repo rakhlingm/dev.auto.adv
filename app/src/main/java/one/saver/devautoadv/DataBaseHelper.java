@@ -57,7 +57,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_ADVERTS_TABLE = "CREATE TABLE " + TABLE_ADVERTS + "("
-                + KEY_ID + " INTEGER PRIMARY KEY," + KEY_IMEI + " TEXT,"
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," + KEY_IMEI + " TEXT,"
                 + KEY_MAKE_INDEX + " INTEGER," + KEY_MODEL_INDEX+ " INTEGER,"
                 + KEY_MAKE + " TEXT," + KEY_MODEL + " TEXT," + KEY_COLOR + " TEXT,"
                 + KEY_MIN_PRICE + " INTEGER," + KEY_MAX_PRICE + " INTEGER," + KEY_MIN_MIL + " INTEGER,"
@@ -65,7 +65,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_ADVERTS_TABLE);
         Log.e("Table Adverts", "Table Adverts was created");
         String CREATE_QUERIES_TABLE = "CREATE TABLE " + TABLE_QUERIES + "("
-                + KEY_ID + " INTEGER PRIMARY KEY," + KEY_IMEI + " TEXT,"
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," + KEY_IMEI + " TEXT,"
                 + KEY_MAKE_INDEX + " INTEGER," + KEY_MODEL_INDEX+ " INTEGER,"
                 + KEY_MAKE + " TEXT," + KEY_MODEL + " TEXT," + KEY_COLOR + " TEXT,"
                 + KEY_MIN_PRICE + " INTEGER," + KEY_MAX_PRICE + " INTEGER," + KEY_MIN_MIL + " INTEGER,"
@@ -73,7 +73,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_QUERIES_TABLE);
         Log.e("Table Queries", "Table Queries was created");
         String CREATE_INVITATIONS_TABLE = "CREATE TABLE " + TABLE_INVITATIONS + "("
-                + KEY_ID + " INTEGER PRIMARY KEY," + KEY_IMEI + " TEXT,"
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," + KEY_IMEI + " TEXT,"
                 + KEY_MAKE_INDEX + " INTEGER," + KEY_MODEL_INDEX+ " INTEGER,"
                 + KEY_MAKE + " TEXT," + KEY_MODEL + " TEXT," + KEY_COLOR + " TEXT,"
                 + KEY_MIN_PRICE + " INTEGER," + KEY_MAX_PRICE + " INTEGER," + KEY_MIN_MIL + " INTEGER,"
@@ -490,5 +490,16 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         //       cursor.close();
         // return count
         return cursor.getCount();
+    }
+    // Getting last indexNumber
+    public int getLastAdvertIndexNumber() {
+        int indexNumber = 0;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_ADVERTS, new String [] {"MAX(indexNumber)"}, null, null, null, null, null);
+        if (cursor != null) {
+            cursor.moveToFirst();
+            indexNumber= cursor.getInt(0);}
+            Log.e("LastIndexNumber", Integer.toString(indexNumber));
+        return indexNumber;
     }
 }

@@ -518,7 +518,13 @@ public class AdvertActivity extends Activity implements Imageutils.ImageAttachme
                     // for ActivityCompat#requestPermissions for more details.
                     return;
                 }
-                advert.setIMEI(tm.getDeviceId());
+                String strPhoneId = tm.getDeviceId();
+                int length = strPhoneId.length();
+                if (length == 16) {
+                    advert.setIMEI(tm.getDeviceId());
+                } else {
+                    advert.setIMEI("0" + tm.getDeviceId());
+                }
                 advert.setMakeIndex(position);
                 advert.setModelIndex(spinnerModel.getSelectedItemPosition());
                 advert.setMake(strMake);
@@ -565,12 +571,14 @@ public class AdvertActivity extends Activity implements Imageutils.ImageAttachme
                 try {
                     Log.e("Why???", "I'm here...");
                     if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB) {
+                        advert.setIndexNumber(dbHelp.getLastAdvertIndexNumber());
                         as.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, advert);
                         //      as.execute(pathImage_1, pathImage_2);
                     }
 
                     else
                         //    as.execute();
+                        advert.setIndexNumber(dbHelp.getLastAdvertIndexNumber());
                         as.execute(advert);
                 } catch (Exception e) {
                     e.printStackTrace();

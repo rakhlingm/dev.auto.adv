@@ -13,7 +13,6 @@ import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -28,7 +27,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -49,7 +47,6 @@ import java.util.List;
 
 import static android.support.v4.app.NotificationCompat.DEFAULT_SOUND;
 import static android.support.v4.app.NotificationCompat.DEFAULT_VIBRATE;
-import static android.support.v4.app.NotificationCompat.PRIORITY_MAX;
 import static android.support.v4.app.NotificationCompat.VISIBILITY_PUBLIC;
 
 public class MainActivity extends AppCompatActivity
@@ -74,7 +71,7 @@ public class MainActivity extends AppCompatActivity
             R.raw.opel, R.raw.seat, R.raw.skoda, R.raw.subaru,
             R.raw.volkswagen, R.raw.toyota, R.raw.volvo};
     int indexMakeAudioFile = 0;
-    BackgroundSound runner;
+    BackgroundSound bgs;
     private final static int REQUEST_ENABLE_BT = 1;
     private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
     boolean isAdvertChanged = true;
@@ -158,14 +155,25 @@ public class MainActivity extends AppCompatActivity
         });
         dbHelper = new DataBaseHelper(this);
    //     startTransmission();
-   //     bt = new BeaconTransmission();
-   //     bt.execute();
+   //       bt = new BeaconTransmission();
+   //       bt.execute();
 
         /* From Advert2 */
 
           BackgroundScanning bs = new BackgroundScanning();
           bs.execute();
-    //    invitationNotification(1);
+    //      invitationNotification(1);
+    /*        InvitationReceiver ir = new InvitationReceiver();
+            try {
+                Log.e("Why???", "I'm here...");
+                if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB) {
+                    ir.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                }
+                else
+                    ir.execute();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }  */
     }
 
  /*   private void startTransmission() {
@@ -186,7 +194,7 @@ public class MainActivity extends AppCompatActivity
         String strLayout = "";
         StringBuffer sbIMEI = new StringBuffer (advert.getIMEI());
         String strInsert = "-";
-        sbIMEI.insert (0, "0");
+    //    sbIMEI.insert (0, "0");
         sbIMEI.insert (6, strInsert);
         sbIMEI.insert (11, strInsert);
         sbIMEI.insert (16, strInsert);
@@ -453,12 +461,8 @@ public class MainActivity extends AppCompatActivity
                         Thread.sleep(500);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
-                    }
                 }
-        /*    } catch (Exception e) {
-                e.printStackTrace();
-            }   */
-      //      return null;
+            }
         }
         @Override
         protected void onPostExecute(Void result) {
@@ -487,18 +491,36 @@ public class MainActivity extends AppCompatActivity
                      Log.e("String", strPLU);
                 //         Log.e("String", strPLU.substring(33, 39));
                 int makeIndex = Integer.parseInt(strPLU.substring(53, 55));
+                int indexNumber = Integer.parseInt(strPLU.substring(49, 53));
+                String imei = strPLU.substring(33, 49);
                 indexMakeAudioFile = makeIndex;
+                Invitation invitation = new Invitation(indexNumber, imei);
+                InvitationReceiver ir = new InvitationReceiver();
                 if(makeIndex != intIsAdvertChanged) {
                     intIsAdvertChanged = makeIndex;
                     isAdvertChanged = true;
-                    runner = new BackgroundSound();
-                    runner.execute();
+                    bgs = new BackgroundSound();
+                    bgs.execute();
+                    try {
+                        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB) {
+                            ir.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, invitation);
+                        }
+                        else {
+                            ir.execute(invitation);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 } else {
                     isAdvertChanged = false;
                 }
+          //      Log.e("indexNumber", Integer.toString(indexNumber));
                 String strMakeIndex = getResources().getStringArray(R.array.makeArray)[makeIndex];
-                Log.e("Make", strMakeIndex);
+          //      Log.e("Make", strMakeIndex);
+          //      Log.e("IMEI", imei);
                 Log.e("intIsAdvertChanged", Integer.toString(intIsAdvertChanged));
+                Log.e("Advert from BLE", Integer.toString(indexNumber) + "-" + imei + "-" + strMakeIndex);
+                Log.e("Invitation for server", invitation.toString());
         //        peripheralTextView.append("Make:    " + strMakeIndex + "\n");
                 //             peripheralTextView.append("Device name_" + result.getDevice().getAddress() + " rssi: " + result.getRssi() + strMakeIndex + "\n");
 
@@ -600,7 +622,7 @@ public class MainActivity extends AppCompatActivity
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    runner.onCancelled();
+                    bgs.onCancelled();
                 }
             });
     /*        player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {

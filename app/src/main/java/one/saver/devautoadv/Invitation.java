@@ -23,6 +23,11 @@ public class Invitation {
     public Invitation() {
     }
 
+    public Invitation(int indexNumber, String IMEI) {
+        this.indexNumber = indexNumber;
+        this.IMEI = IMEI;
+    }
+
     public Invitation(int indexNumber, String IMEI, int makeIndex, int modelIndex, String make, String model, String color, int minPrice, int maxPrice, int minMileage, int maxMileage, String image_1, String image_2, int isRead) {
         this.indexNumber = indexNumber;
         this.IMEI = IMEI;
