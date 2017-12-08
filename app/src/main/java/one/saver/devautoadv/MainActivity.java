@@ -1,5 +1,8 @@
 package one.saver.devautoadv;
 
+import android.Manifest;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.le.AdvertiseCallback;
@@ -12,11 +15,19 @@ import android.bluetooth.le.ScanSettings;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
@@ -33,7 +44,13 @@ import android.widget.Button;
 import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconParser;
 
+import java.util.Calendar;
 import java.util.List;
+
+import static android.support.v4.app.NotificationCompat.DEFAULT_SOUND;
+import static android.support.v4.app.NotificationCompat.DEFAULT_VIBRATE;
+import static android.support.v4.app.NotificationCompat.PRIORITY_MAX;
+import static android.support.v4.app.NotificationCompat.VISIBILITY_PUBLIC;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -62,6 +79,8 @@ public class MainActivity extends AppCompatActivity
     private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
     boolean isAdvertChanged = true;
     int intIsAdvertChanged = 0;
+    Invitation invitation;
+    ImageAdapterSeller imageAdapter = new ImageAdapterSeller(this);
 
 
         org.altbeacon.beacon.BeaconTransmitter beaconTransmitter;
@@ -139,12 +158,14 @@ public class MainActivity extends AppCompatActivity
         });
         dbHelper = new DataBaseHelper(this);
    //     startTransmission();
-        bt = new BeaconTransmission();
-        bt.execute();
+   //     bt = new BeaconTransmission();
+   //     bt.execute();
 
         /* From Advert2 */
-    //    BackgroundScanning bs = new BackgroundScanning();
-    //    bs.execute();
+
+          BackgroundScanning bs = new BackgroundScanning();
+          bs.execute();
+    //    invitationNotification(1);
     }
 
  /*   private void startTransmission() {
@@ -265,6 +286,112 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+    private void invitationNotification(int index) {
+        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.M) {
+            String[] events = new String[6];
+            events[0] = Integer.toString(index);
+            events[1] = "X6";
+            events[2] = "White";
+            events[3] = "$70000";
+            Bitmap modelIcon = BitmapFactory.decodeResource(getResources(),
+                    R.drawable.bmw);
+
+            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
+                    this).setAutoCancel(true)
+                    .setContentTitle("CarApp")
+                    .setSmallIcon(android.R.drawable.btn_star_big_on).setLargeIcon(modelIcon)
+                    .setContentText("The car you are interested in");
+
+            NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
+
+            // Sets a title for the Inbox style big view
+            inboxStyle.setBigContentTitle("Event Details");
+
+            // Moves events into the big view
+            for (int i = 0; i < events.length; i++) {
+
+                inboxStyle.addLine(events[i]);
+            }
+            // Moves the big view style object into the notification object.
+            mBuilder.setStyle(inboxStyle);
+
+            // Creates an explicit intent for an Activity in your app
+            Intent resultIntent = new Intent(this, InvitationActivity.class);
+
+            // The stack builder object will contain an artificial back stack for
+            // the
+            // started Activity.
+            // This ensures that navigating backward from the Activity leads out of
+            // your application to the Home screen.
+            TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+
+            // Adds the back stack for the Intent (but not the Intent itself)
+            stackBuilder.addParentStack(InvitationActivity.class);
+
+            // Adds the Intent that starts the Activity to the top of the stack
+            stackBuilder.addNextIntent(resultIntent);
+            PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0,
+                    PendingIntent.FLAG_UPDATE_CURRENT);
+            mBuilder.setContentIntent(resultPendingIntent);
+
+            NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+            // mId allows you to update the notification later on.
+            mNotificationManager.notify(100, mBuilder.build());
+        } else {
+            Intent callIntent = new Intent(Intent.ACTION_CALL);
+            callIntent.setData(Uri.parse("tel:0523960798"));
+            PendingIntent callResult = PendingIntent.getActivity(this,
+                    (int) Calendar.getInstance().getTimeInMillis(), callIntent, 0);
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
+            //        startActivity(callIntent);
+
+            Intent resultIntent = new Intent(this, InvitationList.class);
+            resultIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                    | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            PendingIntent piResult = PendingIntent.getActivity(this,
+                    (int) Calendar.getInstance().getTimeInMillis(), resultIntent, 0);
+            NotificationCompat.BigPictureStyle bigPictureStyle =
+                    new NotificationCompat.BigPictureStyle();
+            bigPictureStyle.bigPicture(
+                    BitmapFactory.decodeResource(getResources(),
+                            R.drawable.bmw)).build();
+
+            //build notification
+            NotificationCompat.Builder builder =
+                    new NotificationCompat.Builder(this)
+                    //        .setSmallIcon(android.R.drawable.btn_star_big_on)
+                            .setSmallIcon(imageAdapter.makeLogoIds[index])
+                            .setContentTitle("CarsApp")
+                            .setContentText("Row 1")
+                            .setContentInfo("Row 2")
+                            .setStyle(bigPictureStyle)
+                            .setVisibility(VISIBILITY_PUBLIC)
+                            .setDefaults(DEFAULT_SOUND | DEFAULT_VIBRATE)
+                            .setPriority(NotificationCompat.PRIORITY_MAX)
+                            //        .setFullScreenIntent(piResult, true)
+                            //        .addAction(android.R.drawable.btn_star_big_on, "Log",
+                            //        PendingIntent.getActivity(getApplicationContext(), 0,
+                            //                        getIntent(), 0, null))
+                            .addAction(android.R.drawable.sym_action_call, "Call to seller", callResult)
+                            .addAction(android.R.drawable.btn_star_big_on, "See more", piResult);
+            NotificationManager notificationManager =(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.notify(0, builder.build());
+        }
+    }
+    private Invitation invitation() {
+
+        return invitation;
     }
     class BeaconTransmission extends AsyncTask<Void, Void, Void> {
   //      DataBaseHelper dbHelper = new DataBaseHelper(this);
@@ -433,6 +560,7 @@ public class MainActivity extends AppCompatActivity
         MediaPlayer player = null;
         @Override
         protected Void doInBackground(Void... params) {
+            invitationNotification(indexMakeAudioFile);
             //       MediaPlayer player = MediaPlayer.create(MainActivity.this, makeAudioFile[indexMakeAudioFile]);
             //      for(int i = 0; i < 3; i++){
             //     Log.e("File size", Integer.toString(makeAudioFile[indexMakeAudioFile]));
@@ -495,6 +623,7 @@ public class MainActivity extends AppCompatActivity
             //    player.start();
             return null;
         }
+
     }
     public class BackgroundScanning extends AsyncTask<Void, Void, Void> {
 

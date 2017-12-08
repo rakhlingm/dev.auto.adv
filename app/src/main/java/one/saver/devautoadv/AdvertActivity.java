@@ -37,7 +37,7 @@ import java.util.Map;
 
 public class AdvertActivity extends Activity implements Imageutils.ImageAttachmentListener {
     AdvertSender as = new AdvertSender();
-    Helper hlp = new Helper();
+  //  Helper hlp = new Helper();
     TextView textMake;
     ImageButton imageButton;
     int position;
@@ -565,13 +565,13 @@ public class AdvertActivity extends Activity implements Imageutils.ImageAttachme
                 try {
                     Log.e("Why???", "I'm here...");
                     if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB) {
-                        hlp.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, advert);
+                        as.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, advert);
                         //      as.execute(pathImage_1, pathImage_2);
                     }
 
                     else
                         //    as.execute();
-                        hlp.execute(advert);
+                        as.execute(advert);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

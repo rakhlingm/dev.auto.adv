@@ -1,5 +1,6 @@
 package one.saver.devautoadv;
 
+import android.app.NotificationManager;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.le.BluetoothLeScanner;
@@ -13,6 +14,7 @@ import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.NotificationCompat;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
@@ -110,6 +112,17 @@ public class QA_Query extends AppCompatActivity {
                     isAdvertChanged = true;
                     runner = new BackgroundSound();
                     runner.execute();
+                    NotificationCompat.Builder mBuilder =
+                            (NotificationCompat.Builder) new NotificationCompat.Builder(getBaseContext())
+                                    .setPriority(2)
+                                    .setSmallIcon(android.R.drawable.btn_star_big_on)
+                                    .setContentTitle("CarApp")
+                                    .setContentText("This is first notification!");
+// Gets an instance of the NotificationManager service
+                    NotificationManager notificationManager =(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+//to post your notification to the notification bar
+                    notificationManager.notify(0 , mBuilder.build());
                 } else {
                     isAdvertChanged = false;
                 }

@@ -27,7 +27,7 @@ import java.net.URL;
  * Created by Doron Yechezkel on 9/30/2017.
  */
 
-public class AdvertSender extends AsyncTask <String, Void, String> {
+public class AdvertSender extends AsyncTask <Advert, Void, String> {
     URL url;
     HttpURLConnection urlConnection = null;
     int responseCode = 0;
@@ -47,46 +47,21 @@ public class AdvertSender extends AsyncTask <String, Void, String> {
         Log.e("Why2???", "I'm here...");
     }
     @Override
-    protected String doInBackground(String... paths) {
+    protected String doInBackground(Advert... adverts) {
         Log.e("HTTP", "HTTP is alive");
         String strURL = "http://37.46.32.119:8080/CarsApp/rest/Admin/sendAdvert";
-        Advert advert = new Advert();
-        advert.setIndexNumber(1);
-        advert.setIMEI("a");
-        advert.setMakeIndex(2);
-        advert.setModelIndex(3);
-        advert.setMake("make");
-        advert.setModel("model");
-        advert.setColor("color");
-        advert.setMinPrice(1);
-        advert.setMaxPrice(2);
-        advert.setMinMileage(3);
-        advert.setMaxMileage(4);
-        advert.setImage_1("image");
-        advert.setImage_2("image");
-        Log.e("Advert from AsyncTask", advert.toString());
-        try {
-            advertSender(strURL,advert);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        for (String path : paths) {
+        //     Advert advert = new Advert();
+        for (Advert advert : adverts) {
+            Log.e("Advert from AsyncTask", advert.toString());
             try {
-                File file = new File(path) ;
-                Log.e("File for sending", file.toString());
-                //Upload the file
-                //      fileUpload.executeMultiPartRequest("http://localhost:8080/CarsApp/rest/Admin/image-upload",
-                executeMultiPartRequest("http://37.46.32.119:8080/CarsApp/rest/Admin/image-upload",
-                        file, file.getName(), "File Uploaded :: " + path) ;
-            }
-            catch (Exception e) {
+                advertSender(strURL,advert);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-//loginAdmin();
         return null;
     }
-   public static String advertSender(String url, Advert advert)
+    public static String advertSender(String url, Advert advert)
             throws Exception {
         URL object=new URL(url);
         HttpURLConnection con = (HttpURLConnection) object.openConnection();

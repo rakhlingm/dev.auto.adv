@@ -26,7 +26,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     private static final String TABLE_QUERIES= "Queries";
 
     // Invitations table name
-    private static final String TABLE_INVITATIONS= "Queries";
+    private static final String TABLE_INVITATIONS= "Invitations";
 
 
     // Adverts and Queries Table Columns names
