@@ -109,7 +109,6 @@ public class InvitationReceiver extends AsyncTask<Invitation, Void, Invitation> 
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-           //  Log.e("Invitation from JSON", strInvitation);
             }
             return invitation;
         } catch (Exception e) {

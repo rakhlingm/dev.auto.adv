@@ -54,8 +54,39 @@ public class AdvertSender extends AsyncTask <Advert, Void, String> {
         for (Advert advert : adverts) {
             Log.e("Advert from AsyncTask", advert.toString());
             try {
+                Log.e("Advert before File send", advert.toString());
+                Log.e("Image_1", advert.getImage_1());
                 advertSender(strURL,advert);
+                File file = new File(advert.getImage_1()) ;
+                Log.e("File for sending", file.toString());
+                //Upload the file
+                //      fileUpload.executeMultiPartRequest("http://localhost:8080/CarsApp/rest/Admin/image-upload",
+                executeMultiPartRequest("http://37.46.32.119:8080/CarsApp/rest/Admin/image-upload",
+                        file, file.getName(), "File Uploaded :: " + file) ;
             } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            try {
+                File file = new File(advert.getImage_1()) ;
+                Log.e("File for sending", file.toString());
+                //Upload the file
+                //      fileUpload.executeMultiPartRequest("http://localhost:8080/CarsApp/rest/Admin/image-upload",
+                executeMultiPartRequest("http://37.46.32.119:8080/CarsApp/rest/Admin/image-upload",
+                        file, file.getName(), "File Uploaded :: " + file) ;
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+            try {
+                File file2 = new File(advert.getImage_2()) ;
+                Log.e("File for sending", file2.toString());
+                //Upload the file
+                //      fileUpload.executeMultiPartRequest("http://localhost:8080/CarsApp/rest/Admin/image-upload",
+                executeMultiPartRequest("http://37.46.32.119:8080/CarsApp/rest/Admin/image-upload",
+                        file2, file2.getName(), "File Uploaded :: " + file2) ;
+            }
+            catch (Exception e) {
                 e.printStackTrace();
             }
         }

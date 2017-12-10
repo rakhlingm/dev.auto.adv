@@ -27,12 +27,12 @@ import java.net.URL;
  * Created by Doron Yechezkel on 9/30/2017.
  */
 
-public class Helper extends AsyncTask <Advert, Void, String> {
+public class FileSender extends AsyncTask <String, Void, String> {
     URL url;
     HttpURLConnection urlConnection = null;
     int responseCode = 0;
     String sessionId = "";
-    public Helper(){
+    public FileSender(){
         //set context variables if required
     }
     protected void uploadImage() {
@@ -47,44 +47,19 @@ public class Helper extends AsyncTask <Advert, Void, String> {
         Log.e("Why2???", "I'm here...");
     }
     @Override
-    protected String doInBackground(Advert... adverts) {
-        Log.e("HTTP", "HTTP is alive");
-        String strURL = "http://37.46.32.119:8080/CarsApp/rest/Admin/sendAdvert";
-   //     Advert advert = new Advert();
-        for (Advert advert : adverts) {
-     /*   advert.setIndexNumber(1);
-        advert.setIMEI("a");
-        advert.setMakeIndex(2);
-        advert.setModelIndex(3);
-        advert.setMake("make");
-        advert.setModel("model");
-        advert.setColor("color");
-        advert.setMinPrice(1);
-        advert.setMaxPrice(2);
-        advert.setMinMileage(3);
-        advert.setMaxMileage(4);
-        advert.setImage_1("image");
-        advert.setImage_2("image");  */
-        Log.e("Advert from AsyncTask", advert.toString());
-        try {
-            advertSender(strURL,advert);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-  /*      for (String path : paths) {
+    protected String doInBackground(String... paths) {
+        Log.e("FileSender", "FileSender is alive");
+        for (String path : paths) {
             try {
                 File file = new File(path) ;
                 Log.e("File for sending", file.toString());
-                //Upload the file
-                //      fileUpload.executeMultiPartRequest("http://localhost:8080/CarsApp/rest/Admin/image-upload",
                 executeMultiPartRequest("http://37.46.32.119:8080/CarsApp/rest/Admin/image-upload",
                         file, file.getName(), "File Uploaded :: " + path) ;
             }
             catch (Exception e) {
                 e.printStackTrace();
-            } */
+            }
         }
-//loginAdmin();
         return null;
     }
     public static String advertSender(String url, Advert advert)

@@ -37,7 +37,7 @@ import java.util.Map;
 
 public class AdvertActivity extends Activity implements Imageutils.ImageAttachmentListener {
     AdvertSender as = new AdvertSender();
-  //  Helper hlp = new Helper();
+    FileSender hlp = new FileSender();
     TextView textMake;
     ImageButton imageButton;
     int position;
@@ -555,36 +555,28 @@ public class AdvertActivity extends Activity implements Imageutils.ImageAttachme
                     }
                 }
                 dbHelp.addAdvert(advert);
-           /*     try {
+                try {
                     Log.e("Why???", "I'm here...");
                     if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB) {
-                        as.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, pathImage_1, pathImage_2);
-                  //      as.execute(pathImage_1, pathImage_2);
+                        hlp.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, pathImage_1, pathImage_2);
                     }
-
                     else
-                    //    as.execute();
-                    as.execute(pathImage_1, pathImage_2);
+                        hlp.execute(pathImage_1, pathImage_2);
                 } catch (Exception e) {
                     e.printStackTrace();
-                }  */
+                }
                 try {
                     Log.e("Why???", "I'm here...");
                     if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB) {
                         advert.setIndexNumber(dbHelp.getLastAdvertIndexNumber());
                         as.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, advert);
-                        //      as.execute(pathImage_1, pathImage_2);
                     }
-
                     else
-                        //    as.execute();
                         advert.setIndexNumber(dbHelp.getLastAdvertIndexNumber());
                         as.execute(advert);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-         //       Helper hp = new Helper();
-         //       hp.execute();
                 startActivity(new Intent(AdvertActivity.this, AdvertList.class));
                 Log.e("buttonAddNewQuery", "AdvertList activity is opening.");
 
@@ -711,7 +703,7 @@ public class AdvertActivity extends Activity implements Imageutils.ImageAttachme
             }
         }
     }
-/*    public class Helper extends AsyncTask<Void, Void, Void> {
+/*    public class FileSender extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(Void... voids) {
