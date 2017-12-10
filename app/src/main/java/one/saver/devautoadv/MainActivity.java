@@ -78,8 +78,11 @@ public class MainActivity extends AppCompatActivity
     int intIsAdvertChanged = 0;
     Invitation invitation;
     ImageAdapterSeller imageAdapter = new ImageAdapterSeller(this);
-
-
+    String[] colors; // = getResources().getStringArray(R.array.colors);
+    String[] priceMin;
+    String[] priceMax;
+    String[] mileageMin;
+    String[] mileageMax;
         org.altbeacon.beacon.BeaconTransmitter beaconTransmitter;
         @Override
         protected void onCreate(Bundle savedInstanceState) {
@@ -155,13 +158,17 @@ public class MainActivity extends AppCompatActivity
         });
         dbHelper = new DataBaseHelper(this);
    //     startTransmission();
-   //       bt = new BeaconTransmission();
-   //       bt.execute();
-
+          bt = new BeaconTransmission();
+          bt.execute();
+          colors = getResources().getStringArray(R.array.colors);
+          priceMin = getResources().getStringArray(R.array.priseMin);
+          priceMax = getResources().getStringArray(R.array.priseMax);
+          mileageMin = getResources().getStringArray(R.array.minMileage);
+          mileageMin = getResources().getStringArray(R.array.maxMileage);
         /* From Advert2 */
 
-          BackgroundScanning bs = new BackgroundScanning();
-          bs.execute();
+    //      BackgroundScanning bs = new BackgroundScanning();
+    //      bs.execute();
     //      invitationNotification(1);
     /*        InvitationReceiver ir = new InvitationReceiver();
             try {
@@ -201,18 +208,25 @@ public class MainActivity extends AppCompatActivity
         String IMEI = sbIMEI.toString();
         StringBuffer sbIndexNumber = new StringBuffer (Integer.toString(advert.getIndexNumber()));
         String indexNumber = "";
-        if(advert.getIndexNumber() < 10) {
+  /*      if(advert.getIndexNumber() < 10) {
             indexNumber = sbIndexNumber.insert(0, "00-0").toString();
         }
         if(advert.getIndexNumber() > 9 && advert.getIndexNumber() < 100) {
             indexNumber = sbIndexNumber.insert(0, "00-").toString();
         }
-        if(advert.getIndexNumber() > 99) {
+      if(advert.getIndexNumber() > 99) {
             sbIndexNumber.insert(0, "0");
+            indexNumber = sbIndexNumber.insert(2, strInsert).toString();
+      } */
+        if(advert.getIndexNumber() < 10) {
+            indexNumber = sbIndexNumber.insert(0, "0").toString();
+        }
+        if(advert.getIndexNumber() > 9) {
             indexNumber = sbIndexNumber.insert(2, strInsert).toString();
         }
         StringBuffer sbMakeIndex = new StringBuffer (Integer.toString(advert.getMakeIndex()));
         String makeIndex = "";
+        Log.e("sbMakeIndex", sbMakeIndex.toString());
         if(advert.getMakeIndex() < 10) {
             sbMakeIndex.insert(0, "0");
             makeIndex = sbMakeIndex.toString();
@@ -220,7 +234,55 @@ public class MainActivity extends AppCompatActivity
         if(advert.getMakeIndex() > 9) {
             makeIndex = sbMakeIndex.toString();
         }
-        strLayout = IMEI + indexNumber + makeIndex;
+        StringBuffer sbModelIndex = new StringBuffer (Integer.toString(advert.getModelIndex()));
+        String modelIndex = "";
+        Log.e("sbModelIndex", sbModelIndex.toString());
+        if(advert.getModelIndex() < 10) {
+            sbModelIndex.insert(0, "0");
+            modelIndex = sbModelIndex.toString();
+        }
+        if(advert.getMakeIndex() > 9) {
+            modelIndex = sbModelIndex.toString();
+        }
+        String colorIndex = "";
+        int intColorIndex = -1;
+        for (int i=0; i<colors.length; i++) {
+            if (colors[i].equals(advert.getColor())) {
+                intColorIndex = i;
+                break;
+            }
+        }
+        Log.e("intColorIndex", Integer.toString(intColorIndex));
+        StringBuffer sbColor = new StringBuffer (Integer.toString(intColorIndex));
+        Log.e("sbColor", sbColor.toString());
+        if(intColorIndex < 10) {
+            sbColor.insert(0, "0");
+            colorIndex = sbColor.toString();
+        }
+        if(intColorIndex > 9) {
+            colorIndex = sbColor.toString();
+        }
+        Log.e("colorIndex", colorIndex);
+        String minPriceIndex = "";
+        int intMinPriceIndex = 0;
+        for (int i=0; i<priceMin.length; i++) {
+            if (priceMin[i].equals("$" + Integer.toString(advert.getMinPrice()))) {
+                intMinPriceIndex = i;
+                break;
+            }
+        }
+        Log.e("intColorIndex", Integer.toString(intColorIndex));
+        StringBuffer sbMinPrice = new StringBuffer (Integer.toString(intMinPriceIndex));
+        Log.e("intMinPriceIndex", Integer.toString(intMinPriceIndex));
+        if(intMinPriceIndex < 10) {
+            sbMinPrice.insert(0, "0");
+            minPriceIndex = sbMinPrice.toString();
+        }
+        if(intMinPriceIndex > 9) {
+            minPriceIndex = sbMinPrice.toString();
+        }
+        Log.e("sbMinPrice", minPriceIndex);
+        strLayout = IMEI + indexNumber + makeIndex + modelIndex + colorIndex + minPriceIndex;
         Log.e("strLayout", strLayout);
         Beacon beacon = beaconLayout.beaconLayout(strLayout);
         BeaconParser beaconParser = beaconLayout.beaconParser();
@@ -490,11 +552,14 @@ public class MainActivity extends AppCompatActivity
             if(strPLU.substring(27, 33).contains("434152")) {
                      Log.e("String", strPLU);
                 //         Log.e("String", strPLU.substring(33, 39));
-                int makeIndex = Integer.parseInt(strPLU.substring(53, 55));
-                int indexNumber = Integer.parseInt(strPLU.substring(49, 53));
+                int makeIndex = Integer.parseInt(strPLU.substring(51, 53));
+                int indexNumber = Integer.parseInt(strPLU.substring(49, 51));
                 String imei = strPLU.substring(33, 49);
                 indexMakeAudioFile = makeIndex;
                 Invitation invitation = new Invitation(indexNumber, imei);
+                invitation.setIndexNumber(indexNumber);
+                invitation.setIMEI(imei);
+
                 InvitationReceiver ir = new InvitationReceiver();
                 if(makeIndex != intIsAdvertChanged) {
                     intIsAdvertChanged = makeIndex;

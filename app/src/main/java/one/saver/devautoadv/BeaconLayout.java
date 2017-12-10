@@ -22,7 +22,7 @@ public class BeaconLayout {
     public Beacon beaconLayout(String strBeacon){
         Beacon beacon = new Beacon.Builder()
         //        .setId1("52" + strBeacon + "0000-0000-0000-0000-000000000000") //IMEI 7 bytes
-                .setId1("52" + strBeacon + "00000000") //IMEI 7 bytes
+                .setId1("52" + strBeacon + "0000") //IMEI 7 bytes
                 .setId2("1")
                 .setId3("2")
                 .setManufacturer(0x0118)

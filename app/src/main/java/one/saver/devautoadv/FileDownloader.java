@@ -25,12 +25,12 @@ import java.net.URL;
  * Created by Doron Yechezkel on 9/30/2017.
  */
 
-public class InvitationReceiver extends AsyncTask<Invitation, Void, Invitation> {
+public class FileDownloader extends AsyncTask<Invitation, Void, Invitation> {
     URL url;
     HttpURLConnection urlConnection = null;
     int responseCode = 0;
     String strInvitation = "";
-    public InvitationReceiver(){
+    public FileDownloader(){
         //set context variables if required
     }
     protected void uploadImage() {
@@ -45,7 +45,7 @@ public class InvitationReceiver extends AsyncTask<Invitation, Void, Invitation> 
     }
     @Override
     protected Invitation doInBackground(Invitation... invitations) {
-    //    Log.e("Invitation from server", strInvitation);
+        //    Log.e("Invitation from server", strInvitation);
         for (Invitation invitation : invitations) {
             Log.e("Invit... from AsyncTask", invitation.toString());
             try {
