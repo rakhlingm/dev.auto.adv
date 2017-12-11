@@ -37,6 +37,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 
 import org.altbeacon.beacon.Beacon;
@@ -158,8 +159,8 @@ public class MainActivity extends AppCompatActivity
         });
         dbHelper = new DataBaseHelper(this);
    //     startTransmission();
-          bt = new BeaconTransmission();
-          bt.execute();
+   //       bt = new BeaconTransmission();
+   //       bt.execute();
           colors = getResources().getStringArray(R.array.colors);
           priceMin = getResources().getStringArray(R.array.priseMin);
           priceMax = getResources().getStringArray(R.array.priseMax);
@@ -167,8 +168,8 @@ public class MainActivity extends AppCompatActivity
           mileageMax = getResources().getStringArray(R.array.maxMileageForBeacon);
         /* From Advert2 */
 
-    //      BackgroundScanning bs = new BackgroundScanning();
-    //      bs.execute();
+          BackgroundScanning bs = new BackgroundScanning();
+          bs.execute();
     //      invitationNotification(1);
     /*        InvitationReceiver ir = new InvitationReceiver();
             try {
@@ -219,6 +220,7 @@ public class MainActivity extends AppCompatActivity
             indexNumber = sbIndexNumber.insert(2, strInsert).toString();
       } */
         if(advert.getIndexNumber() < 10) {
+            sbIndexNumber.insert(0, "0");
             indexNumber = sbIndexNumber.toString();
         }
         if(advert.getIndexNumber() > 9) {
@@ -603,13 +605,193 @@ public class MainActivity extends AppCompatActivity
             }
             //        Log.e("String", strPLU);
             //        Log.e("String", strPLU.substring(27, 33));
-            if(strPLU.substring(27, 33).contains("434152")) {
+      //      if(strPLU.substring(27, 33).contains("434152")) {
+            if(strPLU.substring(27, 31).contains("4141")) {
                      Log.e("String", strPLU);
-                //         Log.e("String", strPLU.substring(33, 39));
-                int makeIndex = Integer.parseInt(strPLU.substring(51, 53));
-                int indexNumber = Integer.parseInt(strPLU.substring(49, 51));
-                String imei = strPLU.substring(33, 49);
+                String imei = strPLU.substring(31, 47);
+                int indexNumber = Integer.parseInt(strPLU.substring(47, 49));
+                int makeIndex = Integer.parseInt(strPLU.substring(49, 51));
+                int colorIndexInt = Integer.parseInt(strPLU.substring(53, 55));
+                int priceMinIndexInt = Integer.parseInt(strPLU.substring(55, 57));
+                int priceMaxIndexInt = Integer.parseInt(strPLU.substring(57, 59));
+                int mileageMinIndexInt = Integer.parseInt(strPLU.substring(61, 63));
+                int mileageMaxIndexInt = Integer.parseInt(strPLU.substring(63, 65));
                 indexMakeAudioFile = makeIndex;
+                String colorFromArray = colors[colorIndexInt];
+                int minPriceFromArray = 0;
+                int maxPriceFromArray = 0;
+                int minMileageFromArray = 0;
+                int maxMileageFromArray = 0;
+                switch (priceMinIndexInt) {
+                    case 0: {
+                        minPriceFromArray = 0;
+                        break;
+                    }
+                    case 21: {
+                        minPriceFromArray = 25000;
+                        break;
+                    }
+                    case 22: {
+                        minPriceFromArray = 30000;
+                        break;
+                    }
+                    case 23: {
+                        minPriceFromArray = 35000;
+                        break;
+                    }
+                    case 24: {
+                        minPriceFromArray = 40000;
+                        break;
+                    }
+                    case 25: {
+                        minPriceFromArray = 45000;
+                        break;
+                    }
+                    case 26: {
+                        minPriceFromArray = 50000;
+                        break;
+                    }
+                    case 27: {
+                        minPriceFromArray = 60000;
+                        break;
+                    }
+                    case 28: {
+                        minPriceFromArray = 70000;
+                        break;
+                    }
+                    case 29: {
+                        minPriceFromArray = 80000;
+                        break;
+                    }
+                    case 30: {
+                        minPriceFromArray = 90000;
+                        break;
+                    }
+                    case 31: {
+                        minPriceFromArray = 100000;
+                        break;
+                    }
+                    default: {
+                        minPriceFromArray = (priceMinIndexInt) * 1000;
+                        break;
+                    }
+                }
+                Log.e("Min price", Integer.toString(minPriceFromArray));
+                switch (priceMaxIndexInt) {
+                    case 0: {
+                        maxPriceFromArray = 0;
+                        break;
+                    }
+                    case 21: {
+                        maxPriceFromArray = 25000;
+                        break;
+                    }
+                    case 22: {
+                        maxPriceFromArray = 30000;
+                        break;
+                    }
+                    case 23: {
+                        maxPriceFromArray = 35000;
+                        break;
+                    }
+                    case 24: {
+                        maxPriceFromArray = 40000;
+                        break;
+                    }
+                    case 25: {
+                        maxPriceFromArray = 45000;
+                        break;
+                    }
+                    case 26: {
+                        maxPriceFromArray = 50000;
+                        break;
+                    }
+                    case 27: {
+                        maxPriceFromArray = 60000;
+                        break;
+                    }
+                    case 28: {
+                        maxPriceFromArray = 70000;
+                        break;
+                    }
+                    case 29: {
+                        maxPriceFromArray = 80000;
+                        break;
+                    }
+                    case 30: {
+                        maxPriceFromArray = 90000;
+                        break;
+                    }
+                    case 31: {
+                        maxPriceFromArray = 100000;
+                        break;
+                    }
+                    default: {
+                        maxPriceFromArray = (priceMaxIndexInt) * 1000;
+                        break;
+                    }
+                }
+                Log.e("Max price", Integer.toString(maxPriceFromArray));
+                switch (mileageMinIndexInt) {
+                    case 0: {
+                        minMileageFromArray = 0;
+                        break;
+                    }
+                    case 1: {
+                        minMileageFromArray = 1000;
+                        break;
+                    }
+                    case 2: {
+                        minMileageFromArray = 5000;
+                        break;
+                    }
+                    case 13: {
+                        minMileageFromArray = 125000;
+                        break;
+                    }
+                    case 14: {
+                        minMileageFromArray = 150000;
+                        break;
+                    }
+                    case 15: {
+                        minMileageFromArray = 200000;
+                        break;
+                    }
+                    default: {
+                        minMileageFromArray = (mileageMinIndexInt - 2) * 10000;
+                    }
+                }
+                Log.e("Min mileage", Integer.toString(minMileageFromArray));
+                switch (mileageMaxIndexInt) {
+                    case 0: {
+                        maxMileageFromArray = 1000000;
+                        break;
+                    }
+                    case 1: {
+                        maxMileageFromArray = 1000;
+                        break;
+                    }
+                    case 2: {
+                        maxMileageFromArray = 5000;
+                        break;
+                    }
+                    case 13: {
+                        maxMileageFromArray = 125000;
+                        break;
+                    }
+                    case 14: {
+                        maxMileageFromArray = 150000;
+                        break;
+                    }
+                    case 15: {
+                        maxMileageFromArray = 200000;
+                        break;
+                    }
+                    default: {
+                        maxMileageFromArray = (mileageMaxIndexInt - 2) * 10000;
+                    }
+                }
+                Log.e("Max mileage", Integer.toString(maxMileageFromArray));
                 Invitation invitation = new Invitation(indexNumber, imei);
                 invitation.setIndexNumber(indexNumber);
                 invitation.setIMEI(imei);
@@ -634,11 +816,11 @@ public class MainActivity extends AppCompatActivity
                     isAdvertChanged = false;
                 }
           //      Log.e("indexNumber", Integer.toString(indexNumber));
-                String strMakeIndex = getResources().getStringArray(R.array.makeArray)[makeIndex];
+                String strMakeFromArray = getResources().getStringArray(R.array.makeArray)[makeIndex];
           //      Log.e("Make", strMakeIndex);
           //      Log.e("IMEI", imei);
                 Log.e("intIsAdvertChanged", Integer.toString(intIsAdvertChanged));
-                Log.e("Advert from BLE", Integer.toString(indexNumber) + "-" + imei + "-" + strMakeIndex);
+                Log.e("Advert from BLE", Integer.toString(indexNumber) + "-" + imei + "-" + strMakeFromArray);
                 Log.e("Invitation for server", invitation.toString());
         //        peripheralTextView.append("Make:    " + strMakeIndex + "\n");
                 //             peripheralTextView.append("Device name_" + result.getDevice().getAddress() + " rssi: " + result.getRssi() + strMakeIndex + "\n");

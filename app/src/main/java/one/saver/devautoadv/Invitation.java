@@ -28,6 +28,18 @@ public class Invitation {
         this.IMEI = IMEI;
     }
 
+    public Invitation(int indexNumber, String IMEI, int makeIndex, int modelIndex, String color, int minPrice, int maxPrice, int minMileage, int maxMileage) {
+        this.indexNumber = indexNumber;
+        this.IMEI = IMEI;
+        this.makeIndex = makeIndex;
+        this.modelIndex = modelIndex;
+        this.color = color;
+        this.minPrice = minPrice;
+        this.maxPrice = maxPrice;
+        this.minMileage = minMileage;
+        this.maxMileage = maxMileage;
+    }
+
     public Invitation(int indexNumber, String IMEI, int makeIndex, int modelIndex, String make, String model, String color, int minPrice, int maxPrice, int minMileage, int maxMileage, String image_1, String image_2, int isRead) {
         this.indexNumber = indexNumber;
         this.IMEI = IMEI;
