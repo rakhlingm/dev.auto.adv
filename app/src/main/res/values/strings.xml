@@ -153,6 +153,42 @@
         <item>150,000 km</item>
         <item>200,000 km</item>
     </string-array>
+    <string-array name="minMileageForBeacon">
+        <item>Any</item>
+        <item>1000</item>
+        <item>5000</item>
+        <item>10000</item>
+        <item>20000</item>
+        <item>30000</item>
+        <item>40000</item>
+        <item>50000</item>
+        <item>60000</item>
+        <item>70000</item>
+        <item>80000</item>
+        <item>90000</item>
+        <item>100000</item>
+        <item>125000</item>
+        <item>150000</item>
+        <item>200000</item>
+    </string-array>
+    <string-array name="maxMileageForBeacon">
+        <item>Any</item>
+        <item>1000</item>
+        <item>5000</item>
+        <item>10000</item>
+        <item>20000</item>
+        <item>30000</item>
+        <item>40000</item>
+        <item>50000</item>
+        <item>60000</item>
+        <item>70000</item>
+        <item>80000</item>
+        <item>90000</item>
+        <item>100000</item>
+        <item>125000</item>
+        <item>150000</item>
+        <item>200000</item>
+    </string-array>
     <string-array name="audiModels">
         <item>All models</item>
         <item>80</item>

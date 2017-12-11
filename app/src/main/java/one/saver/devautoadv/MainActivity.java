@@ -163,8 +163,8 @@ public class MainActivity extends AppCompatActivity
           colors = getResources().getStringArray(R.array.colors);
           priceMin = getResources().getStringArray(R.array.priseMin);
           priceMax = getResources().getStringArray(R.array.priseMax);
-          mileageMin = getResources().getStringArray(R.array.minMileage);
-          mileageMin = getResources().getStringArray(R.array.maxMileage);
+          mileageMin = getResources().getStringArray(R.array.minMileageForBeacon);
+          mileageMax = getResources().getStringArray(R.array.maxMileageForBeacon);
         /* From Advert2 */
 
     //      BackgroundScanning bs = new BackgroundScanning();
@@ -202,9 +202,9 @@ public class MainActivity extends AppCompatActivity
         StringBuffer sbIMEI = new StringBuffer (advert.getIMEI());
         String strInsert = "-";
     //    sbIMEI.insert (0, "0");
-        sbIMEI.insert (6, strInsert);
-        sbIMEI.insert (11, strInsert);
-        sbIMEI.insert (16, strInsert);
+        sbIMEI.insert (8, strInsert);
+        sbIMEI.insert (13, strInsert);
+        sbIMEI.insert (18, strInsert);
         String IMEI = sbIMEI.toString();
         StringBuffer sbIndexNumber = new StringBuffer (Integer.toString(advert.getIndexNumber()));
         String indexNumber = "";
@@ -219,20 +219,20 @@ public class MainActivity extends AppCompatActivity
             indexNumber = sbIndexNumber.insert(2, strInsert).toString();
       } */
         if(advert.getIndexNumber() < 10) {
-            indexNumber = sbIndexNumber.insert(0, "0").toString();
+            indexNumber = sbIndexNumber.toString();
         }
         if(advert.getIndexNumber() > 9) {
-            indexNumber = sbIndexNumber.insert(2, strInsert).toString();
+            indexNumber = sbIndexNumber.toString();
         }
         StringBuffer sbMakeIndex = new StringBuffer (Integer.toString(advert.getMakeIndex()));
         String makeIndex = "";
         Log.e("sbMakeIndex", sbMakeIndex.toString());
         if(advert.getMakeIndex() < 10) {
             sbMakeIndex.insert(0, "0");
-            makeIndex = sbMakeIndex.toString();
+            makeIndex = sbMakeIndex.insert(2, strInsert).toString();
         }
         if(advert.getMakeIndex() > 9) {
-            makeIndex = sbMakeIndex.toString();
+            makeIndex = sbMakeIndex.insert(2, strInsert).toString();
         }
         StringBuffer sbModelIndex = new StringBuffer (Integer.toString(advert.getModelIndex()));
         String modelIndex = "";
@@ -255,6 +255,7 @@ public class MainActivity extends AppCompatActivity
         Log.e("intColorIndex", Integer.toString(intColorIndex));
         StringBuffer sbColor = new StringBuffer (Integer.toString(intColorIndex));
         Log.e("sbColor", sbColor.toString());
+ //       sbColor.insert(0, "-");
         if(intColorIndex < 10) {
             sbColor.insert(0, "0");
             colorIndex = sbColor.toString();
@@ -271,7 +272,6 @@ public class MainActivity extends AppCompatActivity
                 break;
             }
         }
-        Log.e("intColorIndex", Integer.toString(intColorIndex));
         StringBuffer sbMinPrice = new StringBuffer (Integer.toString(intMinPriceIndex));
         Log.e("intMinPriceIndex", Integer.toString(intMinPriceIndex));
         if(intMinPriceIndex < 10) {
@@ -282,7 +282,61 @@ public class MainActivity extends AppCompatActivity
             minPriceIndex = sbMinPrice.toString();
         }
         Log.e("sbMinPrice", minPriceIndex);
-        strLayout = IMEI + indexNumber + makeIndex + modelIndex + colorIndex + minPriceIndex;
+        String maxPriceIndex = "";
+        int intMaxPriceIndex = 0;
+        for (int i=0; i<priceMax.length; i++) {
+            if (priceMax[i].equals("$" + Integer.toString(advert.getMaxPrice()))) {
+                intMaxPriceIndex = i;
+                break;
+            }
+        }
+        StringBuffer sbMaxPrice = new StringBuffer (Integer.toString(intMaxPriceIndex));
+        Log.e("intMaxPriceIndex", Integer.toString(intMaxPriceIndex));
+        if(intMaxPriceIndex < 10) {
+            sbMaxPrice.insert(0, "0");
+            maxPriceIndex = sbMaxPrice.toString();
+        }
+        if(intMaxPriceIndex > 9) {
+            maxPriceIndex = sbMaxPrice.toString();
+        }
+        Log.e("sbMaxPrice", maxPriceIndex);
+        String minMileageIndex = "";
+        int intMinMileageIndex = 0;
+        for (int i=0; i<mileageMin.length; i++) {
+            if (mileageMin[i].equals(Integer.toString(advert.getMinMileage()))) {
+                intMinMileageIndex = i;
+                break;
+            }
+        }
+        StringBuffer sbMinMileage = new StringBuffer (Integer.toString(intMinMileageIndex));
+        Log.e("intMinMileageIndex", Integer.toString(intMinMileageIndex));
+        if(intMinMileageIndex < 10) {
+            sbMinMileage.insert(0, "0");
+            minMileageIndex = sbMinMileage.toString();
+        }
+        if(intMinMileageIndex > 9) {
+            minMileageIndex = sbMinMileage.toString();
+        }
+        Log.e("sbMinMileage", minMileageIndex);
+        String maxMileageIndex = "";
+        int intMaxMileageIndex = 0;
+        for (int i=0; i<mileageMax.length; i++) {
+            if (mileageMax[i].equals(Integer.toString(advert.getMaxMileage()))) {
+                intMaxMileageIndex = i;
+                break;
+            }
+        }
+        StringBuffer sbMaxMileage = new StringBuffer (Integer.toString(intMaxMileageIndex));
+        Log.e("intMaxMileageIndex", Integer.toString(intMaxMileageIndex));
+        if(intMaxMileageIndex < 10) {
+            sbMaxMileage.insert(0, "0");
+            maxMileageIndex = sbMaxMileage.toString();
+        }
+        if(intMaxMileageIndex > 9) {
+            maxMileageIndex = sbMaxMileage.toString();
+        }
+        Log.e("sbMaxMileage", maxMileageIndex);
+        strLayout = IMEI + indexNumber + makeIndex + modelIndex + colorIndex + minPriceIndex + maxPriceIndex + minMileageIndex + maxMileageIndex;
         Log.e("strLayout", strLayout);
         Beacon beacon = beaconLayout.beaconLayout(strLayout);
         BeaconParser beaconParser = beaconLayout.beaconParser();
