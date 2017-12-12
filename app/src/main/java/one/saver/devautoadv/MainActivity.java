@@ -15,6 +15,7 @@ import android.bluetooth.le.ScanSettings;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
@@ -880,10 +881,13 @@ public class MainActivity extends AppCompatActivity
         });
     }
     public class BackgroundSound extends AsyncTask<Void, Void, Void> {
-        MediaPlayer player = null;
+    //    MediaPlayer player = null;
+        MediaPlayer mp;
+        int mCompleted = 0;
+        private int[] tracks = {makeAudioFile[indexMakeAudioFile], R.raw.word_you_are_interested_in, R.raw.word_near_you};
         @Override
         protected Void doInBackground(Void... params) {
-            invitationNotification(indexMakeAudioFile);
+  /*          invitationNotification(indexMakeAudioFile);
             //       MediaPlayer player = MediaPlayer.create(MainActivity.this, makeAudioFile[indexMakeAudioFile]);
             //      for(int i = 0; i < 3; i++){
             //     Log.e("File size", Integer.toString(makeAudioFile[indexMakeAudioFile]));
@@ -935,7 +939,7 @@ public class MainActivity extends AppCompatActivity
                     player.start();
                 }
             });  */
-            player.start();
+    //        player.start();   //Don't forget to remove commit!!!!!!!
 
 
             // play next audio file
@@ -944,6 +948,32 @@ public class MainActivity extends AppCompatActivity
             //        player.setLooping(true); // Set looping
             //      });  player.setVolume(100,100);
             //    player.start();
+            mCompleted = 0;
+            mp = MediaPlayer.create(getBaseContext(), tracks[0]);
+            mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    mCompleted++;
+                    mp.reset();
+                    if (mCompleted <= tracks.length) {
+                        try {
+                            AssetFileDescriptor afd = getResources().openRawResourceFd(tracks[mCompleted]);
+                            if (afd != null) {
+                                mp.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+                                afd.close();
+                                mp.prepare();
+                                mp.start();
+                            }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+
+                    } else if (mCompleted > tracks.length) {
+                    } else {
+                    }
+                }
+            });
+            mp.start();
             return null;
         }
 
