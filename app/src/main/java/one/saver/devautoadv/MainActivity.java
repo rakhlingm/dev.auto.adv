@@ -45,7 +45,9 @@ import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconParser;
 
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static android.support.v4.app.NotificationCompat.DEFAULT_SOUND;
 import static android.support.v4.app.NotificationCompat.DEFAULT_VIBRATE;
@@ -85,6 +87,9 @@ public class MainActivity extends AppCompatActivity
     String[] priceMax;
     String[] mileageMin;
     String[] mileageMax;
+    String[] makeArray;
+    String[] modelArray;
+    Map<Integer, String[]> models_arrays;
         org.altbeacon.beacon.BeaconTransmitter beaconTransmitter;
         @Override
         protected void onCreate(Bundle savedInstanceState) {
@@ -167,7 +172,29 @@ public class MainActivity extends AppCompatActivity
           priceMax = getResources().getStringArray(R.array.priseMax);
           mileageMin = getResources().getStringArray(R.array.minMileageForBeacon);
           mileageMax = getResources().getStringArray(R.array.maxMileageForBeacon);
-        /* From Advert2 */
+          makeArray = getResources().getStringArray(R.array.makeArray);
+            models_arrays = new HashMap<Integer, String[]>();
+            models_arrays.put(0, new String[]{"All models"});
+            models_arrays.put(1, getResources().getStringArray(R.array.audiModels));
+            models_arrays.put(2, getResources().getStringArray(R.array.bmwModels));
+            models_arrays.put(3, getResources().getStringArray(R.array.citroenModels));
+            models_arrays.put(4, getResources().getStringArray(R.array.fiatModels));
+            models_arrays.put(5, getResources().getStringArray(R.array.fordModels));
+            models_arrays.put(6, getResources().getStringArray(R.array.hondaModels));
+            models_arrays.put(7, getResources().getStringArray(R.array.hyundaiModels));
+            models_arrays.put(8, getResources().getStringArray(R.array.landRoverModels));
+            models_arrays.put(9, getResources().getStringArray(R.array.lexusModels));
+            models_arrays.put(10, getResources().getStringArray(R.array.mazdaModels));
+            models_arrays.put(11, getResources().getStringArray(R.array.mercedes_BenzModels));
+            models_arrays.put(12, getResources().getStringArray(R.array.mitsubishiModels));
+            models_arrays.put(13, getResources().getStringArray(R.array.nissanModels));
+            models_arrays.put(14, getResources().getStringArray(R.array.opelModels));
+            models_arrays.put(15, getResources().getStringArray(R.array.seatModels));
+            models_arrays.put(16, getResources().getStringArray(R.array.skodaModels));
+            models_arrays.put(17, getResources().getStringArray(R.array.subaruModels));
+            models_arrays.put(18, getResources().getStringArray(R.array.volkswagenModels));
+            models_arrays.put(19, getResources().getStringArray(R.array.toyotaModels));
+            models_arrays.put(20, getResources().getStringArray(R.array.volvoModels));
 
           BackgroundScanning bs = new BackgroundScanning();
           bs.execute();
@@ -414,10 +441,10 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-    private void invitationNotification(int index) {
+    private void invitationNotification(Invitation invitation) {
         if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.M) {
             String[] events = new String[6];
-            events[0] = Integer.toString(index);
+            events[0] = Integer.toString(invitation.getMakeIndex());
             events[1] = "X6";
             events[2] = "White";
             events[3] = "$70000";
@@ -498,9 +525,9 @@ public class MainActivity extends AppCompatActivity
             NotificationCompat.Builder builder =
                     new NotificationCompat.Builder(this)
                     //        .setSmallIcon(android.R.drawable.btn_star_big_on)
-                            .setSmallIcon(imageAdapter.makeLogoIds[index])
+                            .setSmallIcon(imageAdapter.makeLogoIds[invitation.getMakeIndex()])
                             .setContentTitle("CarsApp")
-                            .setContentText("Row 1")
+                            .setContentText(invitation.getMake() + "  " + invitation.getModel())
                             .setContentInfo("Row 2")
                             .setStyle(bigPictureStyle)
                             .setVisibility(VISIBILITY_PUBLIC)
@@ -596,22 +623,16 @@ public class MainActivity extends AppCompatActivity
             //          peripheralTextView.append("Device Name: " + result.getDevice().getName() + " rssi: " + result.getRssi() + "\n");
             final StringBuilder builder = new StringBuilder();
             String strPLU = "";
-       /*     if (result.getDevice().getAddress().toString().contains("45:5B")) {
-                Log.e("SCANNER", "Device Name: " + result.getDevice().getAddress() + " rssi: " + result.getRssi()
-                       + "  " + result.getDevice().getUuids() + "\n");
-                peripheralTextView.append("Device name_" + result.getDevice().getAddress() + " rssi: " + result.getRssi() + "\n");
-          */      byte[] mScanRecord = result.getScanRecord().getBytes();
+            byte[] mScanRecord = result.getScanRecord().getBytes();
             for (int j = 0; j < mScanRecord.length; j++) {
                 strPLU =  result.getDevice().getAddress().toString() + "  " + builder.append(String.format("%02x", mScanRecord[j])).toString();
             }
-            //        Log.e("String", strPLU);
-            //        Log.e("String", strPLU.substring(27, 33));
-      //      if(strPLU.substring(27, 33).contains("434152")) {
             if(strPLU.substring(27, 31).contains("4141")) {
                      Log.e("String", strPLU);
                 String imei = strPLU.substring(31, 47);
                 int indexNumber = Integer.parseInt(strPLU.substring(47, 49));
                 int makeIndex = Integer.parseInt(strPLU.substring(49, 51));
+                int modelIndex = Integer.parseInt(strPLU.substring(51,53));
                 int colorIndexInt = Integer.parseInt(strPLU.substring(53, 55));
                 int priceMinIndexInt = Integer.parseInt(strPLU.substring(55, 57));
                 int priceMaxIndexInt = Integer.parseInt(strPLU.substring(57, 59));
@@ -793,14 +814,31 @@ public class MainActivity extends AppCompatActivity
                     }
                 }
                 Log.e("Max mileage", Integer.toString(maxMileageFromArray));
+                String strMakeFromArray = getResources().getStringArray(R.array.makeArray)[makeIndex];
                 Invitation invitation = new Invitation(indexNumber, imei);
                 invitation.setIndexNumber(indexNumber);
                 invitation.setIMEI(imei);
-
+                invitation.setMakeIndex(makeIndex);
+                invitation.setMake(strMakeFromArray);
+                invitation.setModelIndex(modelIndex);
+                invitation.setModel(makeArray[makeIndex]);
+                modelArray = models_arrays.get(makeIndex + 1);
+                invitation.setModel(modelArray[modelIndex]);
+                invitation.setColor(colorFromArray);
+                invitation.setMinPrice(minPriceFromArray);
+                invitation.setMaxPrice(maxPriceFromArray);
+                invitation.setMinMileage(minMileageFromArray);
+                invitation.setMaxMileage(maxMileageFromArray);
                 InvitationReceiver ir = new InvitationReceiver();
                 if(makeIndex != intIsAdvertChanged) {
                     intIsAdvertChanged = makeIndex;
                     isAdvertChanged = true;
+                    invitationNotification(invitation);
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     bgs = new BackgroundSound();
                     bgs.execute();
                     try {
@@ -813,49 +851,20 @@ public class MainActivity extends AppCompatActivity
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                    dbHelper.addInvitation(invitation);
+                    dbHelper.getAllInvitations();
                 } else {
                     isAdvertChanged = false;
                 }
-          //      Log.e("indexNumber", Integer.toString(indexNumber));
-                String strMakeFromArray = getResources().getStringArray(R.array.makeArray)[makeIndex];
-          //      Log.e("Make", strMakeIndex);
-          //      Log.e("IMEI", imei);
                 Log.e("intIsAdvertChanged", Integer.toString(intIsAdvertChanged));
-                Log.e("Advert from BLE", Integer.toString(indexNumber) + "-" + imei + "-" + strMakeFromArray);
+                Log.e("Advert from BLE", Integer.toString(indexNumber) + "-" + imei + "-" + invitation.getMake() + "-" + invitation.getModel());
                 Log.e("Invitation for server", invitation.toString());
-        //        peripheralTextView.append("Make:    " + strMakeIndex + "\n");
-                //             peripheralTextView.append("Device name_" + result.getDevice().getAddress() + " rssi: " + result.getRssi() + strMakeIndex + "\n");
-
             }
-
-
-
-       /*     } else {
-            //             peripheralTextView.setText("PLU is not found!"  + "\n");
-             //            Log.e("SCANNER", "Device Name: " + result.getDevice().getAddress() + " rssi: " + result.getRssi() + "\n");
-           //     Log.e("SCANNER/Else", "Device Name: " + result.getDevice().getAddress() + " rssi: " + result.getRssi()
-          //              + "  " + result.getScanRecord().toString() + "\n");
-          //      peripheralTextView.append("Device name_" + result.getDevice().getAddress() + " rssi: " + result.getRssi() + "\n");
-
-            }  */
-            //  Log.e("SCANNER", "Device Name: " + result.getDevice().getAddress() + " rssi: " + result.getRssi() + "\n");
-            //  peripheralTextView.append("Device name_" + result.getDevice().getAddress() + " rssi: " + result.getRssi() + "\n");
-
-            // auto scroll for text view
-
-            //          peripheralTextView.append("PLU_" + result.getDevice().getName() + " is found!"  + "\n");
-     //       final int scrollAmount = peripheralTextView.getLayout().getLineTop(peripheralTextView.getLineCount()) - peripheralTextView.getHeight();
-            // if there is no need to scroll, scrollAmount will be <=0
-     //       if (scrollAmount > 0)
-     //           peripheralTextView.scrollTo(0, scrollAmount);
         }
     };
 
     public void startScanning() {
         Log.e("Scanner", "Start scanning");
-   //     peripheralTextView.setText("");
-   //    startScanningButton.setVisibility(View.INVISIBLE);
-   //     stopScanningButton.setVisibility(View.VISIBLE);
         ScanSettings.Builder scanSettingsBuilder = new ScanSettings.Builder();
         scanSettingsBuilder.setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY);
         scanSettingsBuilder.setReportDelay(0);
@@ -870,9 +879,6 @@ public class MainActivity extends AppCompatActivity
 
     public void stopScanning() {
         Log.e("Scanner", "Stop scanning");
- //       peripheralTextView.append("Stopped Scanning");
- //       startScanningButton.setVisibility(View.VISIBLE);
- //       stopScanningButton.setVisibility(View.INVISIBLE);
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
@@ -887,67 +893,6 @@ public class MainActivity extends AppCompatActivity
         private int[] tracks = {makeAudioFile[indexMakeAudioFile], R.raw.word_you_are_interested_in, R.raw.word_near_you};
         @Override
         protected Void doInBackground(Void... params) {
-  /*          invitationNotification(indexMakeAudioFile);
-            //       MediaPlayer player = MediaPlayer.create(MainActivity.this, makeAudioFile[indexMakeAudioFile]);
-            //      for(int i = 0; i < 3; i++){
-            //     Log.e("File size", Integer.toString(makeAudioFile[indexMakeAudioFile]));
-            player = MediaPlayer.create(MainActivity.this, makeAudioFile[indexMakeAudioFile]);
-            player.setVolume(100,100);
-
-            player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mp) {
-                    player.stop();
-                    try {
-                        Thread.sleep(50);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    player = MediaPlayer.create(MainActivity.this, R.raw.word_you_are_interested_in);
-                    player.setVolume(100,100);
-                    player.start();
-                    while(player.isPlaying()) {
-
-                    }
-                    player.stop();
-                    try {
-                        Thread.sleep(50);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    player = MediaPlayer.create(MainActivity.this, R.raw.word_near_you);
-                    player.setVolume(100,100);
-                    player.start();
-                    while(player.isPlaying()) {
-
-                    }
-                    player.stop();
-                    try {
-                        Thread.sleep(50);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    bgs.onCancelled();
-                }
-            });
-    /*        player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mp) {
-                    player.stop();
-                    player = MediaPlayer.create(MainActivity.this, R.raw.word_near_you);
-                    player.setVolume(100,100);
-                    player.start();
-                }
-            });  */
-    //        player.start();   //Don't forget to remove commit!!!!!!!
-
-
-            // play next audio file
-
-            //             }  }
-            //        player.setLooping(true); // Set looping
-            //      });  player.setVolume(100,100);
-            //    player.start();
             mCompleted = 0;
             mp = MediaPlayer.create(getBaseContext(), tracks[0]);
             mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
@@ -967,7 +912,6 @@ public class MainActivity extends AppCompatActivity
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }
-
                     } else if (mCompleted > tracks.length) {
                     } else {
                     }
@@ -976,7 +920,6 @@ public class MainActivity extends AppCompatActivity
             mp.start();
             return null;
         }
-
     }
     public class BackgroundScanning extends AsyncTask<Void, Void, Void> {
 

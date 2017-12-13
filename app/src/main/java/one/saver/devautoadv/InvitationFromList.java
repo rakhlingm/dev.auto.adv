@@ -108,19 +108,19 @@ public class InvitationFromList extends Activity implements Imageutils.ImageAtta
         Log.e("indexNumber", Integer.toString(indexNumber));
         dbHelper = new DataBaseHelper(this);
         invitation = dbHelper.getInvitation(indexNumber);
-        Log.e("Advert from DB", invitation.toString());
+        Log.e("Invitation from DB", invitation.toString());
         textMake.setText(invitation.getMake());
         modelIndex = invitation.getModelIndex();
         if (invitation.getIsRead() == 1) {
             imgIsMain.setTag(android.R.drawable.btn_star_big_on);
             imgIsMain.setImageResource(android.R.drawable.btn_star_big_on);
             isRead = 1;
-            Log.e("Is the advert main", "TRUE");
+            Log.e("Is the invitation read", "TRUE");
         } else {
             imgIsMain.setTag(android.R.drawable.btn_star_big_off);
             imgIsMain.setImageResource(android.R.drawable.btn_star_big_off);
             isRead = 0;
-            Log.e("Is the advert main", "FALSE");
+            Log.e("Is the read main", "FALSE");
         }
         Map<Integer, String[]> models_arrays = new HashMap<Integer, String[]>();
         models_arrays.put(0, new String[]{"All models"});
@@ -358,7 +358,7 @@ public class InvitationFromList extends Activity implements Imageutils.ImageAtta
             }
         }
         spinnerMaxMileage.setSelection(indexMaxMileage);
-        if (invitation.getImage_1().contains(".png")) {
+  /*      if (invitation.getImage_1().contains(".png")) {
             image_1.setImageBitmap(BitmapFactory.decodeFile(invitation.getImage_1()));
         } else {
             image_1.setImageResource(R.drawable.ph_add_image);
@@ -367,7 +367,7 @@ public class InvitationFromList extends Activity implements Imageutils.ImageAtta
             image_2.setImageBitmap(BitmapFactory.decodeFile(invitation.getImage_2()));
         } else {
             image_2.setImageResource(R.drawable.ph_add_image);
-        }
+        }  */
         AdapterView.OnItemSelectedListener spinnerMinPriceListener = new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
