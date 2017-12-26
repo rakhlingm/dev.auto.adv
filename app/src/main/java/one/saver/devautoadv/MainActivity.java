@@ -23,6 +23,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -44,6 +45,12 @@ import android.widget.Button;
 import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconParser;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -829,7 +836,28 @@ public class MainActivity extends AppCompatActivity
                 invitation.setMaxPrice(maxPriceFromArray);
                 invitation.setMinMileage(minMileageFromArray);
                 invitation.setMaxMileage(maxMileageFromArray);
-                InvitationReceiver ir = new InvitationReceiver();
+       /*         InvitationReceiver ir = new InvitationReceiver(
+                        new InvitationReceiver.AsyncResponse() {
+                            @Override
+                            public void processFinish(Invitation output) {
+                                Log.e("Response from server 1:", "Finish");
+                            }
+                        }
+                 );  */
+                final Invitation[] invitationFromServer = {null};
+                InvitationReceiver ir = new InvitationReceiver(new InvitationReceiver.AsyncResponse(){
+
+                    @Override
+                    public void processFinish(Invitation output) {
+                        invitationFromServer[0] = output;
+                        Log.e("invitFromServerMain", invitationFromServer[0].toString());
+                    }
+
+
+                });
+
+
+
                 if(makeIndex != intIsAdvertChanged) {
                     intIsAdvertChanged = makeIndex;
                     isAdvertChanged = true;
@@ -846,13 +874,18 @@ public class MainActivity extends AppCompatActivity
                             ir.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, invitation);
                         }
                         else {
-                            ir.execute(invitation);
+                        //    invitationFromServer =
+                            invitationFromServer[0] = ir.execute(invitation).get();
+                       //     ir.execute(invitation).get();
+                            Log.e("Response from server 2:", invitationFromServer[0].toString());
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                     dbHelper.addInvitation(invitation);
                     dbHelper.getAllInvitations();
+                    DownloadFile df = new DownloadFile();
+                    df.execute();
                 } else {
                     isAdvertChanged = false;
                 }
@@ -933,5 +966,74 @@ public class MainActivity extends AppCompatActivity
             return null;
         }
     }
-}
+        public class DownloadFile extends AsyncTask <String, Void, Void> {
+            private static final String URI_DOWNLOAD = "http://37.46.32.119:8080/CarsApp/rest/Admin/download-file";
+            @Override
+            protected Void doInBackground(String... imagePaths) {
+                createDirIfNotExists("CarsApp/FromServer");
+                File path = Environment.getExternalStoragePublicDirectory(
+                        "CarsApp/FromServer");
+                for (String imagePath : imagePaths) {
+                    try {
+                        downloadFile(URI_DOWNLOAD, path.toString());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                return null;
+            }
+            public boolean createDirIfNotExists(String path) {
+                boolean ret = true;
+                File file = new File(Environment.getExternalStorageDirectory(), path);
+                if (!file.exists()) {
+                    if (!file.mkdirs()) {
+                        Log.e("TravellerLog :: ", "Problem creating Image folder");
+                        ret = false;
+                    }
+                }
+                return ret;
+            }
+            public void downloadFile(String fileURL, String saveDir)
+                    throws IOException {
+                int BUFFER_SIZE = 4096;
+                URL url = new URL(fileURL);
+                HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
+                int responseCode = httpConn.getResponseCode();
+
+                // always check HTTP response code first
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    String fileName = "";
+                    String disposition = httpConn.getHeaderField("Content-Disposition");
+                    String contentSplit[] = disposition.split("filename=");
+                    fileName = contentSplit[1].replace("filename=", "").replace("\"", "").trim();
+                    String contentType = httpConn.getContentType();
+                    int contentLength = httpConn.getContentLength();
+                    Log.e("Content-Type", contentType);
+                    Log.e("Content-Disposition", disposition);
+                    Log.e("Content-Length", Integer.toString(contentLength));
+                    Log.e("fileName", fileName);
+
+                    // opens input stream from the HTTP connection
+                    InputStream inputStream = httpConn.getInputStream();
+                    String saveFilePath = saveDir + File.separator + fileName;
+
+                    // opens an output stream to save into file
+                    FileOutputStream outputStream = new FileOutputStream(saveFilePath);
+
+                    int bytesRead = -1;
+                    byte[] buffer = new byte[BUFFER_SIZE];
+                    while ((bytesRead = inputStream.read(buffer)) != -1) {
+                        outputStream.write(buffer, 0, bytesRead);
+                    }
+                    outputStream.close();
+                    inputStream.close();
+
+                    Log.e("File downloading","File downloaded");
+                } else {
+                    System.out.println("No file to download. Server replied HTTP code: " + responseCode);
+                }
+                httpConn.disconnect();
+            }
+        }
+    }
 

@@ -2,7 +2,6 @@ package one.saver.devautoadv;
 
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.SimpleAdapter;
 
 
 import org.apache.http.HttpResponse;
@@ -25,18 +24,26 @@ import java.net.URL;
  * Created by Doron Yechezkel on 9/30/2017.
  */
 
-public class InvitationReceiver extends AsyncTask<Invitation, Void, Invitation> {
+public class InvitationReceiver extends AsyncTask<Invitation, Invitation, Invitation> {
     URL url;
     HttpURLConnection urlConnection = null;
     int responseCode = 0;
     String strInvitation = "";
+    Invitation invitationFromServer = null;
     public InvitationReceiver(){
         //set context variables if required
     }
     protected void uploadImage() {
 
     }
+    public interface AsyncResponse {
+        void processFinish(Invitation output);
+    }
+    public AsyncResponse delegate = null;//Call back interface
 
+    public InvitationReceiver(AsyncResponse asyncResponse) {
+        delegate = asyncResponse;//Assigning call back interfacethrough constructor
+    }
 
     @Override
     protected void onPreExecute() {
@@ -49,17 +56,19 @@ public class InvitationReceiver extends AsyncTask<Invitation, Void, Invitation> 
         for (Invitation invitation : invitations) {
             Log.e("Invit... from AsyncTask", invitation.toString());
             try {
-                invitation = getInvitation(invitation.getIndexNumber(), invitation.getIMEI());
-                return invitation;
+                invitationFromServer = getInvitation(invitation.getIndexNumber(), invitation.getIMEI());
+                Log.e("invitationFromServer", invitationFromServer.toString());
+                return invitationFromServer;
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        return null;
+        return invitationFromServer;
     }
     @Override
     protected void onPostExecute(Invitation result) {
         super.onPostExecute(result);
+        Log.e("onPostExecute", result.toString());
     }
     public void executeMultiPartRequest(String urlString, File file, String fileName, String fileDescription) throws Exception
     {
