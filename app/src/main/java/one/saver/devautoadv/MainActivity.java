@@ -174,7 +174,7 @@ public class MainActivity extends AppCompatActivity
    //     startTransmission();
    //       bt = new BeaconTransmission();
    //       bt.execute();
-
+//
           colors = getResources().getStringArray(R.array.colors);
           priceMin = getResources().getStringArray(R.array.priseMin);
           priceMax = getResources().getStringArray(R.array.priseMax);
