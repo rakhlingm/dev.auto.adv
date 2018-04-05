@@ -81,6 +81,12 @@ public class MainActivity extends AppCompatActivity
             R.raw.lexus, R.raw.mazda, R.raw.mercedes_benz, R.raw.mitsubishi, R.raw.nissan,
             R.raw.opel, R.raw.seat, R.raw.skoda, R.raw.subaru,
             R.raw.volkswagen, R.raw.toyota, R.raw.volvo};
+    public	Integer[] makeLogoIds = { R.drawable.audi, R.drawable.bmw, R.drawable.citroen,
+            R.drawable.fiatlogo, R.drawable.ford, R.drawable.honda, R.drawable.hyundai, R.drawable.landrover,
+            R.drawable.lexus, R.drawable.mazda, R.drawable.mercedes_benz, R.drawable.mitsubishi, R.drawable.nissan,
+            R.drawable.opel, R.drawable.seat, R.drawable.skoda, R.drawable.subaru,
+            R.drawable.thumbsvolkswagen, R.drawable.toyota, R.drawable.volvo};
+
     int indexMakeAudioFile = 0;
     BackgroundSound bgs;
     private final static int REQUEST_ENABLE_BT = 1;
@@ -97,7 +103,7 @@ public class MainActivity extends AppCompatActivity
     String[] makeArray;
     String[] modelArray;
     Map<Integer, String[]> models_arrays;
-        org.altbeacon.beacon.BeaconTransmitter beaconTransmitter;
+    org.altbeacon.beacon.BeaconTransmitter beaconTransmitter;
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -171,10 +177,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
         dbHelper = new DataBaseHelper(this);
-   //     startTransmission();
-   //       bt = new BeaconTransmission();
-   //       bt.execute();
-//
+
           colors = getResources().getStringArray(R.array.colors);
           priceMin = getResources().getStringArray(R.array.priseMin);
           priceMax = getResources().getStringArray(R.array.priseMax);
@@ -204,8 +207,14 @@ public class MainActivity extends AppCompatActivity
             models_arrays.put(19, getResources().getStringArray(R.array.toyotaModels));
             models_arrays.put(20, getResources().getStringArray(R.array.volvoModels));
 
+
+//
           BackgroundScanning bs = new BackgroundScanning();
           bs.execute();
+
+            //     startTransmission();
+   //         bt = new BeaconTransmission();
+   //         bt.execute();
     //      invitationNotification(1);
     /*        InvitationReceiver ir = new InvitationReceiver();
             try {
@@ -376,6 +385,13 @@ public class MainActivity extends AppCompatActivity
         Log.e("sbMaxMileage", maxMileageIndex);
         strLayout = IMEI + indexNumber + makeIndex + modelIndex + colorIndex + minPriceIndex + maxPriceIndex + minMileageIndex + maxMileageIndex;
         Log.e("strLayout", strLayout);
+
+    /*    AdvertiseSettings settings = new AdvertiseSettings.Builder()
+                .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY)
+                .setConnectable(true)
+                .setTimeout(0)
+                .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH)
+                .build(); */
         Beacon beacon = beaconLayout.beaconLayout(strLayout);
         BeaconParser beaconParser = beaconLayout.beaconParser();
         beaconTransmitter =
@@ -453,11 +469,13 @@ public class MainActivity extends AppCompatActivity
         if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.M) {
             String[] events = new String[6];
             events[0] = Integer.toString(invitation.getMakeIndex());
-            events[1] = "X6";
-            events[2] = "White";
+            events[1] = invitation.getMake();
+            events[2] = invitation.getColor();
             events[3] = "$70000";
-            Bitmap modelIcon = BitmapFactory.decodeResource(getResources(),
-                    R.drawable.bmw);
+          /*  Bitmap modelIcon = BitmapFactory.decodeResource(getResources(),
+                    R.drawable.bmw);  */
+             Bitmap modelIcon = BitmapFactory.decodeResource(getResources(),
+                     makeLogoIds[invitation.getMakeIndex()]);
 
             NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
                     this).setAutoCancel(true)
